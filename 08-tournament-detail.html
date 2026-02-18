@@ -9,13 +9,29 @@
 /* Tournament Hero */
 .tournament-hero {
   padding: 0 16px 16px;
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.04) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.tournament-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.06) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .th-name {
   font-size: var(--font-2xl);
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 4px;
+  letter-spacing: -0.5px;
 }
 
 .th-location {
@@ -86,6 +102,7 @@
 .section-tab.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
+  text-shadow: 0 0 12px rgba(0, 230, 138, 0.3);
 }
 
 .section-tab .tab-count {
@@ -94,10 +111,12 @@
   padding: 1px 5px;
   border-radius: 8px;
   margin-left: 4px;
+  font-weight: 600;
 }
 
 .section-tab.active .tab-count {
   background: var(--accent-dim);
+  box-shadow: 0 0 8px rgba(0, 230, 138, 0.1);
 }
 
 /* Entry Rows */
@@ -111,6 +130,14 @@
   padding: 10px 0;
   border-bottom: 1px solid var(--border-subtle);
   gap: 10px;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.entry-row:hover {
+  background: rgba(255,255,255,0.02);
+  padding-left: 4px;
 }
 
 .entry-row:last-child {
@@ -119,10 +146,11 @@
 
 .er-rank {
   font-size: var(--font-base);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--accent);
   min-width: 28px;
   text-align: right;
+  text-shadow: 0 0 10px rgba(0, 230, 138, 0.15);
 }
 
 .er-rank.unranked {

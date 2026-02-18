@@ -6,38 +6,134 @@
 <title>Screen 1 — Dashboard</title>
 <link rel="stylesheet" href="shared-styles.css">
 <style>
+/* Stats Row */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-.stat-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 10px 8px; text-align: center; }
-.stat-card .stat-value { font-size: var(--font-xl); font-weight: 700; color: var(--accent); line-height: 1.2; }
-.stat-card .stat-label { font-size: 9px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+.stat-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 16px rgba(0, 230, 138, 0.06);
+  transition: all 0.25s ease;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 230, 138, 0.1); }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.5;
+}
+.stat-card .stat-value { font-size: var(--font-xl); font-weight: 800; color: var(--accent); line-height: 1.2; text-shadow: 0 0 20px rgba(0, 230, 138, 0.3); }
+.stat-card .stat-label { font-size: 9px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+
+/* Filters */
 .filter-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .entries-toggle { display: flex; align-items: center; gap: 6px; font-size: var(--font-xs); color: var(--text-secondary); }
 .rank-range { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-.rank-input { background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 5px 8px; font-size: var(--font-sm); color: var(--text-primary); width: 60px; text-align: center; font-family: var(--font-family); }
+.rank-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  width: 60px;
+  text-align: center;
+  font-family: var(--font-family);
+  transition: border-color 0.2s;
+}
+.rank-input:focus { outline: none; border-color: var(--accent-border); box-shadow: 0 0 8px rgba(0, 230, 138, 0.1); }
 .rank-range .range-label { font-size: var(--font-xs); color: var(--text-tertiary); }
 .rank-range .range-divider { color: var(--text-tertiary); font-size: var(--font-sm); }
-.player-row { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; text-decoration: none; display: block; }
-.player-row:hover { border-color: var(--accent-border); }
+
+/* Player Rows */
+.player-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.player-row::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.player-row:hover {
+  border-color: var(--accent-border);
+  background: var(--bg-card-hover);
+  transform: translateX(2px);
+}
+.player-row:hover::before { opacity: 1; }
+
 .player-info { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.player-rank { font-size: var(--font-xl); font-weight: 700; color: var(--accent); min-width: 32px; text-align: right; }
+.player-rank {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  color: var(--accent);
+  min-width: 32px;
+  text-align: right;
+  text-shadow: 0 0 12px rgba(0, 230, 138, 0.2);
+}
 .player-details { flex: 1; min-width: 0; }
 .player-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.player-country { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 1px; }
-.player-gender-badge { padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
-.badge-atp { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
-.badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; }
+.player-country { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 2px; }
+.player-gender-badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-atp { background: rgba(59, 130, 246, 0.15); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.2); }
+.badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; border: 1px solid rgba(236, 72, 153, 0.2); }
+
+/* Tournament Badges */
 .tournament-badges { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
 .tournament-badges::-webkit-scrollbar { display: none; }
-.tournament-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: var(--bg-section); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 6px 8px; min-width: 100px; flex-shrink: 0; cursor: pointer; text-decoration: none; }
-.tournament-badge:hover { border-color: var(--accent-border); }
+.tournament-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  background: linear-gradient(135deg, var(--bg-section) 0%, rgba(20, 20, 29, 0.8) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.tournament-badge:hover {
+  border-color: var(--accent-border);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
 .tournament-badge .t-name { font-size: 10px; font-weight: 600; color: var(--text-primary); white-space: nowrap; max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
 .tournament-badge .t-meta { display: flex; align-items: center; gap: 4px; }
-.tournament-badge .t-tier { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
-.tournament-badge .t-surface-dot { width: 6px; height: 6px; border-radius: 50%; }
+.tournament-badge .t-tier { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.3px; }
+.tournament-badge .t-surface-dot { width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 0 4px currentColor; }
 .tournament-badge .t-section { font-size: 9px; color: var(--text-tertiary); font-weight: 500; }
 .tournament-badge.withdrawn { opacity: 0.5; border-color: rgba(239, 68, 68, 0.2); }
 .tournament-badge.withdrawn .t-name { text-decoration: line-through; color: var(--text-tertiary); }
-.wd-tag { font-size: 9px; font-weight: 700; color: var(--withdrawn); background: rgba(239, 68, 68, 0.12); padding: 0px 4px; border-radius: 3px; }
+.wd-tag { font-size: 9px; font-weight: 700; color: var(--withdrawn); background: rgba(239, 68, 68, 0.12); padding: 0px 4px; border-radius: 3px; text-shadow: 0 0 6px rgba(239, 68, 68, 0.3); }
 </style>
 </head>
 <body>

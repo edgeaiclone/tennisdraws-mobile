@@ -15,6 +15,13 @@
   border-radius: var(--radius-md);
   padding: 10px 14px;
   margin: 0 16px 12px;
+  box-shadow: 0 0 20px rgba(0, 230, 138, 0.06), inset 0 1px 0 rgba(0, 230, 138, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-bar-active:focus-within {
+  box-shadow: 0 0 25px rgba(0, 230, 138, 0.1), inset 0 1px 0 rgba(0, 230, 138, 0.08);
+  border-color: var(--accent);
 }
 
 .search-bar-active svg {
@@ -44,6 +51,11 @@
   justify-content: center;
   flex-shrink: 0;
   cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-bar-active .clear-btn:hover {
+  background: rgba(255,255,255,0.18);
 }
 
 .search-hint {
@@ -54,7 +66,7 @@
 }
 
 .player-row {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
   padding: 12px 14px;
@@ -62,9 +74,33 @@
   text-decoration: none;
   display: block;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.player-row:hover { border-color: var(--accent-border); }
+/* Left accent bar */
+.player-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(0, 230, 138, 0.3) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.player-row:hover {
+  border-color: var(--accent-border);
+  transform: translateX(2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), var(--accent-glow);
+}
+
+.player-row:hover::before {
+  opacity: 1;
+}
 
 .player-info {
   display: flex;
@@ -75,17 +111,18 @@
 
 .player-rank {
   font-size: var(--font-xl);
-  font-weight: 700;
+  font-weight: 800;
   color: var(--accent);
   min-width: 32px;
   text-align: right;
+  text-shadow: 0 0 12px rgba(0, 230, 138, 0.2);
 }
 
 .player-details { flex: 1; min-width: 0; }
-.player-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); }
+.player-name { font-size: var(--font-md); font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
 .player-country { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 1px; }
-.badge-atp { background: rgba(59, 130, 246, 0.15); color: #60A5FA; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
-.badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
+.badge-atp { background: rgba(59, 130, 246, 0.15); color: #60A5FA; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.2); }
+.badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; border: 1px solid rgba(236, 72, 153, 0.2); }
 
 .tournament-badges {
   display: flex;
@@ -99,7 +136,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  background: var(--bg-section);
+  background: linear-gradient(135deg, var(--bg-section) 0%, var(--bg-elevated) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 6px 8px;
@@ -107,24 +144,31 @@
   flex-shrink: 0;
   text-decoration: none;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
-.tournament-badge:hover { border-color: var(--accent-border); }
+.tournament-badge:hover {
+  border-color: var(--accent-border);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 .tournament-badge .t-name { font-size: 10px; font-weight: 600; color: var(--text-primary); }
 .tournament-badge .t-meta { display: flex; align-items: center; gap: 4px; }
 .tournament-badge .t-tier { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
-.tournament-badge .t-surface-dot { width: 6px; height: 6px; border-radius: 50%; }
+.tournament-badge .t-surface-dot { width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 0 4px currentColor; }
 
 .highlight-match {
-  background: rgba(0, 230, 138, 0.2);
-  padding: 0 2px;
-  border-radius: 2px;
+  background: rgba(0, 230, 138, 0.25);
+  padding: 0 3px;
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(0, 230, 138, 0.15);
 }
 
 .result-count {
   font-size: var(--font-sm);
-  color: var(--text-tertiary);
+  color: var(--accent);
   padding: 0 16px;
   margin-bottom: 12px;
+  font-weight: 500;
 }
 </style>
 </head>

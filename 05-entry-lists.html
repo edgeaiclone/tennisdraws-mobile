@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="shared-styles.css">
 <style>
 .tournament-card {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
   padding: 14px;
@@ -17,15 +17,51 @@
   align-items: flex-start;
   text-decoration: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.tournament-card:hover { border-color: var(--accent-border); }
+
+/* Left accent bar — challenger green */
+.tournament-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--tier-challenger) 0%, rgba(34, 197, 94, 0.3) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tournament-card:hover {
+  border-color: var(--accent-border);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), var(--accent-glow);
+}
+
+.tournament-card:hover::before {
+  opacity: 1;
+}
+
 .tournament-card .tc-left { flex: 1; min-width: 0; }
-.tournament-card .tc-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.tournament-card .tc-name { font-size: var(--font-md); font-weight: 700; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px; }
 .tournament-card .tc-location { font-size: var(--font-sm); color: var(--text-tertiary); margin-bottom: 8px; }
 .tournament-card .tc-badges { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
 .tournament-card .tc-dates { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 6px; }
 .tournament-card .tc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-left: 12px; }
-.tc-player-count { display: flex; align-items: center; gap: 4px; font-size: var(--font-xs); color: var(--text-secondary); }
+.tc-player-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  background: rgba(34, 197, 94, 0.08);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+}
 .tc-player-count svg { width: 14px; height: 14px; }
 
 .full-list-badge {
@@ -36,6 +72,8 @@
   background: var(--accent-dim);
   color: var(--accent);
   white-space: nowrap;
+  box-shadow: 0 0 8px rgba(0, 230, 138, 0.15);
+  border: 1px solid rgba(0, 230, 138, 0.2);
 }
 </style>
 </head>

@@ -27,17 +27,22 @@
 
 .state-icon.empty {
   background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .state-icon.success {
   background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  box-shadow: 0 0 20px rgba(0, 230, 138, 0.1);
 }
 
 .state-title {
   font-size: var(--font-lg);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
+  letter-spacing: -0.3px;
 }
 
 .state-desc {
@@ -56,6 +61,14 @@
   color: var(--accent);
   border: 1px solid var(--accent-border);
   cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 12px rgba(0, 230, 138, 0.08);
+}
+
+.state-btn:hover {
+  background: rgba(0, 230, 138, 0.2);
+  box-shadow: 0 0 20px rgba(0, 230, 138, 0.15);
+  transform: translateY(-1px);
 }
 
 /* Skeleton Loading */
