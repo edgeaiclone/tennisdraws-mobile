@@ -889,26 +889,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateReveals() {
       const vh = window.innerHeight;
       let bestIdx = -1;
-      let bestProgress = 0;
+      let bestDist = Infinity;
 
       triggers.forEach((trigger, idx) => {
         const rect = trigger.getBoundingClientRect();
-        // Progress: 0 when top enters bottom of viewport, 1 when top reaches top
-        const progress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+        const center = rect.top + rect.height / 2;
+        const dist = Math.abs(center - vh / 2);
 
-        if (progress > 0.1 && progress < 1.2) {
-          if (progress > bestProgress || bestIdx === -1) {
-            bestIdx = idx;
-            bestProgress = progress;
-          }
+        // Pick the trigger whose center is closest to the viewport center
+        if (rect.bottom > 0 && rect.top < vh && dist < bestDist) {
+          bestDist = dist;
+          bestIdx = idx;
         }
       });
 
       if (bestIdx >= 0) {
         const trigger = triggers[bestIdx];
         const rect = trigger.getBoundingClientRect();
-        // Remap progress for pixel art: start building when 30% in, complete at 90%
+        // rawProgress: 0 when trigger top enters viewport bottom, 1 when trigger top exits viewport top
         const rawProgress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+        // Remap: start building at 15% progress, complete at 75%
         const artProgress = Math.max(0, Math.min(1, (rawProgress - 0.15) / 0.6));
 
         const toolKey = trigger.dataset.tool;
