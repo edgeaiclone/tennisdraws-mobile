@@ -72,6 +72,15 @@
   border-bottom: 2px solid transparent;
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.section-tab:hover {
+  color: var(--text-secondary);
+}
+
+.section-tab.active:hover {
+  color: var(--accent);
 }
 
 .section-tab.active {
@@ -411,5 +420,6 @@
   </div>
 
 </div>
+<script src="shared-interactions.js"></script>
 </body>
 </html>

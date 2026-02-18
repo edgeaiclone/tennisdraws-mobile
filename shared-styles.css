@@ -265,12 +265,23 @@ body {
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gender-tab:hover {
+  border-color: rgba(255,255,255,0.15);
+  color: var(--text-primary);
 }
 
 .gender-tab.active {
   background: var(--accent-dim);
   color: var(--accent);
   border-color: var(--accent-border);
+}
+
+.gender-tab.active:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
 /* Filter Scroll Row */
@@ -296,12 +307,23 @@ body {
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  border-color: rgba(255,255,255,0.15);
+  color: var(--text-secondary);
 }
 
 .filter-chip.active {
   background: var(--accent-dim);
   color: var(--accent);
   border-color: var(--accent-border);
+}
+
+.filter-chip.active:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
 /* Section Headers */
