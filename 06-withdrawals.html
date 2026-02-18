@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 6 — Withdrawals</title>
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+.gender-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 10px;
+}
+
+.gender-section-header .gsh-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.gender-section-header .gsh-count {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  background: var(--bg-input);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.wd-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.wd-player-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.wd-rank {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 28px;
+  text-align: right;
+}
+
+.wd-name {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.wd-country {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.wd-tournaments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 38px;
+}
+
+.wd-tournament-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wd-tournament-name {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.wd-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.wd-type-wd {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--withdrawn);
+}
+
+.wd-type-ret {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--retired);
+}
+
+.wd-reason {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.wd-section-badge {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.wd-total {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 8px 0;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="white"/><rect x="9" y="0" width="3" height="12" rx="1" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" opacity="0.3"/></svg>
+      <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2.5C9.8 2.5 11.8 3.5 13.2 5L14.5 3.7C12.7 1.9 10.2 0.8 7.5 0.8S2.3 1.9 0.5 3.7L1.8 5C3.2 3.5 5.2 2.5 7.5 2.5z" fill="white"/><path d="M7.5 5.8C9 5.8 10.4 6.4 11.4 7.4L12.7 6.1C11.3 4.7 9.5 4 7.5 4S3.7 4.7 2.3 6.1L3.6 7.4C4.6 6.4 6 5.8 7.5 5.8z" fill="white"/><circle cx="7.5" cy="10.5" r="1.8" fill="white"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1" fill="white"/><rect x="22" y="4" width="2" height="4" rx="1" fill="white" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="back-btn">
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="title">Withdrawals</div>
+    <div class="action-btn" style="width:33px"></div>
+  </div>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a class="nav-item" href="01-dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="03-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+      Tournaments
+    </a>
+    <a class="nav-item active" href="06-withdrawals.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      Withdrawals
+    </a>
+    <a class="nav-item" href="05-entry-lists.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Entry Lists
+    </a>
+    <a class="nav-item" href="04-itf-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      ITF
+    </a>
+  </nav>
+
+  <div class="screen-content" style="padding-bottom: 30px">
+
+    <!-- Gender Filter -->
+    <div class="gender-tabs" style="margin-top:12px">
+      <div class="gender-tab active">All</div>
+      <div class="gender-tab">ATP</div>
+      <div class="gender-tab">WTA</div>
+    </div>
+
+    <!-- Week: Feb 17 -->
+    <div class="week-header">
+      <span class="week-label">Feb 17</span>
+      <div class="week-line"></div>
+    </div>
+
+    <!-- ATP Section -->
+    <div class="gender-section-header">
+      <span class="gsh-label">ATP</span>
+      <span class="gsh-count">8 players</span>
+    </div>
+
+    <div class="wd-card">
+      <div class="wd-player-row">
+        <div class="wd-rank">3</div>
+        <div class="wd-name">Carlos Alcaraz</div>
+        <div class="wd-country">ESP</div>
+      </div>
+      <div class="wd-tournaments">
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Dubai</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-wd">WD</span>
+          <span class="wd-reason">Forearm injury</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wd-card">
+      <div class="wd-player-row">
+        <div class="wd-rank">7</div>
+        <div class="wd-name">Novak Djokovic</div>
+        <div class="wd-country">SRB</div>
+      </div>
+      <div class="wd-tournaments">
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Dubai</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-wd">WD</span>
+          <span class="wd-reason">Personal reasons</span>
+        </div>
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Acapulco</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-wd">WD</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wd-card">
+      <div class="wd-player-row">
+        <div class="wd-rank">12</div>
+        <div class="wd-name">Holger Rune</div>
+        <div class="wd-country">DEN</div>
+      </div>
+      <div class="wd-tournaments">
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Dubai</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-ret">RET</span>
+          <span class="wd-reason">Knee</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WTA Section -->
+    <div class="gender-section-header">
+      <span class="gsh-label">WTA</span>
+      <span class="gsh-count">5 players</span>
+    </div>
+
+    <div class="wd-card">
+      <div class="wd-player-row">
+        <div class="wd-rank">6</div>
+        <div class="wd-name">Jessica Pegula</div>
+        <div class="wd-country">USA</div>
+      </div>
+      <div class="wd-tournaments">
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Abu Dhabi</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-wd">WD</span>
+          <span class="wd-reason">Knee injury</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wd-card">
+      <div class="wd-player-row">
+        <div class="wd-rank">9</div>
+        <div class="wd-name">Daria Kasatkina</div>
+        <div class="wd-country">RUS</div>
+      </div>
+      <div class="wd-tournaments">
+        <div class="wd-tournament-item">
+          <span class="pill pill-tier-500" style="font-size:10px">500</span>
+          <span class="wd-tournament-name">Abu Dhabi</span>
+          <span class="wd-section-badge">MD</span>
+          <span class="wd-type-badge wd-type-wd">WD</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+</body>
+</html>

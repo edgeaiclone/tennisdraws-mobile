@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 2 — Dashboard Search Active</title>
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+.search-bar-active {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 0 16px 12px;
+}
+
+.search-bar-active svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.search-bar-active .search-input {
+  flex: 1;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-family);
+}
+
+.search-bar-active .clear-btn {
+  width: 20px;
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.search-hint {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+
+.player-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  margin: 0 16px 8px;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.player-rank {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 32px;
+  text-align: right;
+}
+
+.player-details { flex: 1; min-width: 0; }
+.player-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); }
+.player-country { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 1px; }
+.badge-atp { background: rgba(59, 130, 246, 0.15); color: #60A5FA; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
+.badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
+
+.tournament-badges {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tournament-badges::-webkit-scrollbar { display: none; }
+
+.tournament-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--bg-section);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+.tournament-badge .t-name { font-size: 10px; font-weight: 600; color: var(--text-primary); }
+.tournament-badge .t-meta { display: flex; align-items: center; gap: 4px; }
+.tournament-badge .t-tier { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
+.tournament-badge .t-surface-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.highlight-match {
+  background: rgba(0, 230, 138, 0.2);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.result-count {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="white"/><rect x="9" y="0" width="3" height="12" rx="1" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" opacity="0.3"/></svg>
+      <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2.5C9.8 2.5 11.8 3.5 13.2 5L14.5 3.7C12.7 1.9 10.2 0.8 7.5 0.8S2.3 1.9 0.5 3.7L1.8 5C3.2 3.5 5.2 2.5 7.5 2.5z" fill="white"/><path d="M7.5 5.8C9 5.8 10.4 6.4 11.4 7.4L12.7 6.1C11.3 4.7 9.5 4 7.5 4S3.7 4.7 2.3 6.1L3.6 7.4C4.6 6.4 6 5.8 7.5 5.8z" fill="white"/><circle cx="7.5" cy="10.5" r="1.8" fill="white"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1" fill="white"/><rect x="22" y="4" width="2" height="4" rx="1" fill="white" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="back-btn">
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="title">Entry Lists</div>
+    <div class="action-btn" style="width:33px">
+      <span style="font-size:var(--font-sm);color:var(--accent);font-weight:500">Cancel</span>
+    </div>
+  </div>
+
+  <!-- Active Search Bar -->
+  <div class="search-bar-active">
+    <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M13 13L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <input class="search-input" value="Djoko" readonly>
+    <div class="clear-btn">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <div class="search-hint">Search by player name, country, or tournament</div>
+  <div class="result-count">1 result found</div>
+
+  <!-- Search Results -->
+  <div class="player-row">
+    <div class="player-info">
+      <div class="player-rank">7</div>
+      <div class="player-details">
+        <div class="player-name">Novak <span class="highlight-match">Djoko</span>vic</div>
+        <div class="player-country">Serbia</div>
+      </div>
+      <span class="badge-atp">ATP</span>
+    </div>
+    <div class="tournament-badges">
+      <div class="tournament-badge" style="opacity:0.5;border-color:rgba(239,68,68,0.2)">
+        <div class="t-name" style="text-decoration:line-through;color:var(--text-tertiary)">Dubai</div>
+        <div class="t-meta">
+          <span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span>
+          <span style="font-size:9px;font-weight:700;color:var(--withdrawn);background:rgba(239,68,68,0.12);padding:0px 4px;border-radius:3px">WD</span>
+        </div>
+      </div>
+      <div class="tournament-badge">
+        <div class="t-name">Indian Wells</div>
+        <div class="t-meta">
+          <span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span>
+          <span class="t-surface-dot" style="background:var(--surface-hard)"></span>
+          <span style="font-size:9px;color:var(--text-tertiary)">MD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

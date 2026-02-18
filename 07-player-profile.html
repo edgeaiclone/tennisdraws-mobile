@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 7 — Player Profile</title>
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+/* Hero */
+.player-hero {
+  text-align: center;
+  padding: 20px 16px 24px;
+}
+
+.hero-rank {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.hero-rank-label {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.hero-name {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hero-country {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+}
+
+/* Stats Scroll */
+.stats-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 16px 12px;
+  scrollbar-width: none;
+}
+
+.stats-scroll::-webkit-scrollbar { display: none; }
+
+.stat-mini {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  text-align: center;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.stat-mini .sm-value {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.stat-mini .sm-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.stat-mini.withdrawn .sm-value {
+  color: var(--withdrawn);
+}
+
+/* Schedule Section */
+.schedule-section {
+  padding: 0 16px;
+}
+
+.schedule-week {
+  margin-bottom: 16px;
+}
+
+.schedule-week-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.schedule-entry {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.schedule-entry .se-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.se-tier-bar {
+  width: 4px;
+  height: 36px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.se-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.se-name {
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.se-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.se-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.schedule-entry.withdrawn {
+  opacity: 0.5;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.schedule-entry.withdrawn .se-name {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.se-chevron {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="white"/><rect x="9" y="0" width="3" height="12" rx="1" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" opacity="0.3"/></svg>
+      <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2.5C9.8 2.5 11.8 3.5 13.2 5L14.5 3.7C12.7 1.9 10.2 0.8 7.5 0.8S2.3 1.9 0.5 3.7L1.8 5C3.2 3.5 5.2 2.5 7.5 2.5z" fill="white"/><path d="M7.5 5.8C9 5.8 10.4 6.4 11.4 7.4L12.7 6.1C11.3 4.7 9.5 4 7.5 4S3.7 4.7 2.3 6.1L3.6 7.4C4.6 6.4 6 5.8 7.5 5.8z" fill="white"/><circle cx="7.5" cy="10.5" r="1.8" fill="white"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1" fill="white"/><rect x="22" y="4" width="2" height="4" rx="1" fill="white" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <a href="01-dashboard.html" class="back-btn">
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="title">Player Profile</div>
+    <div class="action-btn" style="width:33px"></div>
+  </div>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a class="nav-item" href="01-dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="03-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+      Tournaments
+    </a>
+    <a class="nav-item" href="06-withdrawals.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      Withdrawals
+    </a>
+    <a class="nav-item" href="05-entry-lists.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Entry Lists
+    </a>
+    <a class="nav-item" href="04-itf-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      ITF
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="player-hero" style="margin-top:12px">
+    <div class="hero-rank">#1</div>
+    <div class="hero-rank-label">World Ranking</div>
+    <div class="hero-name">Jannik Sinner</div>
+    <div class="hero-meta">
+      <span class="hero-country">Italy</span>
+      <span class="pill" style="background:rgba(59,130,246,0.15);color:#60A5FA;font-size:11px;font-weight:600">ATP</span>
+    </div>
+  </div>
+
+  <!-- Stats Scroll -->
+  <div class="stats-scroll">
+    <div class="stat-mini">
+      <div class="sm-value">5</div>
+      <div class="sm-label">Tournaments</div>
+    </div>
+    <div class="stat-mini withdrawn">
+      <div class="sm-value">0</div>
+      <div class="sm-label">Withdrawals</div>
+    </div>
+    <div class="stat-mini">
+      <div class="sm-value">1</div>
+      <div class="sm-label">Grand Slam</div>
+    </div>
+    <div class="stat-mini">
+      <div class="sm-value">2</div>
+      <div class="sm-label">Masters 1000</div>
+    </div>
+    <div class="stat-mini">
+      <div class="sm-value">2</div>
+      <div class="sm-label">ATP 500</div>
+    </div>
+  </div>
+
+  <!-- Schedule -->
+  <div class="schedule-section">
+    <div class="section-header" style="margin-top:8px">Schedule</div>
+
+    <!-- Week 1 -->
+    <div class="schedule-week">
+      <div class="week-header">
+        <span class="week-label">Feb 17</span>
+        <div class="week-line"></div>
+      </div>
+
+      <div class="schedule-entry">
+        <div class="se-left">
+          <div class="se-tier-bar" style="background:var(--tier-500)"></div>
+          <div class="se-info">
+            <div class="se-name">Dubai</div>
+            <div class="se-meta">
+              <span class="pill pill-tier-500" style="font-size:9px;padding:1px 5px">500</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--surface-hard);display:inline-block"></span>
+              <span style="font-size:10px;color:var(--text-tertiary)">MD</span>
+            </div>
+          </div>
+        </div>
+        <div class="se-chevron">
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week 2 -->
+    <div class="schedule-week">
+      <div class="week-header">
+        <span class="week-label">Mar 3</span>
+        <div class="week-line"></div>
+      </div>
+
+      <div class="schedule-entry">
+        <div class="se-left">
+          <div class="se-tier-bar" style="background:var(--tier-1000)"></div>
+          <div class="se-info">
+            <div class="se-name">Indian Wells</div>
+            <div class="se-meta">
+              <span class="pill pill-tier-1000" style="font-size:9px;padding:1px 5px">1000</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--surface-hard);display:inline-block"></span>
+              <span style="font-size:10px;color:var(--text-tertiary)">MD</span>
+            </div>
+          </div>
+        </div>
+        <div class="se-chevron">
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week 3 -->
+    <div class="schedule-week">
+      <div class="week-header">
+        <span class="week-label">Mar 17</span>
+        <div class="week-line"></div>
+      </div>
+
+      <div class="schedule-entry">
+        <div class="se-left">
+          <div class="se-tier-bar" style="background:var(--tier-1000)"></div>
+          <div class="se-info">
+            <div class="se-name">Miami Open</div>
+            <div class="se-meta">
+              <span class="pill pill-tier-1000" style="font-size:9px;padding:1px 5px">1000</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--surface-hard);display:inline-block"></span>
+              <span style="font-size:10px;color:var(--text-tertiary)">MD</span>
+            </div>
+          </div>
+        </div>
+        <div class="se-chevron">
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week 4 -->
+    <div class="schedule-week">
+      <div class="week-header">
+        <span class="week-label">Apr 14</span>
+        <div class="week-line"></div>
+      </div>
+
+      <div class="schedule-entry">
+        <div class="se-left">
+          <div class="se-tier-bar" style="background:var(--tier-1000)"></div>
+          <div class="se-info">
+            <div class="se-name">Monte-Carlo</div>
+            <div class="se-meta">
+              <span class="pill pill-tier-1000" style="font-size:9px;padding:1px 5px">1000</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--surface-clay);display:inline-block"></span>
+              <span style="font-size:10px;color:var(--text-tertiary)">MD</span>
+            </div>
+          </div>
+        </div>
+        <div class="se-chevron">
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week 5 -->
+    <div class="schedule-week">
+      <div class="week-header">
+        <span class="week-label">May 25</span>
+        <div class="week-line"></div>
+      </div>
+
+      <div class="schedule-entry">
+        <div class="se-left">
+          <div class="se-tier-bar" style="background:var(--tier-gs)"></div>
+          <div class="se-info">
+            <div class="se-name">Roland Garros</div>
+            <div class="se-meta">
+              <span class="pill pill-tier-gs" style="font-size:9px;padding:1px 5px">GS</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--surface-clay);display:inline-block"></span>
+              <span style="font-size:10px;color:var(--text-tertiary)">MD</span>
+            </div>
+          </div>
+        </div>
+        <div class="se-chevron">
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

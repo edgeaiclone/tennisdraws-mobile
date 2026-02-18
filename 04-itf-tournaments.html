@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 4 — ITF Tournaments</title>
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+.tournament-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tournament-card .tc-left { flex: 1; min-width: 0; }
+.tournament-card .tc-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.tournament-card .tc-location { font-size: var(--font-sm); color: var(--text-tertiary); margin-bottom: 8px; }
+.tournament-card .tc-badges { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.tournament-card .tc-dates { font-size: var(--font-xs); color: var(--text-tertiary); margin-top: 6px; }
+.tournament-card .tc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-left: 12px; }
+.tc-player-count { display: flex; align-items: center; gap: 4px; font-size: var(--font-xs); color: var(--text-secondary); }
+.tc-player-count svg { width: 14px; height: 14px; }
+
+.tournament-card.disabled {
+  opacity: 0.4;
+  border-color: rgba(255,255,255,0.04);
+}
+
+.tournament-card.disabled .tc-name {
+  color: var(--text-tertiary);
+}
+
+.no-data-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="white"/><rect x="9" y="0" width="3" height="12" rx="1" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" opacity="0.3"/></svg>
+      <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2.5C9.8 2.5 11.8 3.5 13.2 5L14.5 3.7C12.7 1.9 10.2 0.8 7.5 0.8S2.3 1.9 0.5 3.7L1.8 5C3.2 3.5 5.2 2.5 7.5 2.5z" fill="white"/><path d="M7.5 5.8C9 5.8 10.4 6.4 11.4 7.4L12.7 6.1C11.3 4.7 9.5 4 7.5 4S3.7 4.7 2.3 6.1L3.6 7.4C4.6 6.4 6 5.8 7.5 5.8z" fill="white"/><circle cx="7.5" cy="10.5" r="1.8" fill="white"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1" fill="white"/><rect x="22" y="4" width="2" height="4" rx="1" fill="white" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="back-btn">
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="title">ITF Tournaments</div>
+    <div class="action-btn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M5 10h10M7 15h6" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a class="nav-item" href="01-dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="03-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+      Tournaments
+    </a>
+    <a class="nav-item" href="06-withdrawals.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      Withdrawals
+    </a>
+    <a class="nav-item" href="05-entry-lists.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Entry Lists
+    </a>
+    <a class="nav-item active" href="04-itf-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      ITF
+    </a>
+  </nav>
+
+  <div class="screen-content" style="padding-bottom: 30px">
+
+    <!-- Gender Tabs -->
+    <div class="gender-tabs" style="margin-top:12px">
+      <div class="gender-tab active">All</div>
+      <div class="gender-tab">Men</div>
+      <div class="gender-tab">Women</div>
+    </div>
+
+    <!-- Tier Filter -->
+    <div class="filter-scroll">
+      <div class="filter-chip active">All Tiers</div>
+      <div class="filter-chip">M25</div>
+      <div class="filter-chip">M15</div>
+      <div class="filter-chip">W100</div>
+      <div class="filter-chip">W75</div>
+      <div class="filter-chip">W50</div>
+      <div class="filter-chip">W35</div>
+      <div class="filter-chip">W15</div>
+    </div>
+
+    <!-- Week: Feb 17 -->
+    <div class="week-header">
+      <span class="week-label">Feb 17</span>
+      <div class="week-line"></div>
+    </div>
+
+    <div class="tournament-card">
+      <div class="tc-left">
+        <div class="tc-name">Monastir</div>
+        <div class="tc-location">Monastir, Tunisia</div>
+        <div class="tc-badges">
+          <span class="pill pill-tier-itf">ITF M25</span>
+          <span class="pill pill-surface-hard">Hard</span>
+          <span class="pill" style="background:rgba(59,130,246,0.1);color:#60A5FA;font-size:10px">Men</span>
+        </div>
+        <div class="tc-dates">Feb 17 – Feb 22, 2026</div>
+      </div>
+      <div class="tc-right">
+        <div class="tc-player-count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>32</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tournament-card">
+      <div class="tc-left">
+        <div class="tc-name">Sharm El Sheikh</div>
+        <div class="tc-location">Sharm El Sheikh, Egypt</div>
+        <div class="tc-badges">
+          <span class="pill pill-tier-itf">ITF M15</span>
+          <span class="pill pill-surface-hard">Hard</span>
+          <span class="pill" style="background:rgba(59,130,246,0.1);color:#60A5FA;font-size:10px">Men</span>
+        </div>
+        <div class="tc-dates">Feb 17 – Feb 22, 2026</div>
+      </div>
+      <div class="tc-right">
+        <div class="tc-player-count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>48</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tournament-card">
+      <div class="tc-left">
+        <div class="tc-name">Antalya</div>
+        <div class="tc-location">Antalya, Turkey</div>
+        <div class="tc-badges">
+          <span class="pill pill-tier-itf">ITF W75</span>
+          <span class="pill pill-surface-clay">Clay</span>
+          <span class="pill" style="background:rgba(236,72,153,0.1);color:#F472B6;font-size:10px">Women</span>
+        </div>
+        <div class="tc-dates">Feb 17 – Feb 22, 2026</div>
+      </div>
+      <div class="tc-right">
+        <div class="tc-player-count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>24</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tournament-card disabled">
+      <div class="tc-left">
+        <div class="tc-name">Buenos Aires</div>
+        <div class="tc-location">Buenos Aires, Argentina</div>
+        <div class="tc-badges">
+          <span class="pill pill-tier-itf">ITF W15</span>
+          <span class="pill pill-surface-clay">Clay</span>
+          <span class="pill" style="background:rgba(236,72,153,0.1);color:#F472B6;font-size:10px">Women</span>
+        </div>
+        <div class="tc-dates">Feb 17 – Feb 22, 2026</div>
+      </div>
+      <div class="tc-right">
+        <span class="no-data-label">No entries</span>
+      </div>
+    </div>
+
+    <div class="tournament-card">
+      <div class="tc-left">
+        <div class="tc-name">Heraklion</div>
+        <div class="tc-location">Heraklion, Greece</div>
+        <div class="tc-badges">
+          <span class="pill pill-tier-itf">ITF W50</span>
+          <span class="pill pill-surface-hard">Hard</span>
+          <span class="pill" style="background:rgba(236,72,153,0.1);color:#F472B6;font-size:10px">Women</span>
+        </div>
+        <div class="tc-dates">Feb 17 – Feb 22, 2026</div>
+      </div>
+      <div class="tc-right">
+        <div class="tc-player-count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>36</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+</body>
+</html>

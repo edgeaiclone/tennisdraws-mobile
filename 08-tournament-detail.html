@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 8 — Tournament Detail</title>
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+/* Tournament Hero */
+.tournament-hero {
+  padding: 0 16px 16px;
+}
+
+.th-name {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.th-location {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.th-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.th-dates {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+}
+
+.th-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+.th-count svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Section Tabs */
+.section-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.section-tabs::-webkit-scrollbar { display: none; }
+
+.section-tab {
+  padding: 10px 14px;
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.section-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.section-tab .tab-count {
+  font-size: 10px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-left: 4px;
+}
+
+.section-tab.active .tab-count {
+  background: var(--accent-dim);
+}
+
+/* Entry Rows */
+.entry-list {
+  padding: 12px 16px;
+}
+
+.entry-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 10px;
+}
+
+.entry-row:last-child {
+  border-bottom: none;
+}
+
+.er-rank {
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 28px;
+  text-align: right;
+}
+
+.er-rank.unranked {
+  color: var(--text-tertiary);
+}
+
+.er-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.er-name {
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.er-country {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+.er-badges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.er-section-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-tertiary);
+}
+
+.er-method {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Withdrawn Section */
+.wd-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 16px 8px;
+}
+
+.wd-section-title .wst-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--withdrawn);
+}
+
+.wd-section-title .wst-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(239,68,68,0.2);
+}
+
+.entry-row.withdrawn {
+  opacity: 0.5;
+}
+
+.entry-row.withdrawn .er-name {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.wd-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wd-reason-text {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="white"/><rect x="9" y="0" width="3" height="12" rx="1" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" opacity="0.3"/></svg>
+      <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2.5C9.8 2.5 11.8 3.5 13.2 5L14.5 3.7C12.7 1.9 10.2 0.8 7.5 0.8S2.3 1.9 0.5 3.7L1.8 5C3.2 3.5 5.2 2.5 7.5 2.5z" fill="white"/><path d="M7.5 5.8C9 5.8 10.4 6.4 11.4 7.4L12.7 6.1C11.3 4.7 9.5 4 7.5 4S3.7 4.7 2.3 6.1L3.6 7.4C4.6 6.4 6 5.8 7.5 5.8z" fill="white"/><circle cx="7.5" cy="10.5" r="1.8" fill="white"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1" fill="white"/><rect x="22" y="4" width="2" height="4" rx="1" fill="white" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <div class="header">
+    <a href="01-dashboard.html" class="back-btn">
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="title">Tournament</div>
+    <div class="action-btn" style="width:33px"></div>
+  </div>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a class="nav-item" href="01-dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="03-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+      Tournaments
+    </a>
+    <a class="nav-item" href="06-withdrawals.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      Withdrawals
+    </a>
+    <a class="nav-item" href="05-entry-lists.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Entry Lists
+    </a>
+    <a class="nav-item" href="04-itf-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      ITF
+    </a>
+  </nav>
+
+  <!-- Tournament Hero -->
+  <div class="tournament-hero" style="margin-top:12px">
+    <div class="th-name">Dubai</div>
+    <div class="th-location">Dubai, UAE</div>
+    <div class="th-badges">
+      <span class="pill pill-tier-500">ATP 500</span>
+      <span class="pill pill-surface-hard">Hard</span>
+      <span class="pill" style="background:rgba(59,130,246,0.1);color:#60A5FA;font-size:11px;font-weight:600">ATP</span>
+    </div>
+    <div class="th-dates">Feb 17 – Feb 22, 2026</div>
+    <div class="th-count">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span>28 players</span>
+    </div>
+  </div>
+
+  <!-- Section Tabs -->
+  <div class="section-tabs">
+    <div class="section-tab active">All<span class="tab-count">28</span></div>
+    <div class="section-tab">Main Draw<span class="tab-count">24</span></div>
+    <div class="section-tab">Qualifying<span class="tab-count">16</span></div>
+    <div class="section-tab">Wild Cards<span class="tab-count">3</span></div>
+    <div class="section-tab">Alternates<span class="tab-count">5</span></div>
+  </div>
+
+  <!-- Entry List -->
+  <div class="entry-list" style="max-height:460px;overflow-y:auto">
+    <div class="entry-row">
+      <div class="er-rank">1</div>
+      <div class="er-info">
+        <div class="er-name">Jannik Sinner</div>
+        <div class="er-country">Italy</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">2</div>
+      <div class="er-info">
+        <div class="er-name">Alexander Zverev</div>
+        <div class="er-country">Germany</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">5</div>
+      <div class="er-info">
+        <div class="er-name">Daniil Medvedev</div>
+        <div class="er-country">Russia</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">8</div>
+      <div class="er-info">
+        <div class="er-name">Casper Ruud</div>
+        <div class="er-country">Norway</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">15</div>
+      <div class="er-info">
+        <div class="er-name">Ugo Humbert</div>
+        <div class="er-country">France</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">22</div>
+      <div class="er-info">
+        <div class="er-name">Frances Tiafoe</div>
+        <div class="er-country">United States</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">45</div>
+      <div class="er-info">
+        <div class="er-name">Hamad Medjedovic</div>
+        <div class="er-country">Serbia</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-method">WC</span>
+        <span class="er-section-badge">MD</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">68</div>
+      <div class="er-info">
+        <div class="er-name">Luca Nardi</div>
+        <div class="er-country">Italy</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">Q</span>
+      </div>
+    </div>
+
+    <div class="entry-row">
+      <div class="er-rank">82</div>
+      <div class="er-info">
+        <div class="er-name">Yannick Hanfmann</div>
+        <div class="er-country">Germany</div>
+      </div>
+      <div class="er-badges">
+        <span class="er-section-badge">Q</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdrawals Section -->
+  <div class="wd-section-title">
+    <span class="wst-label">Withdrawals</span>
+    <div class="wst-line"></div>
+  </div>
+
+  <div class="entry-list" style="padding-top:0">
+    <div class="entry-row withdrawn">
+      <div class="er-rank" style="color:var(--text-tertiary)">3</div>
+      <div class="er-info">
+        <div class="er-name">Carlos Alcaraz</div>
+        <div class="er-country">Spain</div>
+      </div>
+      <div class="wd-info">
+        <span class="pill pill-wd" style="font-size:10px;padding:1px 5px">WD</span>
+        <span class="wd-reason-text">Forearm</span>
+      </div>
+    </div>
+    <div class="entry-row withdrawn">
+      <div class="er-rank" style="color:var(--text-tertiary)">7</div>
+      <div class="er-info">
+        <div class="er-name">Novak Djokovic</div>
+        <div class="er-country">Serbia</div>
+      </div>
+      <div class="wd-info">
+        <span class="pill pill-wd" style="font-size:10px;padding:1px 5px">WD</span>
+        <span class="wd-reason-text">Personal</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
