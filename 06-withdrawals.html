@@ -33,7 +33,12 @@
   border-radius: var(--radius-lg);
   padding: 14px;
   margin-bottom: 8px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
 }
+
+.wd-card:hover { border-color: var(--accent-border); }
 
 .wd-player-row {
   display: flex;
@@ -137,9 +142,9 @@
 
   <!-- Header -->
   <div class="header">
-    <div class="back-btn">
+    <a href="01-dashboard.html" class="back-btn">
       <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+    </a>
     <div class="title">Withdrawals</div>
     <div class="action-btn" style="width:33px"></div>
   </div>
@@ -189,7 +194,7 @@
       <span class="gsh-count">8 players</span>
     </div>
 
-    <div class="wd-card">
+    <a href="07-player-profile.html" class="wd-card">
       <div class="wd-player-row">
         <div class="wd-rank">3</div>
         <div class="wd-name">Carlos Alcaraz</div>
@@ -204,9 +209,9 @@
           <span class="wd-reason">Forearm injury</span>
         </div>
       </div>
-    </div>
+    </a>
 
-    <div class="wd-card">
+    <a href="07-player-profile.html" class="wd-card">
       <div class="wd-player-row">
         <div class="wd-rank">7</div>
         <div class="wd-name">Novak Djokovic</div>
@@ -227,9 +232,9 @@
           <span class="wd-type-badge wd-type-wd">WD</span>
         </div>
       </div>
-    </div>
+    </a>
 
-    <div class="wd-card">
+    <a href="07-player-profile.html" class="wd-card">
       <div class="wd-player-row">
         <div class="wd-rank">12</div>
         <div class="wd-name">Holger Rune</div>
@@ -244,7 +249,7 @@
           <span class="wd-reason">Knee</span>
         </div>
       </div>
-    </div>
+    </a>
 
     <!-- WTA Section -->
     <div class="gender-section-header">
@@ -252,7 +257,7 @@
       <span class="gsh-count">5 players</span>
     </div>
 
-    <div class="wd-card">
+    <a href="07-player-profile.html" class="wd-card">
       <div class="wd-player-row">
         <div class="wd-rank">6</div>
         <div class="wd-name">Jessica Pegula</div>
@@ -267,9 +272,9 @@
           <span class="wd-reason">Knee injury</span>
         </div>
       </div>
-    </div>
+    </a>
 
-    <div class="wd-card">
+    <a href="07-player-profile.html" class="wd-card">
       <div class="wd-player-row">
         <div class="wd-rank">9</div>
         <div class="wd-name">Daria Kasatkina</div>
@@ -283,7 +288,7 @@
           <span class="wd-type-badge wd-type-wd">WD</span>
         </div>
       </div>
-    </div>
+    </a>
 
   </div>
 

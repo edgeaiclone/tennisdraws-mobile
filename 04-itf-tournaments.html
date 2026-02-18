@@ -15,7 +15,11 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  text-decoration: none;
+  cursor: pointer;
 }
+
+.tournament-card:hover { border-color: var(--accent-border); }
 
 .tournament-card .tc-left { flex: 1; min-width: 0; }
 .tournament-card .tc-name { font-size: var(--font-md); font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
@@ -29,6 +33,7 @@
 .tournament-card.disabled {
   opacity: 0.4;
   border-color: rgba(255,255,255,0.04);
+  cursor: default;
 }
 
 .tournament-card.disabled .tc-name {
@@ -55,9 +60,9 @@
   </div>
 
   <div class="header">
-    <div class="back-btn">
+    <a href="01-dashboard.html" class="back-btn">
       <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+    </a>
     <div class="title">ITF Tournaments</div>
     <div class="action-btn">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M5 10h10M7 15h6" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -115,7 +120,7 @@
       <div class="week-line"></div>
     </div>
 
-    <div class="tournament-card">
+    <a href="08-tournament-detail.html" class="tournament-card">
       <div class="tc-left">
         <div class="tc-name">Monastir</div>
         <div class="tc-location">Monastir, Tunisia</div>
@@ -132,9 +137,9 @@
           <span>32</span>
         </div>
       </div>
-    </div>
+    </a>
 
-    <div class="tournament-card">
+    <a href="08-tournament-detail.html" class="tournament-card">
       <div class="tc-left">
         <div class="tc-name">Sharm El Sheikh</div>
         <div class="tc-location">Sharm El Sheikh, Egypt</div>
@@ -151,9 +156,9 @@
           <span>48</span>
         </div>
       </div>
-    </div>
+    </a>
 
-    <div class="tournament-card">
+    <a href="08-tournament-detail.html" class="tournament-card">
       <div class="tc-left">
         <div class="tc-name">Antalya</div>
         <div class="tc-location">Antalya, Turkey</div>
@@ -170,7 +175,7 @@
           <span>24</span>
         </div>
       </div>
-    </div>
+    </a>
 
     <div class="tournament-card disabled">
       <div class="tc-left">
@@ -188,7 +193,7 @@
       </div>
     </div>
 
-    <div class="tournament-card">
+    <a href="08-tournament-detail.html" class="tournament-card">
       <div class="tc-left">
         <div class="tc-name">Heraklion</div>
         <div class="tc-location">Heraklion, Greece</div>
@@ -205,7 +210,7 @@
           <span>36</span>
         </div>
       </div>
-    </div>
+    </a>
 
   </div>
 

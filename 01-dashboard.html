@@ -16,7 +16,7 @@
 .rank-input { background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 5px 8px; font-size: var(--font-sm); color: var(--text-primary); width: 60px; text-align: center; font-family: var(--font-family); }
 .rank-range .range-label { font-size: var(--font-xs); color: var(--text-tertiary); }
 .rank-range .range-divider { color: var(--text-tertiary); font-size: var(--font-sm); }
-.player-row { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; }
+.player-row { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; text-decoration: none; display: block; }
 .player-row:hover { border-color: var(--accent-border); }
 .player-info { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .player-rank { font-size: var(--font-xl); font-weight: 700; color: var(--accent); min-width: 32px; text-align: right; }
@@ -28,7 +28,7 @@
 .badge-wta { background: rgba(236, 72, 153, 0.15); color: #F472B6; }
 .tournament-badges { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
 .tournament-badges::-webkit-scrollbar { display: none; }
-.tournament-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: var(--bg-section); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 6px 8px; min-width: 100px; flex-shrink: 0; cursor: pointer; }
+.tournament-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: var(--bg-section); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 6px 8px; min-width: 100px; flex-shrink: 0; cursor: pointer; text-decoration: none; }
 .tournament-badge:hover { border-color: var(--accent-border); }
 .tournament-badge .t-name { font-size: 10px; font-weight: 600; color: var(--text-primary); white-space: nowrap; max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
 .tournament-badge .t-meta { display: flex; align-items: center; gap: 4px; }
@@ -59,9 +59,9 @@
       <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div class="title">Entry Lists</div>
-    <div class="action-btn">
+    <a href="02-dashboard-search.html" class="action-btn">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="#9CA3AF" stroke-width="1.8"/><path d="M13 13L18 18" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </div>
+    </a>
   </div>
 
   <!-- Top Navigation -->
@@ -95,7 +95,7 @@
       <div class="stat-card"><div class="stat-value">842</div><div class="stat-label">Players</div></div>
       <div class="stat-card"><div class="stat-value">386</div><div class="stat-label">With Entries</div></div>
       <div class="stat-card"><div class="stat-value">1.2K</div><div class="stat-label">Entries</div></div>
-      <div class="stat-card"><div class="stat-value">47</div><div class="stat-label">Tournaments</div></div>
+      <a href="03-tournaments.html" style="text-decoration:none"><div class="stat-card"><div class="stat-value">47</div><div class="stat-label">Tournaments</div></div></a>
     </div>
 
     <div class="filter-row">
@@ -118,88 +118,84 @@
     </div>
 
     <!-- Player: Sinner -->
-    <a href="07-player-profile.html" style="text-decoration:none">
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">1</div>
         <div class="player-details"><div class="player-name">Jannik Sinner</div><div class="player-country">Italy</div></div>
         <div class="player-gender-badge badge-atp">ATP</div>
       </div>
       <div class="tournament-badges">
-        <a href="08-tournament-detail.html" onclick="event.stopPropagation()" style="text-decoration:none">
-        <div class="tournament-badge"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        </a>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Miami Open</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Miami Open</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
     </a>
 
     <!-- Player: Zverev -->
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">2</div>
         <div class="player-details"><div class="player-name">Alexander Zverev</div><div class="player-country">Germany</div></div>
         <div class="player-gender-badge badge-atp">ATP</div>
       </div>
       <div class="tournament-badges">
-        <div class="tournament-badge"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
+    </a>
 
     <!-- Player: Alcaraz (withdrawn) -->
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">3</div>
         <div class="player-details"><div class="player-name">Carlos Alcaraz</div><div class="player-country">Spain</div></div>
         <div class="player-gender-badge badge-atp">ATP</div>
       </div>
       <div class="tournament-badges">
-        <div class="tournament-badge withdrawn"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="wd-tag">WD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge withdrawn" onclick="event.stopPropagation()"><div class="t-name">Dubai</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="wd-tag">WD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
+    </a>
 
     <!-- Player: Fritz -->
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">4</div>
         <div class="player-details"><div class="player-name">Taylor Fritz</div><div class="player-country">United States</div></div>
         <div class="player-gender-badge badge-atp">ATP</div>
       </div>
       <div class="tournament-badges">
-        <div class="tournament-badge"><div class="t-name">Acapulco</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Acapulco</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
+    </a>
 
     <!-- Player: Sabalenka -->
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">1</div>
         <div class="player-details"><div class="player-name">Aryna Sabalenka</div><div class="player-country">Belarus</div></div>
         <div class="player-gender-badge badge-wta">WTA</div>
       </div>
       <div class="tournament-badges">
-        <div class="tournament-badge"><div class="t-name">Abu Dhabi</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Abu Dhabi</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
+    </a>
 
     <!-- Player: Swiatek -->
-    <div class="player-row">
+    <a href="07-player-profile.html" class="player-row">
       <div class="player-info">
         <div class="player-rank">2</div>
         <div class="player-details"><div class="player-name">Iga Swiatek</div><div class="player-country">Poland</div></div>
         <div class="player-gender-badge badge-wta">WTA</div>
       </div>
       <div class="tournament-badges">
-        <div class="tournament-badge"><div class="t-name">Abu Dhabi</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
-        <div class="tournament-badge"><div class="t-name">Miami Open</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></div>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Abu Dhabi</div><div class="t-meta"><span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Indian Wells</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
+        <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()"><div class="t-name">Miami Open</div><div class="t-meta"><span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span><span class="t-surface-dot" style="background:var(--surface-hard)"></span><span class="t-section">MD</span></div></a>
       </div>
-    </div>
+    </a>
 
   </div>
 

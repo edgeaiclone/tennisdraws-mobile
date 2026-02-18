@@ -59,7 +59,12 @@
   border-radius: var(--radius-lg);
   padding: 12px 14px;
   margin: 0 16px 8px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
 }
+
+.player-row:hover { border-color: var(--accent-border); }
 
 .player-info {
   display: flex;
@@ -100,7 +105,10 @@
   padding: 6px 8px;
   min-width: 100px;
   flex-shrink: 0;
+  text-decoration: none;
+  cursor: pointer;
 }
+.tournament-badge:hover { border-color: var(--accent-border); }
 .tournament-badge .t-name { font-size: 10px; font-weight: 600; color: var(--text-primary); }
 .tournament-badge .t-meta { display: flex; align-items: center; gap: 4px; }
 .tournament-badge .t-tier { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
@@ -133,29 +141,53 @@
   </div>
 
   <div class="header">
-    <div class="back-btn">
+    <a href="01-dashboard.html" class="back-btn">
       <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L2 10L10 18" stroke="#00E68A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+    </a>
     <div class="title">Entry Lists</div>
-    <div class="action-btn" style="width:33px">
-      <span style="font-size:var(--font-sm);color:var(--accent);font-weight:500">Cancel</span>
-    </div>
+    <a href="01-dashboard.html" class="action-btn">
+      <span style="font-size:var(--font-sm);color:var(--accent);font-weight:500;text-decoration:none">Cancel</span>
+    </a>
   </div>
 
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a class="nav-item active" href="01-dashboard.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="03-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+      Tournaments
+    </a>
+    <a class="nav-item" href="06-withdrawals.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      Withdrawals
+    </a>
+    <a class="nav-item" href="05-entry-lists.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Entry Lists
+    </a>
+    <a class="nav-item" href="04-itf-tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      ITF
+    </a>
+  </nav>
+
   <!-- Active Search Bar -->
-  <div class="search-bar-active">
+  <div class="search-bar-active" style="margin-top:12px">
     <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M13 13L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     <input class="search-input" value="Djoko" readonly>
-    <div class="clear-btn">
+    <a href="01-dashboard.html" class="clear-btn">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </div>
+    </a>
   </div>
 
   <div class="search-hint">Search by player name, country, or tournament</div>
   <div class="result-count">1 result found</div>
 
   <!-- Search Results -->
-  <div class="player-row">
+  <a href="07-player-profile.html" class="player-row">
     <div class="player-info">
       <div class="player-rank">7</div>
       <div class="player-details">
@@ -165,23 +197,23 @@
       <span class="badge-atp">ATP</span>
     </div>
     <div class="tournament-badges">
-      <div class="tournament-badge" style="opacity:0.5;border-color:rgba(239,68,68,0.2)">
+      <a href="08-tournament-detail.html" class="tournament-badge" style="opacity:0.5;border-color:rgba(239,68,68,0.2)" onclick="event.stopPropagation()">
         <div class="t-name" style="text-decoration:line-through;color:var(--text-tertiary)">Dubai</div>
         <div class="t-meta">
           <span class="t-tier" style="background:rgba(239,68,68,0.15);color:var(--tier-500)">500</span>
           <span style="font-size:9px;font-weight:700;color:var(--withdrawn);background:rgba(239,68,68,0.12);padding:0px 4px;border-radius:3px">WD</span>
         </div>
-      </div>
-      <div class="tournament-badge">
+      </a>
+      <a href="08-tournament-detail.html" class="tournament-badge" onclick="event.stopPropagation()">
         <div class="t-name">Indian Wells</div>
         <div class="t-meta">
           <span class="t-tier" style="background:rgba(168,85,247,0.15);color:var(--tier-1000)">1000</span>
           <span class="t-surface-dot" style="background:var(--surface-hard)"></span>
           <span style="font-size:9px;color:var(--text-tertiary)">MD</span>
         </div>
-      </div>
+      </a>
     </div>
-  </div>
+  </a>
 
 </div>
 </body>
