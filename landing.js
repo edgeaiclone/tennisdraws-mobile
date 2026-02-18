@@ -7,13 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── Boot Sequence ───
   const bootLines = [
     { text: '> EDGE AI v2.1.0 — Initializing...', delay: 0 },
-    { text: '> Connecting to live match feed...       [OK]', delay: 100 },
-    { text: '> Loading ATP / WTA data pipeline...     [OK]', delay: 80 },
-    { text: '> Odds stream connected...               [OK]', delay: 100 },
-    { text: '> MTO / Rain / Suspension tracker...     ARMED', delay: 80 },
-    { text: '> Entry list aggregator...               SYNCED', delay: 80 },
-    { text: '> Neural inference engine...              READY', delay: 120 },
-    { text: '> System nominal. Welcome.', delay: 200 },
+    { text: '> Live match feed connected...           [OK]', delay: 40 },
+    { text: '> ATP / WTA / ITF data pipeline...       [OK]', delay: 30 },
+    { text: '> Odds Master stream online...           [OK]', delay: 30 },
+    { text: '> edgeAI tools loaded...                 ARMED', delay: 30 },
+    { text: '> Burnout / Fatigue / MTO tracker...     ARMED', delay: 30 },
+    { text: '> System nominal. Welcome.', delay: 80 },
   ];
 
   const bootLinesEl = document.getElementById('bootLines');
@@ -24,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
   async function runBootSequence() {
     for (let i = 0; i < bootLines.length; i++) {
       const { text, delay } = bootLines[i];
-      await typewriterLine(bootLinesEl, text, 18);
+      await typewriterLine(bootLinesEl, text, 10);
       bootProgressBar.style.width = ((i + 1) / bootLines.length * 100) + '%';
       await sleep(delay);
     }
-    await sleep(500);
+    await sleep(250);
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
     initHeroCanvas();
@@ -186,16 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Live Ticker ───
   const tickerMessages = [
-    'Djokovic 6-4, 3-2* Alcaraz — Roland Garros QF | LIVE',
-    'Swiatek 7-5, 6-3 Gauff — Australian Open SF | FINISHED',
-    'MTO: Sinner (back) — Monte Carlo R3, Set 2',
-    'Rain Delay: Rune vs Medvedev — Wimbledon Court 1',
-    'RETIRED: Tsitsipas def. Hurkacz — abdominal, Set 3',
-    'WD: Medvedev OUT of Dubai — shoulder injury',
-    'Odds Shift: Alcaraz 1.45 → 1.28 — Indian Wells Final',
-    'Sinner 4-6, 6-3, 2-1* Zverev — Wimbledon R16 | LIVE',
-    'Entry List: Nadal confirmed for Barcelona Open',
-    'SUSPENDED: Rublev vs Fritz — bad light, Halle QF',
+    'Alcaraz vs Medvedev is now live — 1st set underway',
+    'Swiatek defeated Sabalenka 6-4, 3-6, 7-5',
+    'MTO Alert: Faria Jenginks called a medical timeout in Set 2',
+    'Odds Shift: Nadal vs Djokovic — Nadal 2.10 → 1.85',
+    'Burnout Watch: Alcaraz — 18h recovery after 4h 21m marathon',
+    'Fatigue Tracker: Djokovic — 2 matches today, 7h gap',
+    'RETIRED: Legout T. — Futures 2026, Score [6-3] [6⁵-7] [0-0]',
+    'Dropping Odds: Medvedev -21.4% for Barcelona Open',
+    'After MTO: Hijikata won with MTO, next match in 16h',
+    'ATP 250 Estoril — play suspended due to rain',
   ];
 
   let tickerIdx = 0;
@@ -331,63 +330,63 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── Sticky Scroll Feature Showcase ───
   const featureData = {
     'live-scores': {
-      title: 'Live Scores',
-      desc: 'Real-time set-by-set match tracking with serve indicators, game-by-game updates, and live commentary — refreshed every second.',
-      tags: ['Real-time', 'All Courts', 'Serve Tracking'],
+      title: 'Live Scores & Stats',
+      desc: 'Point-by-point match tracking with serve indicators, live stats (aces, break points, first serve %), momentum analysis, and full H2H history.',
+      tags: ['Point-by-Point', 'Live Stats', 'H2H'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
     },
-    'fast-odds': {
-      title: 'Fast Odds',
-      desc: 'Sub-second odds movement tracking across all major bookmakers. See odds shift before the market catches up.',
-      tags: ['Multi-book', 'Flash Alerts', 'Line Movement'],
+    'odds-master': {
+      title: 'Odds Master',
+      desc: 'Live in-play odds, minute-by-minute odds tracker, dropping odds monitor, and pre-match line movement — all in one view. Decimal, fractional and US formats.',
+      tags: ['Live Odds', 'Dropping Odds', 'Pre-match'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>'
-    },
-    'live-stats': {
-      title: 'Live Stats',
-      desc: 'In-match statistical analysis with aces, break points, first serve percentage, and momentum indicators updated in real time.',
-      tags: ['Break Points', 'Serve %', 'Momentum'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>'
     },
     'mto': {
       title: 'MTO Tracker',
-      desc: 'Instant medical timeout alerts with injury details, player history context, and return-to-play analysis.',
-      tags: ['Injury Details', 'History', 'Impact Analysis'],
+      desc: 'Deep MTO intelligence: live notifications, scoreboard context, medical info, integrity check, match dynamics, and set-by-set performance analytics.',
+      tags: ['Integrity Check', 'Match Dynamics', 'Analytics'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
     },
-    'suspended': {
-      title: 'Suspended Matches',
-      desc: 'Track mid-match suspensions with score snapshots, estimated resume times, and court assignments.',
-      tags: ['Resume Times', 'Score Freeze', 'Court Info'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>'
-    },
-    'rain': {
-      title: 'Rain Delays',
-      desc: 'Weather-driven delay tracking across all courts and venues with real-time updates and schedule impact analysis.',
-      tags: ['Weather Data', 'All Venues', 'Schedule Impact'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/></svg>'
+    'edgeai-tools': {
+      title: 'edgeAI Tools',
+      desc: 'Our AI-powered modules: Burnout Watch (3h+ marathons), Fatigue Tracker (same-day doubles), After MTO Tracker, and Opening Odds Alert. Act before the market moves.',
+      tags: ['Burnout Watch', 'Fatigue Tracker', 'After MTO'],
+      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>'
     },
     'retirements': {
-      title: 'Retirements',
-      desc: 'Instant player retirement and walkover alerts as they happen, with injury details and return timeline tracking.',
-      tags: ['Instant Alerts', 'Injury Info', 'Timeline'],
+      title: 'Retirements & Walkovers',
+      desc: 'Track recently retired players and those returning. See date, tournament, score at retirement, and odds at retirement. Never miss a retirement event.',
+      tags: ['Retired', 'Returning', 'Odds at Ret.'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    },
+    'live-performance': {
+      title: 'Live Performance',
+      desc: 'Real-time performance leaderboards: high double faults, poor first serve, top aces — across ATP, WTA, Challenger, and ITF tiers.',
+      tags: ['Double Faults', 'Serve %', 'Aces'],
+      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>'
     },
     'draws': {
       title: 'Entry Lists & Draws',
-      desc: '3,000+ players tracked across every tier — Grand Slams to ITF Futures. Know who\'s in, who withdrew, and why.',
-      tags: ['3000+ Players', 'All Tiers', 'WD Reasons'],
+      desc: '3,000+ players tracked across every tier — Grand Slams to ITF Futures. Full withdrawal reasons, alternate lists, and knockout brackets.',
+      tags: ['3000+ Players', 'All Tiers', 'Brackets'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>'
     },
     'profiles': {
       title: 'Player Profiles',
-      desc: 'Deep-dive any player with full tournament schedule, entry history, ranking progression, and competitive stats.',
-      tags: ['Full Schedule', 'Rankings', 'Entry History'],
+      desc: 'Deep-dive any player with ranking, career high, prize money, nationality, full match history, and tournament schedule.',
+      tags: ['Rankings', 'Match History', 'Prize Money'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+    },
+    'interruptions': {
+      title: 'Rain & Suspensions',
+      desc: 'Track rain delays, match suspensions with score snapshots, and estimated resume times. Star a match to get notified when play resumes.',
+      tags: ['Rain Delays', 'Suspensions', 'Resume Alerts'],
+      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/></svg>'
     },
     'notifications': {
       title: 'Smart Notifications',
-      desc: 'Push alerts for your followed players — match starts, score updates, MTO events, withdrawals, and odds shifts.',
-      tags: ['Custom Alerts', 'Player Watch', 'Real-time'],
+      desc: 'Real-time alerts for live MTOs, odds shifts, play interruptions, momentum changes, and match results. Powered by edgeAI so you act before the market moves.',
+      tags: ['Live MTOs', 'Odds Shifts', 'edgeAI Powered'],
       iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
     },
   };
