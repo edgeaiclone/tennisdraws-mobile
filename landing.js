@@ -1,8 +1,504 @@
 /* ═══════════════════════════════════════════════ */
-/* EdgeAI Landing — Interactions & Animations      */
+/* EdgeAI Landing — Pixel Art Creative Overhaul    */
 /* ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ─── Pixel Art Color Palette ───
+  const PIXEL_PALETTE = {
+    0: 'transparent',
+    1: '#00E68A',  // green (accent)
+    2: '#4DA6FF',  // blue
+    3: '#A78BFA',  // purple
+    4: '#FF6B9D',  // pink
+    5: '#F7C948',  // gold
+    6: '#EF4444',  // red
+    7: '#FFFFFF',  // white
+    8: '#1A1A2E',  // dark fill
+    9: '#0D0D14',  // darker bg
+  };
+
+  // ─── 9 Pixel Art Illustrations (24x24 grids) ───
+  // Each string row maps chars to palette indices: .=0 1-9=colors
+  function parsePixelArt(str) {
+    return str.trim().split('\n').map(row =>
+      row.split('').map(ch => ch === '.' ? 0 : parseInt(ch) || 0)
+    );
+  }
+
+  const PIXEL_ART = {
+    // 01: Live Scores — tennis court + scoreboard + ball
+    'live-scores': parsePixelArt(
+      '........................\n' +
+      '..888888888888888888..\n' +
+      '..811111111111111118..\n' +
+      '..81..............18..\n' +
+      '..81.577.577.577..18..\n' +
+      '..81..............18..\n' +
+      '..81..............18..\n' +
+      '..888888888888888888..\n' +
+      '........................\n' +
+      '..1111111111111111111...\n' +
+      '..1.........7.........1.\n' +
+      '..1.........7.........1.\n' +
+      '..1.........7.........1.\n' +
+      '..1...55....7.........1.\n' +
+      '..1...55....7.........1.\n' +
+      '..1.........7.........1.\n' +
+      '..1.........7.........1.\n' +
+      '..1.........7.........1.\n' +
+      '..1111111111111111111...\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 02: Odds Master — bar chart with trend line
+    'odds-master': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '..7.....................\n' +
+      '..7.....................\n' +
+      '..7.......22...........\n' +
+      '..7.......22...11......\n' +
+      '..7..22...22...11......\n' +
+      '..7..22...22...11..66..\n' +
+      '..7..22...22...11..66..\n' +
+      '..7..22...22...11..66..\n' +
+      '..7..22.5.22.5.11..66..\n' +
+      '..7..22.5.22...11..66..\n' +
+      '..7..22...22...11..66..\n' +
+      '..7..22...22...11..66..\n' +
+      '..77777777777777777777..\n' +
+      '........................\n' +
+      '..5555..5..55555..555...\n' +
+      '..5..5..5..5......5..5..\n' +
+      '..5..5..5..555....5..5..\n' +
+      '..5..5..5..5......5..5..\n' +
+      '..5555..5..55555..555...\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 03: MTO Tracker — medical cross + heartbeat
+    'mto': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '........6666............\n' +
+      '........6666............\n' +
+      '........6666............\n' +
+      '..666666666666666666....\n' +
+      '..666666666666666666....\n' +
+      '........6666............\n' +
+      '........6666............\n' +
+      '........6666............\n' +
+      '........................\n' +
+      '........................\n' +
+      '1.........1.............\n' +
+      '1.........1.............\n' +
+      '1........1.1............\n' +
+      '1.......1...1...........\n' +
+      '1......1.....1..11....1.\n' +
+      '1.....1.......1.11...1..\n' +
+      '.1...1.........1.1..1...\n' +
+      '..1.1...............1...\n' +
+      '...1..............1.....\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 04: edgeAI Tools — gear + lightning bolt
+    'edgeai-tools': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '.......333..............\n' +
+      '......33333.............\n' +
+      '..333.33333.333.........\n' +
+      '..3333333333333.........\n' +
+      '...33333333333..........\n' +
+      '..3333.333.3333.........\n' +
+      '..3333.333.3333.........\n' +
+      '...33333333333..........\n' +
+      '..3333333333333.........\n' +
+      '..333.33333.333.........\n' +
+      '......33333.............\n' +
+      '.......333..............\n' +
+      '........................\n' +
+      '..............555.......\n' +
+      '.............555........\n' +
+      '............555.........\n' +
+      '...........5555555......\n' +
+      '.............555........\n' +
+      '............555.........\n' +
+      '...........555..........\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 05: Live AI — brain with neural dots
+    'live-ai': parsePixelArt(
+      '........................\n' +
+      '........111111..........\n' +
+      '......11......11........\n' +
+      '.....1..333333..1.......\n' +
+      '....1..3......3..1......\n' +
+      '....1.3..2..2..3.1......\n' +
+      '....1.3.2..2.2.3.1......\n' +
+      '....1.3..2..2..3.1......\n' +
+      '....1.3.2.22.2.3.1......\n' +
+      '....1..3......3..1......\n' +
+      '.....1..333333..1.......\n' +
+      '......11......11........\n' +
+      '........111111..........\n' +
+      '........................\n' +
+      '...5.......5.......5....\n' +
+      '....5.....5.....55......\n' +
+      '.....5...5...55.........\n' +
+      '......5.5.55............\n' +
+      '.......5................\n' +
+      '........................\n' +
+      '..55..1111..55..1111....\n' +
+      '..55..1111..55..1111....\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 06: Retirements — player walking away + trophy
+    'retirements': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '..555..........77.......\n' +
+      '..555.........7557......\n' +
+      '...5..........7557......\n' +
+      '..565..........55.......\n' +
+      '..565..........55.......\n' +
+      '.56565.........55.......\n' +
+      '..565........555555.....\n' +
+      '...5.........555555.....\n' +
+      '...5..........555.......\n' +
+      '..5.5.....................\n' +
+      '..5..5.........6........\n' +
+      '.5....5........66.......\n' +
+      '5......5......6666......\n' +
+      '........................\n' +
+      '........................\n' +
+      '...666666666666666......\n' +
+      '........................\n' +
+      '..77..77..7777..777.....\n' +
+      '..7..7..7.7.....7..7...\n' +
+      '..77.7777.777...7..7...\n' +
+      '..7..7..7.7.....777.....\n' +
+      '........................'
+    ),
+    // 07: Entry Lists & Draws — bracket tree
+    'draws': parsePixelArt(
+      '........................\n' +
+      '..22222.................\n' +
+      '..22222.111.............\n' +
+      '........1...............\n' +
+      '..22222.1...............\n' +
+      '..22222..1..............\n' +
+      '..........1.111.........\n' +
+      '..........1.1...........\n' +
+      '..22222..1..1...........\n' +
+      '..22222.1...1...........\n' +
+      '........1....1.111......\n' +
+      '..22222.1....1.1........\n' +
+      '..22222..1...1.1........\n' +
+      '..........1..1..1.11111.\n' +
+      '..22222..1..1...1.11111.\n' +
+      '..22222.1...1..1........\n' +
+      '........1....1.1........\n' +
+      '..22222.1....1.111......\n' +
+      '..22222..1...1..........\n' +
+      '..........1.1...........\n' +
+      '..22222..1.1............\n' +
+      '..22222.1...............\n' +
+      '........111.............\n' +
+      '........................'
+    ),
+    // 08: Chatrooms — speech bubbles
+    'chatrooms': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '..111111111111..........\n' +
+      '..1..........1..........\n' +
+      '..1..77..77..1..........\n' +
+      '..1..........1..........\n' +
+      '..111111111111..........\n' +
+      '....11..................\n' +
+      '........................\n' +
+      '..........2222222222222.\n' +
+      '..........2...........2.\n' +
+      '..........2..77.77.77.2.\n' +
+      '..........2...........2.\n' +
+      '..........2222222222222.\n' +
+      '....................22...\n' +
+      '........................\n' +
+      '..111111111111..........\n' +
+      '..1..........1..........\n' +
+      '..1..3..3..3.1..........\n' +
+      '..1..........1..........\n' +
+      '..111111111111..........\n' +
+      '....11..................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 09: Smart Notifications — bell with ringing lines
+    'notifications': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '...........55...........\n' +
+      '...........55...........\n' +
+      '........55555555........\n' +
+      '.......5555555555.......\n' +
+      '......555555555555......\n' +
+      '......555555555555......\n' +
+      '.....55555555555555.....\n' +
+      '.....55555555555555.....\n' +
+      '.....55555555555555.....\n' +
+      '......555555555555......\n' +
+      '......555555555555......\n' +
+      '.....5555555555555555...\n' +
+      '....555555555555555555..\n' +
+      '........................\n' +
+      '..........5555..........\n' +
+      '..........5555..........\n' +
+      '........................\n' +
+      '..11................11..\n' +
+      '...11..............11...\n' +
+      '....11............11....\n' +
+      '........................\n' +
+      '........................'
+    ),
+  };
+
+  // Tool metadata for the reveal section
+  const TOOL_DATA = {
+    'live-scores': {
+      title: 'Live Scores & Stats',
+      desc: 'Point-by-point tracking. Serve indicators. Aces, break points, first serve %. Momentum analysis and full H2H history across every match.',
+      tags: ['Point-by-Point', 'Live Stats', 'H2H'],
+    },
+    'odds-master': {
+      title: 'Odds Master',
+      desc: 'Live in-play odds with minute-by-minute tracking. Dropping odds monitor. Pre-match line movement. Decimal, fractional, and US formats.',
+      tags: ['Live Odds', 'Dropping Odds', 'Pre-match'],
+    },
+    'mto': {
+      title: 'MTO Tracker',
+      desc: 'Deep MTO intelligence. Integrity check on retirement history. Match dynamics with momentum tracking. Set-by-set performance analytics.',
+      tags: ['Integrity Check', 'Match Dynamics', 'Analytics'],
+    },
+    'edgeai-tools': {
+      title: 'edgeAI Tools',
+      desc: 'Burnout Watch flags 3h+ marathons. Fatigue Tracker spots same-day doubles. After MTO tracks next-match risk. Opening Odds Alert on Bet365.',
+      tags: ['Burnout Watch', 'Fatigue Tracker', 'After MTO'],
+    },
+    'live-ai': {
+      title: 'Live AI Predictions',
+      desc: 'Our AI engine analyzes live match data to generate statistical predictions. Pattern recognition across thousands of matches to give you the edge.',
+      tags: ['AI Engine', 'Predictions', 'Pattern Analysis'],
+    },
+    'retirements': {
+      title: 'Retirements & Returns',
+      desc: 'Track retired players with date, tournament, score, and odds at retirement. Monitor who is returning. Never miss a retirement event.',
+      tags: ['Retired', 'Returning', 'Odds at Ret.'],
+    },
+    'draws': {
+      title: 'Entry Lists & Draws',
+      desc: '3,000+ players tracked across every tier. Grand Slams to ITF Futures. Full withdrawal reasons, alternate lists, and knockout brackets.',
+      tags: ['3000+ Players', 'All Tiers', 'Brackets'],
+    },
+    'chatrooms': {
+      title: 'Live Chatrooms',
+      desc: 'Global tennis community. Discuss live matches, share insights, debate predictions. Connect with fellow sharp bettors in real-time.',
+      tags: ['Global Chat', 'Live Discussion', 'Community'],
+    },
+    'notifications': {
+      title: 'Smart Notifications',
+      desc: 'Real-time alerts for live MTOs, odds shifts, rain delays, momentum changes, and match results. Powered by edgeAI so you act first.',
+      tags: ['Live MTOs', 'Odds Shifts', 'edgeAI Powered'],
+    },
+  };
+
+
+  // ─── PixelArtRenderer Class ───
+  class PixelArtRenderer {
+    constructor(canvas, grid, pixelSize) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d');
+      this.grid = grid;
+      this.rows = grid.length;
+      this.cols = grid[0] ? grid[0].length : 0;
+      this.gap = 1;
+
+      // Responsive pixel size
+      const isMobile = window.innerWidth < 768;
+      this.pixelSize = pixelSize || (isMobile ? 7 : 9);
+
+      // DPR scaling
+      const dpr = window.devicePixelRatio || 1;
+      const logW = this.cols * (this.pixelSize + this.gap);
+      const logH = this.rows * (this.pixelSize + this.gap);
+      canvas.width = logW * dpr;
+      canvas.height = logH * dpr;
+      canvas.style.width = logW + 'px';
+      canvas.style.height = logH + 'px';
+      this.ctx.scale(dpr, dpr);
+      this.logW = logW;
+      this.logH = logH;
+
+      // Build reveal order (shuffled)
+      this.revealOrder = [];
+      this.totalPixels = 0;
+      for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.cols; c++) {
+          if (this.grid[r] && this.grid[r][c] !== 0) {
+            this.revealOrder.push([r, c]);
+            this.totalPixels++;
+          }
+        }
+      }
+      // Fisher-Yates shuffle
+      for (let i = this.revealOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.revealOrder[i], this.revealOrder[j]] = [this.revealOrder[j], this.revealOrder[i]];
+      }
+
+      this.lastProgress = -1;
+    }
+
+    drawAtProgress(progress) {
+      // Avoid redundant redraws
+      const quantized = Math.round(progress * 200) / 200;
+      if (quantized === this.lastProgress) return;
+      this.lastProgress = quantized;
+
+      const ctx = this.ctx;
+      const ps = this.pixelSize;
+      const gap = this.gap;
+      ctx.clearRect(0, 0, this.logW, this.logH);
+
+      if (progress <= 0) {
+        // Draw scrambled noise
+        this._drawScrambled();
+        return;
+      }
+
+      const revealCount = Math.floor(progress * this.totalPixels);
+
+      // Draw revealed pixels (correct colors)
+      for (let i = 0; i < revealCount && i < this.revealOrder.length; i++) {
+        const [r, c] = this.revealOrder[i];
+        const colorIdx = this.grid[r][c];
+        const color = PIXEL_PALETTE[colorIdx];
+        if (color === 'transparent') continue;
+        ctx.fillStyle = color;
+        ctx.fillRect(c * (ps + gap), r * (ps + gap), ps, ps);
+      }
+
+      // Draw remaining as scrambled noise (dimmer)
+      for (let i = revealCount; i < this.revealOrder.length; i++) {
+        const [r, c] = this.revealOrder[i];
+        if (Math.random() < 0.3) {
+          const randColors = ['#00E68A', '#4DA6FF', '#A78BFA', '#FF6B9D', '#F7C948'];
+          ctx.fillStyle = randColors[Math.floor(Math.random() * randColors.length)];
+          ctx.globalAlpha = 0.08 + Math.random() * 0.12;
+          ctx.fillRect(c * (ps + gap), r * (ps + gap), ps, ps);
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    drawFull() {
+      const ctx = this.ctx;
+      const ps = this.pixelSize;
+      const gap = this.gap;
+      ctx.clearRect(0, 0, this.logW, this.logH);
+      for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.cols; c++) {
+          const colorIdx = this.grid[r] ? this.grid[r][c] : 0;
+          if (colorIdx === 0) continue;
+          const color = PIXEL_PALETTE[colorIdx];
+          if (color === 'transparent') continue;
+          ctx.fillStyle = color;
+          ctx.fillRect(c * (ps + gap), r * (ps + gap), ps, ps);
+        }
+      }
+    }
+
+    _drawScrambled() {
+      const ctx = this.ctx;
+      const ps = this.pixelSize;
+      const gap = this.gap;
+      const colors = ['#00E68A', '#4DA6FF', '#A78BFA', '#FF6B9D', '#F7C948', '#EF4444'];
+      for (let r = 0; r < this.rows; r++) {
+        for (let c = 0; c < this.cols; c++) {
+          if (Math.random() < 0.15) {
+            ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+            ctx.globalAlpha = 0.05 + Math.random() * 0.15;
+            ctx.fillRect(c * (ps + gap), r * (ps + gap), ps, ps);
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+    }
+  }
+
+
+  // ─── TextScramble Class ───
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      this.frameReq = null;
+    }
+
+    setText(newText) {
+      const length = newText.length;
+      this.queue = [];
+      for (let i = 0; i < length; i++) {
+        const to = newText[i];
+        const start = Math.floor(Math.random() * 15);
+        const end = start + Math.floor(Math.random() * 15) + 5;
+        this.queue.push({ to, start, end, char: '' });
+      }
+      cancelAnimationFrame(this.frameReq);
+      this.frame = 0;
+      return new Promise(resolve => {
+        this.resolve = resolve;
+        this._update();
+      });
+    }
+
+    _update() {
+      let output = '';
+      let complete = 0;
+      for (let i = 0; i < this.queue.length; i++) {
+        let { to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.chars[Math.floor(Math.random() * this.chars.length)];
+            this.queue[i].char = char;
+          }
+          output += '<span class="scramble-char">' + char + '</span>';
+        } else {
+          output += '<span class="scramble-char">' + this.chars[Math.floor(Math.random() * this.chars.length)] + '</span>';
+        }
+      }
+      this.el.innerHTML = output;
+      if (complete === this.queue.length) {
+        if (this.resolve) this.resolve();
+      } else {
+        this.frameReq = requestAnimationFrame(() => this._update());
+        this.frame++;
+      }
+    }
+  }
+
 
   // ─── Boot Sequence ───
   const bootLines = [
@@ -11,7 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { text: '> ATP / WTA / ITF data pipeline...       [OK]', delay: 30 },
     { text: '> Odds Master stream online...           [OK]', delay: 30 },
     { text: '> edgeAI tools loaded...                 ARMED', delay: 30 },
-    { text: '> Burnout / Fatigue / MTO tracker...     ARMED', delay: 30 },
+    { text: '> Live AI predictions engine...          ARMED', delay: 30 },
+    { text: '> Subscription check...                  FREE TIER', delay: 30 },
     { text: '> System nominal. Welcome.', delay: 80 },
   ];
 
@@ -33,6 +530,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroCanvas();
     startLiveTicker();
     startLiveOdds();
+    initMysteryIntro();
+    initPixelReveals();
   }
 
   function typewriterLine(container, text, speed) {
@@ -58,11 +557,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Check for reduced motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) {
-    // Skip boot, show everything immediately
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
     startLiveTicker();
     startLiveOdds();
+    setTimeout(() => { initMysteryIntro(); initPixelReveals(); }, 100);
   } else {
     runBootSequence();
   }
@@ -98,7 +597,6 @@ document.addEventListener('DOMContentLoaded', () => {
         this.alpha = Math.random() * 0.5 + 0.2;
       }
       update() {
-        // Mouse repulsion
         const dx = this.x - mouse.x;
         const dy = this.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -125,7 +623,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Scale particles based on screen size
     const count = Math.min(100, Math.floor(W * H / 12000));
     for (let i = 0; i < count; i++) particles.push(new Particle());
 
@@ -134,10 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     });
-    canvas.addEventListener('mouseleave', () => {
-      mouse.x = -9999;
-      mouse.y = -9999;
-    });
+    canvas.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
     function drawConnections() {
       const maxDist = 120;
@@ -151,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 230, 138, ${alpha})`;
+            ctx.strokeStyle = 'rgba(0, 230, 138, ' + alpha + ')';
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -167,16 +661,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loop();
 
-    // Pause when not visible
     const heroSection = document.getElementById('hero');
     const canvasObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (!animId) loop();
-        } else {
-          cancelAnimationFrame(animId);
-          animId = null;
-        }
+        if (entry.isIntersecting) { if (!animId) loop(); }
+        else { cancelAnimationFrame(animId); animId = null; }
       });
     }, { threshold: 0.1 });
     canvasObserver.observe(heroSection);
@@ -185,16 +674,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Live Ticker ───
   const tickerMessages = [
-    'Alcaraz vs Medvedev is now live — 1st set underway',
-    'Swiatek defeated Sabalenka 6-4, 3-6, 7-5',
-    'MTO Alert: Faria Jenginks called a medical timeout in Set 2',
-    'Odds Shift: Nadal vs Djokovic — Nadal 2.10 → 1.85',
-    'Burnout Watch: Alcaraz — 18h recovery after 4h 21m marathon',
-    'Fatigue Tracker: Djokovic — 2 matches today, 7h gap',
-    'RETIRED: Legout T. — Futures 2026, Score [6-3] [6⁵-7] [0-0]',
+    'Alcaraz vs Medvedev is now live \u2014 1st set underway',
+    'MTO Alert: Medical timeout called in Set 2',
+    'Odds Shift: Nadal vs Djokovic \u2014 Nadal 2.10 \u2192 1.85',
+    'Burnout Watch: Alcaraz \u2014 18h recovery after 4h 21m marathon',
+    'Fatigue Tracker: Djokovic \u2014 2 matches today, 7h gap',
     'Dropping Odds: Medvedev -21.4% for Barcelona Open',
+    'AI Prediction: 73% chance of upset in Rune vs Sinner',
     'After MTO: Hijikata won with MTO, next match in 16h',
-    'ATP 250 Estoril — play suspended due to rain',
+    'ATP 250 Estoril \u2014 play suspended due to rain',
+    'Entry List Update: Nadal added to Barcelona Open draws',
   ];
 
   let tickerIdx = 0;
@@ -235,7 +724,6 @@ document.addEventListener('DOMContentLoaded', () => {
       odd1El.classList.add(val1 > oldVal1 ? 'flash-up' : 'flash-down');
       setTimeout(() => odd1El.classList.remove('flash-up', 'flash-down'), 600);
 
-      // Inverse correlation for odds
       const change2 = -change1 * 0.8 + (Math.random() - 0.5) * 0.04;
       let val2 = parseFloat(odd2El.textContent) + change2;
       val2 = Math.max(1.05, Math.min(4.0, val2));
@@ -255,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', () => {
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
     const scrolled = (window.scrollY / scrollHeight) * 100;
-    scrollProgress.style.width = scrolled + '%';
+    if (scrollProgress) scrollProgress.style.width = scrolled + '%';
   });
 
 
@@ -327,139 +815,675 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Sticky Scroll Feature Showcase ───
-  const featureData = {
-    'live-scores': {
-      title: 'Live Scores & Stats',
-      desc: 'Point-by-point match tracking with serve indicators, live stats (aces, break points, first serve %), momentum analysis, and full H2H history.',
-      tags: ['Point-by-Point', 'Live Stats', 'H2H'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-    },
-    'odds-master': {
-      title: 'Odds Master',
-      desc: 'Live in-play odds, minute-by-minute odds tracker, dropping odds monitor, and pre-match line movement — all in one view. Decimal, fractional and US formats.',
-      tags: ['Live Odds', 'Dropping Odds', 'Pre-match'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>'
-    },
-    'mto': {
-      title: 'MTO Tracker',
-      desc: 'Deep MTO intelligence: live notifications, scoreboard context, medical info, integrity check, match dynamics, and set-by-set performance analytics.',
-      tags: ['Integrity Check', 'Match Dynamics', 'Analytics'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
-    },
-    'edgeai-tools': {
-      title: 'edgeAI Tools',
-      desc: 'Our AI-powered modules: Burnout Watch (3h+ marathons), Fatigue Tracker (same-day doubles), After MTO Tracker, and Opening Odds Alert. Act before the market moves.',
-      tags: ['Burnout Watch', 'Fatigue Tracker', 'After MTO'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>'
-    },
-    'retirements': {
-      title: 'Retirements & Walkovers',
-      desc: 'Track recently retired players and those returning. See date, tournament, score at retirement, and odds at retirement. Never miss a retirement event.',
-      tags: ['Retired', 'Returning', 'Odds at Ret.'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-    },
-    'live-performance': {
-      title: 'Live Performance',
-      desc: 'Real-time performance leaderboards: high double faults, poor first serve, top aces — across ATP, WTA, Challenger, and ITF tiers.',
-      tags: ['Double Faults', 'Serve %', 'Aces'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>'
-    },
-    'draws': {
-      title: 'Entry Lists & Draws',
-      desc: '3,000+ players tracked across every tier — Grand Slams to ITF Futures. Full withdrawal reasons, alternate lists, and knockout brackets.',
-      tags: ['3000+ Players', 'All Tiers', 'Brackets'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>'
-    },
-    'profiles': {
-      title: 'Player Profiles',
-      desc: 'Deep-dive any player with ranking, career high, prize money, nationality, full match history, and tournament schedule.',
-      tags: ['Rankings', 'Match History', 'Prize Money'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
-    },
-    'interruptions': {
-      title: 'Rain & Suspensions',
-      desc: 'Track rain delays, match suspensions with score snapshots, and estimated resume times. Star a match to get notified when play resumes.',
-      tags: ['Rain Delays', 'Suspensions', 'Resume Alerts'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/></svg>'
-    },
-    'notifications': {
-      title: 'Smart Notifications',
-      desc: 'Real-time alerts for live MTOs, odds shifts, play interruptions, momentum changes, and match results. Powered by edgeAI so you act before the market moves.',
-      tags: ['Live MTOs', 'Odds Shifts', 'edgeAI Powered'],
-      iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
-    },
-  };
+  // ─── Mystery Intro — Scrambled Text Reveal ───
+  function initMysteryIntro() {
+    const mysteryLines = document.querySelectorAll('.mystery-line');
+    if (!mysteryLines.length) return;
 
-  const triggers = document.querySelectorAll('.feature-trigger');
-  const featureTitle = document.getElementById('featureTitle');
-  const featureDesc = document.getElementById('featureDesc');
-  const featureNum = document.getElementById('featureNum');
-  const featureIcon = document.getElementById('featureIcon');
-  const featureTags = document.getElementById('featureTags');
+    const scramblers = [];
+    mysteryLines.forEach(line => {
+      const originalText = line.textContent;
+      line.dataset.original = originalText;
+      // Start scrambled
+      line.innerHTML = originalText.split('').map(() =>
+        '<span class="scramble-char">' + '!<>-_\\/[]{}=+*^?#'[Math.floor(Math.random() * 18)] + '</span>'
+      ).join('');
+      scramblers.push(new TextScramble(line));
+    });
 
-  if (triggers.length && featureTitle) {
-    const featureObserver = new IntersectionObserver(entries => {
+    const mysterySection = document.querySelector('.mystery-intro');
+    if (!mysterySection) return;
+
+    let revealed = [false, false, false];
+
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Deactivate all, activate current
-          triggers.forEach(t => t.classList.remove('active'));
-          entry.target.classList.add('active');
-
-          const key = entry.target.dataset.feature;
-          const num = entry.target.dataset.num;
-          const data = featureData[key];
-
-          if (data) {
-            // Smooth transition
-            featureTitle.style.opacity = '0';
-            featureDesc.style.opacity = '0';
-
-            setTimeout(() => {
-              featureTitle.textContent = data.title;
-              featureDesc.textContent = data.desc;
-              featureNum.textContent = num;
-              featureIcon.innerHTML = data.iconSvg;
-              featureTags.innerHTML = data.tags.map(t => `<span class="fd-tag">${t}</span>`).join('');
-
-              featureTitle.style.opacity = '1';
-              featureDesc.style.opacity = '1';
-            }, 200);
+          const idx = Array.from(mysteryLines).indexOf(entry.target);
+          if (idx >= 0 && !revealed[idx]) {
+            revealed[idx] = true;
+            scramblers[idx].setText(entry.target.dataset.original);
           }
         }
       });
-    }, {
-      threshold: 0.6,
-      rootMargin: '-20% 0px -20% 0px'
-    });
+    }, { threshold: 0.5, rootMargin: '-10% 0px -10% 0px' });
 
-    triggers.forEach(t => featureObserver.observe(t));
+    mysteryLines.forEach(line => observer.observe(line));
   }
 
 
-  // ─── 3D Tilt Cards ───
-  document.querySelectorAll('.feature-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
-      const dx = e.clientX - rect.left - cx;
-      const dy = e.clientY - rect.top - cy;
-      const rotX = -(dy / cy) * 6;
-      const rotY = (dx / cx) * 6;
-      card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  // ─── Pixel Art Reveal System ───
+  let currentRenderer = null;
+  let currentToolKey = null;
+  const toolKeys = ['live-scores', 'odds-master', 'mto', 'edgeai-tools', 'live-ai', 'retirements', 'draws', 'chatrooms', 'notifications'];
+  const renderers = {};
 
-      // Update shimmer position
-      const mouseXPct = ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%';
-      const mouseYPct = ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%';
-      card.style.setProperty('--mouse-x', mouseXPct);
-      card.style.setProperty('--mouse-y', mouseYPct);
-    });
+  function initPixelReveals() {
+    const pixelCanvas = document.getElementById('pixelArtCanvas');
+    const titleEl = document.getElementById('pixelToolTitle');
+    const descEl = document.getElementById('pixelToolDesc');
+    const numEl = document.getElementById('pixelToolNum');
+    const tagsEl = document.getElementById('pixelToolTags');
+    const triggers = document.querySelectorAll('.pixel-trigger');
 
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-    });
-  });
+    if (!pixelCanvas || !triggers.length) return;
+
+    // Create a renderer for the shared canvas (we'll swap grids)
+    const titleScramble = new TextScramble(titleEl);
+    let activeIdx = -1;
+    let lastActiveIdx = -1;
+    let isTypingDesc = false;
+
+    // Scroll-driven update
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateReveals();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    function updateReveals() {
+      const vh = window.innerHeight;
+      let bestIdx = -1;
+      let bestProgress = 0;
+
+      triggers.forEach((trigger, idx) => {
+        const rect = trigger.getBoundingClientRect();
+        // Progress: 0 when top enters bottom of viewport, 1 when top reaches top
+        const progress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+
+        if (progress > 0.1 && progress < 1.2) {
+          if (progress > bestProgress || bestIdx === -1) {
+            bestIdx = idx;
+            bestProgress = progress;
+          }
+        }
+      });
+
+      if (bestIdx >= 0) {
+        const trigger = triggers[bestIdx];
+        const rect = trigger.getBoundingClientRect();
+        // Remap progress for pixel art: start building when 30% in, complete at 90%
+        const rawProgress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+        const artProgress = Math.max(0, Math.min(1, (rawProgress - 0.15) / 0.6));
+
+        const toolKey = trigger.dataset.tool;
+
+        // Switch tool if different
+        if (bestIdx !== lastActiveIdx) {
+          lastActiveIdx = bestIdx;
+          currentToolKey = toolKey;
+
+          // Create or reuse renderer
+          if (!renderers[toolKey] && PIXEL_ART[toolKey]) {
+            // We need a fresh canvas context for each, so we recreate
+            renderers[toolKey] = new PixelArtRenderer(pixelCanvas, PIXEL_ART[toolKey]);
+          }
+          currentRenderer = renderers[toolKey] || null;
+
+          // Actually we need to re-create renderer each time since we share one canvas
+          if (PIXEL_ART[toolKey]) {
+            currentRenderer = new PixelArtRenderer(pixelCanvas, PIXEL_ART[toolKey]);
+          }
+
+          // Update number
+          if (numEl) numEl.textContent = trigger.dataset.num;
+
+          // Scramble title
+          const data = TOOL_DATA[toolKey];
+          if (data && titleEl) {
+            titleScramble.setText(data.title);
+          }
+
+          // Clear desc and tags (will type in when progress > 0.7)
+          if (descEl) { descEl.textContent = ''; descEl.style.opacity = '0'; }
+          if (tagsEl) { tagsEl.innerHTML = ''; tagsEl.style.opacity = '0'; }
+          isTypingDesc = false;
+        }
+
+        // Draw pixel art at progress
+        if (currentRenderer) {
+          currentRenderer.drawAtProgress(artProgress);
+        }
+
+        // Type description when art is >70% built
+        if (artProgress > 0.7 && !isTypingDesc) {
+          isTypingDesc = true;
+          const data = TOOL_DATA[toolKey];
+          if (data) {
+            if (descEl) {
+              descEl.style.opacity = '1';
+              typewriterText(descEl, data.desc, 8);
+            }
+            if (tagsEl && data.tags) {
+              setTimeout(() => {
+                tagsEl.style.opacity = '1';
+                tagsEl.innerHTML = data.tags.map(t => '<span class="fd-tag">' + t + '</span>').join('') +
+                  '<span class="free-badge-inline">FREE</span>';
+              }, 400);
+            }
+          }
+        }
+      }
+    }
+
+    // Simple typewriter for description text
+    function typewriterText(el, text, speed) {
+      el.textContent = '';
+      let i = 0;
+      const timer = setInterval(() => {
+        el.textContent = text.substring(0, ++i);
+        if (i >= text.length) clearInterval(timer);
+      }, speed);
+    }
+
+    // Initial call
+    updateReveals();
+  }
+
+
+  // ─── "100% FREE" Pixel Text Canvas ───
+  const freeCanvas = document.getElementById('freePixelCanvas');
+  if (freeCanvas) {
+    // 5x7 pixel font for "100% FREE"
+    const PIXEL_FONT = {
+      '1': [[0,1,0],[1,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[1,1,1]],
+      '0': [[1,1,1],[1,0,1],[1,0,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]],
+      '%': [[1,0,1],[0,0,1],[0,1,0],[0,1,0],[0,1,0],[1,0,0],[1,0,1]],
+      ' ': [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
+      'F': [[1,1,1,1],[1,0,0,0],[1,0,0,0],[1,1,1,0],[1,0,0,0],[1,0,0,0],[1,0,0,0]],
+      'R': [[1,1,1,0],[1,0,0,1],[1,0,0,1],[1,1,1,0],[1,0,1,0],[1,0,0,1],[1,0,0,1]],
+      'E': [[1,1,1,1],[1,0,0,0],[1,0,0,0],[1,1,1,0],[1,0,0,0],[1,0,0,0],[1,1,1,1]],
+    };
+
+    const text = '100% FREE';
+    const ps = window.innerWidth < 768 ? 5 : 8;
+    const gap = 1;
+    const charGap = ps * 2;
+
+    // Calculate total width
+    let totalW = 0;
+    for (const ch of text) {
+      const glyph = PIXEL_FONT[ch];
+      if (glyph) totalW += glyph[0].length * (ps + gap) + charGap;
+    }
+    totalW -= charGap;
+    const totalH = 7 * (ps + gap);
+
+    const dpr = window.devicePixelRatio || 1;
+    freeCanvas.width = totalW * dpr;
+    freeCanvas.height = totalH * dpr;
+    freeCanvas.style.width = totalW + 'px';
+    freeCanvas.style.height = totalH + 'px';
+    const fctx = freeCanvas.getContext('2d');
+    fctx.scale(dpr, dpr);
+
+    let freeRevealed = false;
+    let freeProgress = 0;
+
+    // Collect all pixel positions
+    const freePixels = [];
+    let xOff = 0;
+    for (const ch of text) {
+      const glyph = PIXEL_FONT[ch];
+      if (!glyph) continue;
+      for (let r = 0; r < glyph.length; r++) {
+        for (let c = 0; c < glyph[r].length; c++) {
+          if (glyph[r][c]) {
+            freePixels.push({ x: xOff + c * (ps + gap), y: r * (ps + gap) });
+          }
+        }
+      }
+      xOff += glyph[0].length * (ps + gap) + charGap;
+    }
+
+    // Shuffle
+    for (let i = freePixels.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [freePixels[i], freePixels[j]] = [freePixels[j], freePixels[i]];
+    }
+
+    function drawFreeText(progress) {
+      fctx.clearRect(0, 0, totalW, totalH);
+      const count = Math.floor(progress * freePixels.length);
+      for (let i = 0; i < count; i++) {
+        const p = freePixels[i];
+        fctx.fillStyle = '#00E68A';
+        fctx.fillRect(p.x, p.y, ps, ps);
+      }
+      // Noise for unrevealed
+      for (let i = count; i < freePixels.length; i++) {
+        if (Math.random() < 0.2) {
+          const p = freePixels[i];
+          fctx.fillStyle = '#00E68A';
+          fctx.globalAlpha = 0.08;
+          fctx.fillRect(p.x, p.y, ps, ps);
+          fctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    const freeSection = document.querySelector('.free-section');
+    if (freeSection) {
+      const freeObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !freeRevealed) {
+            freeRevealed = true;
+            // Animate the pixel text building
+            let prog = 0;
+            function animFree() {
+              prog += 0.02;
+              drawFreeText(Math.min(prog, 1));
+              if (prog < 1) requestAnimationFrame(animFree);
+            }
+            animFree();
+          }
+        });
+      }, { threshold: 0.3 });
+      freeObserver.observe(freeSection);
+    }
+  }
+
+
+  // ─── Tennis Rally Puzzle Game ───
+  class TennisRallyPuzzle {
+    constructor(canvas) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d');
+
+      // Responsive sizing
+      const isMobile = window.innerWidth < 768;
+      const logW = isMobile ? Math.min(340, window.innerWidth - 40) : 360;
+      const logH = isMobile ? Math.min(460, window.innerHeight * 0.55) : 480;
+
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = logW * dpr;
+      canvas.height = logH * dpr;
+      canvas.style.width = logW + 'px';
+      canvas.style.height = logH + 'px';
+      this.ctx.scale(dpr, dpr);
+
+      this.W = logW;
+      this.H = logH;
+      this.ps = isMobile ? 4 : 5; // pixel size for game elements
+
+      // Game state
+      this.ralliesWon = 0;
+      this.ralliesNeeded = 3;
+      this.misses = 0;
+      this.maxMisses = 5;
+      this.state = 'idle'; // idle | falling | hit | miss | won
+      this.ballX = this.W / 2;
+      this.ballY = 40;
+      this.ballVY = 0;
+      this.ballVX = 0;
+      this.baseSpeed = isMobile ? 2.5 : 3;
+      this.racketY = this.H - 60;
+      this.racketX = this.W / 2;
+      this.netY = this.H * 0.42;
+      this.hitZoneSize = isMobile ? 50 : 40;
+      this.flashTimer = 0;
+      this.flashColor = null;
+      this.solved = false;
+      this.showSkip = false;
+
+      this._setupEvents();
+      this._startIdle();
+    }
+
+    _setupEvents() {
+      const handler = (e) => {
+        e.preventDefault();
+        if (this.solved) return;
+
+        if (this.state === 'falling') {
+          // Check hit zone
+          if (this.ballY >= this.racketY - this.hitZoneSize && this.ballY <= this.racketY + 10) {
+            this._onHit();
+          } else {
+            // Too early or too late — let it play out
+          }
+        } else if (this.state === 'idle' || this.state === 'miss') {
+          this._launchBall();
+        }
+      };
+
+      this.canvas.addEventListener('click', handler);
+      this.canvas.addEventListener('touchstart', handler, { passive: false });
+
+      // Skip button
+      const skipBtn = document.getElementById('puzzleSkip');
+      if (skipBtn) {
+        skipBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.solved = true;
+          this.state = 'won';
+          this._onPuzzleSolved();
+        });
+      }
+    }
+
+    _startIdle() {
+      // Show "TAP TO START" state
+      this.state = 'idle';
+      this.ballX = this.W / 2;
+      this.ballY = 40;
+      this._loop();
+    }
+
+    _launchBall() {
+      this.state = 'falling';
+      this.ballY = 30;
+      this.ballX = this.W / 2 + (Math.random() - 0.5) * (this.W * 0.4);
+      this.ballVY = this.baseSpeed + (this.ralliesWon * 0.6);
+      this.ballVX = (Math.random() - 0.5) * 1.2;
+      // Move racket to track ball loosely
+      this.racketX = this.ballX + (Math.random() - 0.5) * 30;
+    }
+
+    _onHit() {
+      this.state = 'hit';
+      this.ralliesWon++;
+      this.flashColor = '#00E68A';
+      this.flashTimer = 15;
+
+      // Update dots
+      this._updateDots();
+
+      if (this.ralliesWon >= this.ralliesNeeded) {
+        this.solved = true;
+        setTimeout(() => {
+          this.state = 'won';
+          this._onPuzzleSolved();
+        }, 600);
+      } else {
+        // Ball bounces back up
+        this.ballVY = -(this.baseSpeed + this.ralliesWon * 0.5) * 1.5;
+        setTimeout(() => {
+          this.state = 'idle';
+        }, 800);
+      }
+    }
+
+    _onMiss() {
+      this.state = 'miss';
+      this.misses++;
+      this.flashColor = '#EF4444';
+      this.flashTimer = 15;
+
+      if (this.misses >= this.maxMisses) {
+        this.showSkip = true;
+        const skipBtn = document.getElementById('puzzleSkip');
+        if (skipBtn) skipBtn.style.display = 'inline-block';
+      }
+
+      setTimeout(() => {
+        this.state = 'idle';
+        this.ballY = 40;
+      }, 800);
+    }
+
+    _updateDots() {
+      const dots = document.querySelectorAll('.rally-dot');
+      dots.forEach((dot, i) => {
+        if (i < this.ralliesWon) dot.classList.add('filled');
+      });
+    }
+
+    _onPuzzleSolved() {
+      // Trigger the reward
+      const rewardEl = document.getElementById('puzzleReward');
+      const puzzleSection = document.querySelector('.puzzle-section');
+
+      if (rewardEl) {
+        rewardEl.style.display = 'flex';
+        rewardEl.classList.add('active');
+
+        // Launch confetti
+        launchConfetti();
+
+        // Build "UNLOCKED" pixel text
+        setTimeout(() => {
+          const unlockedEl = document.querySelector('.reward-pixel-text');
+          if (unlockedEl) unlockedEl.classList.add('visible');
+        }, 400);
+
+        setTimeout(() => {
+          const priceEl = document.querySelector('.reward-price');
+          if (priceEl) priceEl.classList.add('visible');
+        }, 800);
+
+        setTimeout(() => {
+          const btnsEl = document.querySelector('.reward-buttons');
+          if (btnsEl) btnsEl.classList.add('visible');
+        }, 1200);
+      }
+    }
+
+    _draw() {
+      const ctx = this.ctx;
+      const ps = this.ps;
+      ctx.clearRect(0, 0, this.W, this.H);
+
+      // Flash effect
+      if (this.flashTimer > 0) {
+        ctx.fillStyle = this.flashColor;
+        ctx.globalAlpha = this.flashTimer / 30;
+        ctx.fillRect(0, 0, this.W, this.H);
+        ctx.globalAlpha = 1;
+        this.flashTimer--;
+      }
+
+      // Draw pixel court
+      ctx.fillStyle = '#0D1A0D';
+      ctx.fillRect(20, 20, this.W - 40, this.H - 40);
+
+      // Court lines
+      ctx.fillStyle = '#1A3A1A';
+      // Side lines
+      for (let y = 20; y < this.H - 20; y += ps + 1) {
+        ctx.fillRect(20, y, ps, ps);
+        ctx.fillRect(this.W - 20 - ps, y, ps, ps);
+      }
+      // Base lines
+      for (let x = 20; x < this.W - 20; x += ps + 1) {
+        ctx.fillRect(x, 20, ps, ps);
+        ctx.fillRect(x, this.H - 20 - ps, ps, ps);
+      }
+      // Service lines
+      for (let x = 20; x < this.W - 20; x += ps + 1) {
+        ctx.fillRect(x, this.netY - 60, ps, 1);
+        ctx.fillRect(x, this.netY + 60, ps, 1);
+      }
+
+      // Net
+      ctx.fillStyle = '#FFFFFF';
+      for (let x = 20; x < this.W - 20; x += ps * 2) {
+        ctx.globalAlpha = 0.6;
+        ctx.fillRect(x, this.netY, ps, ps * 2);
+        ctx.globalAlpha = 1;
+      }
+
+      // Hit zone indicator (subtle glow when ball is near)
+      if (this.state === 'falling') {
+        const distToRacket = Math.abs(this.ballY - this.racketY);
+        if (distToRacket < this.hitZoneSize * 2) {
+          const intensity = 1 - (distToRacket / (this.hitZoneSize * 2));
+          ctx.fillStyle = '#00E68A';
+          ctx.globalAlpha = intensity * 0.15;
+          ctx.fillRect(20, this.racketY - this.hitZoneSize, this.W - 40, this.hitZoneSize + 10);
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // Racket (pixel art)
+      ctx.fillStyle = '#FFFFFF';
+      const rw = ps * 10;
+      const rx = this.state === 'falling' ?
+        this.racketX + (this.ballX - this.racketX) * 0.3 : // Track ball loosely
+        this.W / 2;
+      for (let i = 0; i < 10; i++) {
+        ctx.fillRect(rx - rw / 2 + i * (ps + 1), this.racketY, ps, ps * 2);
+      }
+
+      // Ball (3x3 pixel)
+      ctx.fillStyle = '#F7C948';
+      const bps = ps * 1.5;
+      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 2, bps * 2);
+      // Ball shine
+      ctx.fillStyle = '#FFFFFF';
+      ctx.globalAlpha = 0.4;
+      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 0.8, bps * 0.8);
+      ctx.globalAlpha = 1;
+
+      // Score dots
+      ctx.fillStyle = '#00E68A';
+      for (let i = 0; i < this.ralliesNeeded; i++) {
+        ctx.globalAlpha = i < this.ralliesWon ? 1 : 0.2;
+        ctx.beginPath();
+        ctx.arc(this.W / 2 - 20 + i * 20, this.H - 10, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // Instructions
+      if (this.state === 'idle') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 400) * 0.3;
+        ctx.font = '13px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('TAP TO SERVE', this.W / 2, this.H / 2 + 40);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    _update() {
+      if (this.state === 'falling') {
+        this.ballY += this.ballVY;
+        this.ballX += this.ballVX;
+
+        // Bounce off walls
+        if (this.ballX < 30 || this.ballX > this.W - 30) {
+          this.ballVX *= -1;
+        }
+
+        // Miss: ball goes past racket
+        if (this.ballY > this.racketY + 40) {
+          this._onMiss();
+        }
+      }
+
+      if (this.state === 'hit') {
+        this.ballY += this.ballVY;
+        this.ballVY += 0.1; // decelerate
+        if (this.ballY < -20) {
+          this.state = 'idle';
+        }
+      }
+    }
+
+    _loop() {
+      if (this.solved && this.state === 'won') return;
+      this._update();
+      this._draw();
+      requestAnimationFrame(() => this._loop());
+    }
+  }
+
+  // Init puzzle when section is visible
+  const puzzleCanvas = document.getElementById('puzzleCanvas');
+  if (puzzleCanvas) {
+    const puzzleObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          new TennisRallyPuzzle(puzzleCanvas);
+          puzzleObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    puzzleObserver.observe(puzzleCanvas);
+  }
+
+
+  // ─── Confetti System ───
+  function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    if (!canvas) return;
+
+    const parent = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const W = parent.offsetWidth;
+    const H = parent.offsetHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const colors = ['#00E68A', '#4DA6FF', '#A78BFA', '#FF6B9D', '#F7C948', '#EF4444', '#FFFFFF'];
+    const particles = [];
+
+    for (let i = 0; i < 200; i++) {
+      particles.push({
+        x: W / 2,
+        y: H / 2,
+        vx: (Math.random() - 0.5) * 16,
+        vy: (Math.random() - 0.5) * 16 - 4,
+        size: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 1,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 10,
+        gravity: 0.15 + Math.random() * 0.1,
+      });
+    }
+
+    let frame = 0;
+    function animConfetti() {
+      ctx.clearRect(0, 0, W, H);
+      let alive = false;
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.99;
+        p.rotation += p.rotationSpeed;
+        p.alpha -= 0.008;
+
+        if (p.alpha > 0) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation * Math.PI / 180);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      });
+
+      ctx.globalAlpha = 1;
+      frame++;
+      if (alive && frame < 180) requestAnimationFrame(animConfetti);
+    }
+    animConfetti();
+  }
+
+
+  // ─── Glitch Effect on $0 ───
+  const glitchEl = document.querySelector('.glitch-price');
+  if (glitchEl) {
+    setInterval(() => {
+      glitchEl.classList.add('glitching');
+      setTimeout(() => glitchEl.classList.remove('glitching'), 200);
+    }, 3000);
+  }
 
 
   // ─── Magnetic Button Effect ───
@@ -470,7 +1494,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cy = rect.top + rect.height / 2;
       const dx = (e.clientX - cx) * 0.25;
       const dy = (e.clientY - cy) * 0.25;
-      btn.style.transform = `translate(${dx}px, ${dy}px)`;
+      btn.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
     });
     btn.addEventListener('mouseleave', () => {
       btn.style.transform = 'translate(0, 0)';
