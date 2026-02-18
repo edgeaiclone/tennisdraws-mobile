@@ -3,173 +3,405 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TennisDraws — Every Entry List. Before The Draw.</title>
-<meta name="description" content="Track 3,000+ tennis players across 120+ ATP, WTA & ITF tournaments. Real-time entry lists, withdrawals, and schedules — updated daily.">
+<title>EdgeAI — Live Tennis Intelligence</title>
+<meta name="description" content="Real-time match tracking, live odds, MTO alerts, withdrawals, and entry lists. The ultimate tennis intelligence platform for professionals, coaches, and superfans.">
 <link rel="stylesheet" href="landing.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- AURORA AMBIENT BACKGROUND -->
+<div class="aurora-bg" aria-hidden="true">
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+</div>
+
+<!-- BOOT SEQUENCE -->
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-container">
+    <div class="boot-logo">
+      <svg class="boot-logo-svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="22" stroke="#00E68A" stroke-width="2" opacity="0.3"/>
+        <circle cx="24" cy="24" r="16" stroke="#00E68A" stroke-width="1.5" opacity="0.2"/>
+        <circle cx="24" cy="24" r="4" fill="#00E68A"/>
+        <path d="M24 2v44M2 24h44" stroke="#00E68A" stroke-width="0.5" opacity="0.15"/>
+        <path d="M6.7 6.7l34.6 34.6M41.3 6.7L6.7 41.3" stroke="#00E68A" stroke-width="0.5" opacity="0.1"/>
+      </svg>
+    </div>
+    <div class="boot-lines" id="bootLines"></div>
+    <div class="boot-progress">
+      <div class="boot-progress-bar" id="bootProgressBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL PROGRESS BAR -->
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <div class="logo-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="#00E68A" stroke-width="2"/>
-          <path d="M12 2C12 2 5 8 5 12s3 10 7 10" stroke="#00E68A" stroke-width="1.5" opacity="0.5"/>
-          <path d="M12 2C12 2 19 8 19 12s-3 10-7 10" stroke="#00E68A" stroke-width="1.5" opacity="0.5"/>
-          <path d="M2.5 9.5h19M2.5 14.5h19" stroke="#00E68A" stroke-width="1.5" opacity="0.3"/>
+      <div class="logo-mark">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" stroke="#00E68A" stroke-width="2.5"/>
+          <circle cx="24" cy="24" r="4" fill="#00E68A"/>
+          <path d="M24 2v44M2 24h44" stroke="#00E68A" stroke-width="1" opacity="0.3"/>
         </svg>
       </div>
-      <span class="logo-text">Tennis<span class="logo-accent">Draws</span></span>
+      <span class="logo-text">Edge<span class="logo-accent">AI</span></span>
     </a>
     <div class="nav-links">
       <a href="#features">Features</a>
-      <a href="#coverage">Coverage</a>
-      <a href="#how-it-works">How It Works</a>
+      <a href="#showcase">Showcase</a>
+      <a href="#download">Download</a>
     </div>
-    <a href="#download" class="nav-cta">Download App</a>
+    <a href="#download" class="nav-cta">Get the App</a>
     <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#features">Features</a>
-    <a href="#coverage">Coverage</a>
-    <a href="#how-it-works">How It Works</a>
-    <a href="#download" class="nav-cta mobile">Download App</a>
+    <a href="#showcase">Showcase</a>
+    <a href="#download">Download</a>
+    <a href="#download" class="nav-cta mobile">Get the App</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-bg">
-    <div class="hero-glow"></div>
-    <div class="hero-grid"></div>
-    <div class="particles" id="particles"></div>
-  </div>
+  <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
     <div class="hero-text">
-      <div class="hero-badge reveal">
-        <span class="badge-dot"></span>
-        Updated daily from 7 official sources
+      <div class="hero-eyebrow">
+        <span class="eyebrow-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+        </span>
+        LIVE TENNIS INTELLIGENCE
       </div>
-      <h1 class="hero-title reveal">
-        Every Entry List.<br>
-        <span class="title-accent">Before The Draw.</span>
+      <h1 class="hero-title">
+        <span class="title-line">Every Match.</span>
+        <span class="title-line">Every Edge.</span>
+        <span class="title-line accent">In Real Time.</span>
       </h1>
-      <p class="hero-sub reveal">
-        Track 3,000+ players across 120+ ATP, WTA & ITF tournaments. Know who's playing, who withdrew, and what's coming next.
+      <p class="hero-sub">
+        Live scores, instant odds, MTO alerts, withdrawal tracking, and entry lists across 120+ ATP, WTA & ITF tournaments.
       </p>
-      <div class="hero-actions reveal">
-        <a href="#download" class="btn-primary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          Download the App
+      <div class="hero-actions">
+        <a href="#download" class="btn-primary magnetic-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          Download Free
         </a>
         <a href="#features" class="btn-ghost">
-          See Features
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17l9.2-9.2M17 17V7.8H7.8"/></svg>
+          Explore Features
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17l9.2-9.2M17 17V7.8H7.8"/></svg>
         </a>
       </div>
+      <!-- LIVE TICKER -->
+      <div class="hero-ticker">
+        <span class="live-dot"></span>
+        <span class="ticker-text" id="heroTicker"></span>
+      </div>
     </div>
-    <div class="hero-phone reveal-phone">
-      <div class="phone-glow"></div>
-      <div class="device-frame">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="01-dashboard.html" title="App Dashboard" loading="lazy" scrolling="no"></iframe>
+    <div class="hero-widget">
+      <!-- LIVE SCORE CARD -->
+      <div class="live-card">
+        <div class="lc-header">
+          <span class="lc-live-badge">LIVE</span>
+          <span class="lc-tournament">Roland Garros &middot; QF</span>
+          <span class="lc-surface clay">Clay</span>
+        </div>
+        <div class="lc-match">
+          <div class="lc-player">
+            <span class="lc-flag">&#127479;&#127480;</span>
+            <span class="lc-rank">#1</span>
+            <span class="lc-name">Djokovic N.</span>
+            <div class="lc-scores">
+              <span class="lc-set won">6</span>
+              <span class="lc-set won">4</span>
+              <span class="lc-set current" id="p1Game">3</span>
+            </div>
+            <span class="lc-serve active"></span>
+          </div>
+          <div class="lc-player">
+            <span class="lc-flag">&#127466;&#127480;</span>
+            <span class="lc-rank">#2</span>
+            <span class="lc-name">Alcaraz C.</span>
+            <div class="lc-scores">
+              <span class="lc-set">3</span>
+              <span class="lc-set won">6</span>
+              <span class="lc-set current" id="p2Game">2</span>
+            </div>
+            <span class="lc-serve"></span>
+          </div>
+        </div>
+        <div class="lc-odds">
+          <div class="lc-odd">
+            <span class="lc-odd-label">DJO</span>
+            <span class="lc-odd-value" id="odd1">1.62</span>
+          </div>
+          <span class="lc-odd-vs">vs</span>
+          <div class="lc-odd">
+            <span class="lc-odd-label">ALC</span>
+            <span class="lc-odd-value" id="odd2">2.35</span>
+          </div>
+        </div>
+        <div class="lc-footer">
+          <span class="lc-footer-item">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Set 3 &middot; 2h 14m
+          </span>
+          <span class="lc-footer-item mto">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            MTO: Djokovic (knee)
+          </span>
+        </div>
+      </div>
+      <!-- Floating notification cards -->
+      <div class="float-notif notif-1" id="floatNotif1">
+        <div class="notif-icon wd">WD</div>
+        <div class="notif-text">
+          <strong>Medvedev</strong> withdrew
+          <span>Dubai &middot; Shoulder injury</span>
+        </div>
+      </div>
+      <div class="float-notif notif-2" id="floatNotif2">
+        <div class="notif-icon rain">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/></svg>
+        </div>
+        <div class="notif-text">
+          <strong>Rain Delay</strong>
+          <span>Wimbledon &middot; Court 1</span>
+        </div>
+      </div>
+      <div class="float-notif notif-3" id="floatNotif3">
+        <div class="notif-icon odds">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div class="notif-text">
+          <strong>Odds Shift</strong>
+          <span>Sinner 1.45 &rarr; 1.28</span>
         </div>
       </div>
     </div>
   </div>
-  <div class="scroll-indicator">
+  <div class="scroll-cue">
+    <span>Scroll to explore</span>
     <div class="scroll-line"></div>
   </div>
 </section>
 
 <!-- STATS BAR -->
-<section class="stats-bar" id="stats">
-  <div class="stats-inner">
-    <div class="stat-item reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+<section class="stats-section" id="stats">
+  <div class="stat-block">
+    <div class="stat-number" data-target="3000" data-suffix="+">0</div>
+    <div class="stat-label">Players Tracked</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-number" data-target="120" data-suffix="+">0</div>
+    <div class="stat-label">Tournaments</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-number" data-target="1" data-suffix="s">0</div>
+    <div class="stat-label">Update Latency</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-number" data-target="24" data-suffix="/7">0</div>
+    <div class="stat-label">Always Live</div>
+  </div>
+</section>
+
+<!-- FEATURES — STICKY SCROLL -->
+<section class="features-section" id="features">
+  <div class="features-sticky">
+    <div class="feature-display">
+      <div class="feature-display-number" id="featureNum">01</div>
+      <div class="feature-display-icon" id="featureIcon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
-      <span class="stat-number" data-target="3000" data-suffix="+">0</span>
-      <span class="stat-label">Players Tracked</span>
+      <h2 class="feature-display-title" id="featureTitle">Live Scores</h2>
+      <p class="feature-display-desc" id="featureDesc">Real-time set-by-set match tracking with serve indicators, game-by-game updates, and live commentary — refreshed every second.</p>
+      <div class="feature-display-tags" id="featureTags">
+        <span class="fd-tag">Real-time</span>
+        <span class="fd-tag">All Courts</span>
+        <span class="fd-tag">Serve Tracking</span>
+      </div>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+  </div>
+  <div class="features-scroll">
+    <div class="feature-trigger active" data-feature="live-scores" data-num="01">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
-      <span class="stat-number" data-target="120" data-suffix="+">0</span>
-      <span class="stat-label">Tournaments</span>
+      <h3>Live Scores</h3>
+      <p>Set-by-set match tracking with serve indicators, game-by-game updates, and live commentary across every court.</p>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+    <div class="feature-trigger" data-feature="fast-odds" data-num="02">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
       </div>
-      <span class="stat-number" data-target="7" data-suffix="">0</span>
-      <span class="stat-label">Data Sources</span>
+      <h3>Fast Odds</h3>
+      <p>Sub-second odds movement tracking across all major books. See odds shift before the market catches up.</p>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <div class="feature-trigger" data-feature="live-stats" data-num="03">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
       </div>
-      <span class="stat-number" data-target="24" data-suffix="h">0</span>
-      <span class="stat-label">Update Cycle</span>
+      <h3>Live Stats</h3>
+      <p>In-match statistical analysis with aces, break points, first serve percentage, and momentum indicators updated in real time.</p>
+    </div>
+    <div class="feature-trigger" data-feature="mto" data-num="04">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <h3>MTO Tracker</h3>
+      <p>Instant medical timeout alerts with injury details, player history context, and return-to-play analysis.</p>
+    </div>
+    <div class="feature-trigger" data-feature="suspended" data-num="05">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      </div>
+      <h3>Suspended Matches</h3>
+      <p>Track mid-match suspensions with score snapshots, estimated resume times, and court assignments.</p>
+    </div>
+    <div class="feature-trigger" data-feature="rain" data-num="06">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/></svg>
+      </div>
+      <h3>Rain Delays</h3>
+      <p>Weather-driven delay tracking across all courts and venues with real-time updates and schedule impact analysis.</p>
+    </div>
+    <div class="feature-trigger" data-feature="retirements" data-num="07">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h3>Retirements</h3>
+      <p>Instant player retirement and walkover alerts as they happen, with injury details and return timeline tracking.</p>
+    </div>
+    <div class="feature-trigger" data-feature="draws" data-num="08">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+      </div>
+      <h3>Entry Lists & Draws</h3>
+      <p>3,000+ players tracked across every tier — Grand Slams to ITF Futures. See who's in, who withdrew, and why.</p>
+    </div>
+    <div class="feature-trigger" data-feature="profiles" data-num="09">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Player Profiles</h3>
+      <p>Deep-dive any player with full tournament schedule, entry history, ranking progression, and competitive stats.</p>
+    </div>
+    <div class="feature-trigger" data-feature="notifications" data-num="10">
+      <div class="ft-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <h3>Smart Notifications</h3>
+      <p>Push alerts for your followed players — match starts, score updates, MTO events, withdrawals, and odds shifts.</p>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="section-header reveal">
-    <span class="section-tag">Features</span>
-    <h2 class="section-title">Everything you need to<br><span class="title-accent">track tennis entries</span></h2>
+<!-- FEATURE CARDS GRID -->
+<section class="cards-section" id="showcase">
+  <div class="section-header">
+    <span class="section-tag">The Platform</span>
+    <h2 class="section-title">Built for the <span class="title-accent">edge</span></h2>
+    <p class="section-sub">Every tool you need to stay ahead of the game — in one place.</p>
   </div>
+  <div class="cards-grid">
+    <div class="feature-card" data-color="#00E68A">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3 class="fc-title">Live Scores</h3>
+      <p class="fc-desc">Real-time match tracking across every court, every tournament.</p>
+    </div>
+    <div class="feature-card" data-color="#F7C948">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <h3 class="fc-title">Fast Odds</h3>
+      <p class="fc-desc">Sub-second odds movement across all major bookmakers.</p>
+    </div>
+    <div class="feature-card" data-color="#4DA6FF">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <h3 class="fc-title">Live Stats</h3>
+      <p class="fc-desc">In-play statistical analysis with momentum tracking.</p>
+    </div>
+    <div class="feature-card" data-color="#FF6B9D">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <h3 class="fc-title">MTO Alerts</h3>
+      <p class="fc-desc">Instant medical timeout notifications with injury context.</p>
+    </div>
+    <div class="feature-card" data-color="#A78BFA">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      </div>
+      <h3 class="fc-title">Suspensions</h3>
+      <p class="fc-desc">Mid-match suspension tracking with resume estimates.</p>
+    </div>
+    <div class="feature-card" data-color="#36D399">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      </div>
+      <h3 class="fc-title">Entry Lists</h3>
+      <p class="fc-desc">3,000+ players across 120+ tournaments, every tier covered.</p>
+    </div>
+    <div class="feature-card" data-color="#EF4444">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h3 class="fc-title">Withdrawals</h3>
+      <p class="fc-desc">Real-time withdrawal and retirement tracking with reasons.</p>
+    </div>
+    <div class="feature-card" data-color="#4DA6FF">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+      </div>
+      <h3 class="fc-title">Rain Delays</h3>
+      <p class="fc-desc">Weather tracking across all venues with schedule impact.</p>
+    </div>
+    <div class="feature-card wide" data-color="#00E68A">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <h3 class="fc-title">Smart Notifications</h3>
+      <p class="fc-desc">Personalized push alerts for your watched players and tournaments — never miss a critical moment.</p>
+    </div>
+  </div>
+</section>
 
-  <div class="feature-block">
-    <div class="feature-text reveal-left">
-      <div class="feature-number">01</div>
-      <h3 class="feature-title">Your tennis command center</h3>
-      <p class="feature-desc">See every ranked player's upcoming entries at a glance. Filter by ATP or WTA, set rank ranges, and toggle between views.</p>
-      <div class="feature-tags">
-        <span class="f-tag">Gender Filter</span>
-        <span class="f-tag">Rank Range</span>
-        <span class="f-tag">Quick Stats</span>
+<!-- APP SHOWCASE - PHONE MOCKUPS -->
+<section class="phone-showcase" id="phoneShowcase">
+  <div class="showcase-glow"></div>
+  <div class="showcase-phones">
+    <div class="showcase-phone left">
+      <div class="device-frame tiny">
+        <div class="device-notch"></div>
+        <div class="device-screen">
+          <iframe src="06-withdrawals.html" title="Withdrawals" loading="lazy" scrolling="no"></iframe>
+        </div>
       </div>
     </div>
-    <div class="feature-phone reveal-right">
-      <div class="feature-phone-glow" style="--glow-color: rgba(0, 230, 138, 0.12)"></div>
-      <div class="device-frame small">
+    <div class="showcase-phone center">
+      <div class="device-frame">
         <div class="device-notch"></div>
         <div class="device-screen">
           <iframe src="01-dashboard.html" title="Dashboard" loading="lazy" scrolling="no"></iframe>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="feature-block reverse">
-    <div class="feature-text reveal-right">
-      <div class="feature-number">02</div>
-      <h3 class="feature-title">Every tournament. Every tier.</h3>
-      <p class="feature-desc">Browse from Grand Slams to ITF futures. See entry counts, court surfaces, dates, all organized by week with color-coded tier badges.</p>
-      <div class="feature-tags">
-        <span class="f-tag">Week View</span>
-        <span class="f-tag">Surface Info</span>
-        <span class="f-tag">Tier Badges</span>
-      </div>
-    </div>
-    <div class="feature-phone reveal-left">
-      <div class="feature-phone-glow" style="--glow-color: rgba(168, 85, 247, 0.12)"></div>
-      <div class="device-frame small">
+    <div class="showcase-phone right">
+      <div class="device-frame tiny">
         <div class="device-notch"></div>
         <div class="device-screen">
           <iframe src="03-tournaments.html" title="Tournaments" loading="lazy" scrolling="no"></iframe>
@@ -177,178 +409,22 @@
       </div>
     </div>
   </div>
-
-  <div class="feature-block feature-highlight">
-    <div class="feature-text reveal-left">
-      <div class="feature-number red">03</div>
-      <h3 class="feature-title">Never miss a <span style="color:#EF4444">withdrawal</span></h3>
-      <p class="feature-desc">Real-time withdrawal and retirement tracking with reasons. Know who pulled out and why before it hits the news.</p>
-      <div class="feature-tags">
-        <span class="f-tag red">WD Tracking</span>
-        <span class="f-tag red">RET Alerts</span>
-        <span class="f-tag red">Reasons</span>
-      </div>
-    </div>
-    <div class="feature-phone reveal-right">
-      <div class="feature-phone-glow" style="--glow-color: rgba(239, 68, 68, 0.12)"></div>
-      <div class="device-frame small">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="06-withdrawals.html" title="Withdrawals" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="feature-block reverse">
-    <div class="feature-text reveal-right">
-      <div class="feature-number">04</div>
-      <h3 class="feature-title">Deep-dive any player</h3>
-      <p class="feature-desc">Full tournament schedule, entry history, and stats. See any player's complete competitive picture from Grand Slams to Challengers.</p>
-      <div class="feature-tags">
-        <span class="f-tag">Schedule</span>
-        <span class="f-tag">Stats</span>
-        <span class="f-tag">Entry History</span>
-      </div>
-    </div>
-    <div class="feature-phone reveal-left">
-      <div class="feature-phone-glow" style="--glow-color: rgba(59, 130, 246, 0.12)"></div>
-      <div class="device-frame small">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="07-player-profile.html" title="Player Profile" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- APP SHOWCASE -->
-<section class="showcase" id="showcase">
-  <div class="showcase-glow"></div>
-  <div class="showcase-phones">
-    <div class="showcase-phone left reveal">
-      <div class="device-frame tiny">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="08-tournament-detail.html" title="Tournament Detail" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-    <div class="showcase-phone center reveal">
-      <div class="device-frame tiny">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="05-entry-lists.html" title="Entry Lists" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-    <div class="showcase-phone right reveal">
-      <div class="device-frame tiny">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="02-dashboard-search.html" title="Search" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-  <p class="showcase-caption reveal">Designed for tennis professionals, coaches, and superfans</p>
-</section>
-
-<!-- TOURNAMENT COVERAGE -->
-<section class="coverage" id="coverage">
-  <div class="section-header reveal">
-    <span class="section-tag">Coverage</span>
-    <h2 class="section-title">Complete coverage across<br><span class="title-accent">every tier</span></h2>
-  </div>
-  <div class="tier-grid">
-    <div class="tier-card reveal" style="--tier-color: #D4AF37">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(212,175,55,0.15);color:#D4AF37;border:1px solid rgba(212,175,55,0.3)">GS</div></div>
-      <h4 class="tier-name">Grand Slam</h4>
-      <p class="tier-examples">Australian Open, Roland Garros, Wimbledon, US Open</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #A855F7">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(168,85,247,0.15);color:#A855F7;border:1px solid rgba(168,85,247,0.3)">1000</div></div>
-      <h4 class="tier-name">Masters 1000</h4>
-      <p class="tier-examples">Indian Wells, Miami, Monte Carlo, Madrid, Rome, Shanghai, Paris</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #EF4444">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(239,68,68,0.15);color:#EF4444;border:1px solid rgba(239,68,68,0.3)">500</div></div>
-      <h4 class="tier-name">ATP / WTA 500</h4>
-      <p class="tier-examples">Dubai, Barcelona, Queen's, Washington, Beijing, Vienna</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #3B82F6">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">250</div></div>
-      <h4 class="tier-name">ATP / WTA 250</h4>
-      <p class="tier-examples">Brisbane, Adelaide, Marseille, Eastbourne, and 40+ more</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #22C55E">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3)">CH</div></div>
-      <h4 class="tier-name">Challengers</h4>
-      <p class="tier-examples">ATP Challenger Tour events worldwide</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #F59E0B">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.3)">125</div></div>
-      <h4 class="tier-name">WTA 125</h4>
-      <p class="tier-examples">WTA 125 series events across the globe</p>
-    </div>
-    <div class="tier-card reveal" style="--tier-color: #64748B">
-      <div class="tier-icon"><div class="tier-badge" style="background:rgba(100,116,139,0.15);color:#64748B;border:1px solid rgba(100,116,139,0.3)">ITF</div></div>
-      <h4 class="tier-name">ITF Circuit</h4>
-      <p class="tier-examples">M25, M15, W100, W75, W50, W35, W15</p>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-it-works" id="how-it-works">
-  <div class="section-header reveal">
-    <span class="section-tag">How It Works</span>
-    <h2 class="section-title">Get started in <span class="title-accent">seconds</span></h2>
-  </div>
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-number">01</div>
-      <div class="step-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01" stroke-width="2.5" stroke-linecap="round"/></svg>
-      </div>
-      <h4 class="step-title">Download</h4>
-      <p class="step-desc">Get the app free from the App Store or Google Play.</p>
-    </div>
-    <div class="step-connector reveal"></div>
-    <div class="step reveal">
-      <div class="step-number">02</div>
-      <div class="step-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      </div>
-      <h4 class="step-title">Explore</h4>
-      <p class="step-desc">Browse tournaments or search any player from the top 3,000.</p>
-    </div>
-    <div class="step-connector reveal"></div>
-    <div class="step reveal">
-      <div class="step-number">03</div>
-      <div class="step-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </div>
-      <h4 class="step-title">Track</h4>
-      <p class="step-desc">Follow entries, withdrawals, and schedules updated daily.</p>
-    </div>
-  </div>
+  <p class="showcase-caption">Built for tennis professionals, coaches, and superfans</p>
 </section>
 
 <!-- FINAL CTA -->
 <section class="final-cta" id="download">
   <div class="cta-glow"></div>
-  <div class="cta-content reveal">
-    <h2 class="cta-title">Start Tracking Entries<br><span class="title-accent">Today</span></h2>
-    <p class="cta-sub">Join thousands of tennis fans who know the draw before it drops.</p>
+  <div class="cta-content">
+    <h2 class="cta-title">Get the <span class="title-accent">Edge</span></h2>
+    <p class="cta-sub">Join thousands of tennis professionals who never miss a beat.</p>
     <div class="cta-buttons">
       <a href="#" class="store-badge">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         <div><small>Download on the</small><strong>App Store</strong></div>
       </a>
       <a href="#" class="store-badge">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.834 1.64a1 1 0 0 1 0 1.726l-2.834 1.64-2.536-2.536 2.536-2.47zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.834 1.64a1 1 0 0 1 0 1.726l-2.834 1.64-2.536-2.536 2.536-2.47zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
         <div><small>GET IT ON</small><strong>Google Play</strong></div>
       </a>
     </div>
@@ -359,11 +435,12 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <span class="logo-text small">Tennis<span class="logo-accent">Draws</span></span>
+      <span class="logo-text small">Edge<span class="logo-accent">AI</span></span>
+      <span class="footer-tagline">Live Tennis Intelligence</span>
     </div>
     <div class="footer-links">
       <a href="#features">Features</a>
-      <a href="#coverage">Coverage</a>
+      <a href="#showcase">Showcase</a>
       <a href="#download">Download</a>
     </div>
     <div class="footer-social">
@@ -373,7 +450,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2025 TennisDraws. All rights reserved.</span>
+    <span>&copy; 2025 EdgeAI. All rights reserved.</span>
   </div>
 </footer>
 
