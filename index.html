@@ -12,13 +12,6 @@
 </head>
 <body>
 
-<!-- AURORA AMBIENT BACKGROUND -->
-<div class="aurora-bg" aria-hidden="true">
-  <div class="aurora-blob"></div>
-  <div class="aurora-blob"></div>
-  <div class="aurora-blob"></div>
-</div>
-
 <!-- BOOT SEQUENCE -->
 <div class="boot-screen" id="bootScreen">
   <div class="boot-container">
@@ -38,9 +31,6 @@
   </div>
 </div>
 
-<!-- SCROLL PROGRESS BAR -->
-<div class="scroll-progress" id="scrollProgress"></div>
-
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
@@ -54,303 +44,53 @@
       </div>
       <span class="logo-text">Edge<span class="logo-accent">AI</span></span>
     </a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#showcase">Showcase</a>
-      <a href="#puzzle">Unlock</a>
-    </div>
-    <a href="#puzzle" class="nav-cta">Get the App</a>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#features">Features</a>
-    <a href="#showcase">Showcase</a>
-    <a href="#puzzle">Unlock</a>
-    <a href="#puzzle" class="nav-cta mobile">Get the App</a>
+    <a href="https://apps.apple.com" class="nav-cta" target="_blank">Download</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="hero">
-  <canvas id="heroCanvas"></canvas>
-  <div class="hero-content">
-    <div class="hero-text">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
-        </span>
-        LIVE TENNIS INTELLIGENCE
-      </div>
-      <h1 class="hero-title">
-        <span class="title-line">Every Match.</span>
-        <span class="title-line">Every Edge.</span>
-        <span class="title-line accent">In Real Time.</span>
-      </h1>
-      <p class="hero-sub">
-        Live scores, AI predictions, instant odds, smart alerts & tools to outsmart the sportsbooks. 100% free.
-      </p>
-      <div class="hero-actions">
-        <a href="#puzzle" class="btn-primary magnetic-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          Unlock Free Download
-        </a>
-        <a href="#features" class="btn-ghost">
-          Decode Features
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17l9.2-9.2M17 17V7.8H7.8"/></svg>
-        </a>
-      </div>
-      <!-- LIVE TICKER -->
-      <div class="hero-ticker">
-        <span class="live-dot"></span>
-        <span class="ticker-text" id="heroTicker"></span>
-      </div>
-    </div>
-    <div class="hero-widget">
-      <!-- LIVE SCORE CARD -->
-      <div class="live-card">
-        <div class="lc-header">
-          <span class="lc-live-badge">LIVE</span>
-          <span class="lc-tournament">Roland Garros &middot; QF</span>
-          <span class="lc-surface clay">Clay</span>
-        </div>
-        <div class="lc-match">
-          <div class="lc-player">
-            <span class="lc-flag">&#127479;&#127480;</span>
-            <span class="lc-rank">#1</span>
-            <span class="lc-name">Djokovic N.</span>
-            <div class="lc-scores">
-              <span class="lc-set won">6</span>
-              <span class="lc-set won">4</span>
-              <span class="lc-set current" id="p1Game">3</span>
-            </div>
-            <span class="lc-serve active"></span>
-          </div>
-          <div class="lc-player">
-            <span class="lc-flag">&#127466;&#127480;</span>
-            <span class="lc-rank">#2</span>
-            <span class="lc-name">Alcaraz C.</span>
-            <div class="lc-scores">
-              <span class="lc-set">3</span>
-              <span class="lc-set won">6</span>
-              <span class="lc-set current" id="p2Game">2</span>
-            </div>
-            <span class="lc-serve"></span>
-          </div>
-        </div>
-        <div class="lc-odds">
-          <div class="lc-odd">
-            <span class="lc-odd-label">DJO</span>
-            <span class="lc-odd-value" id="odd1">1.62</span>
-          </div>
-          <span class="lc-odd-vs">vs</span>
-          <div class="lc-odd">
-            <span class="lc-odd-label">ALC</span>
-            <span class="lc-odd-value" id="odd2">2.35</span>
-          </div>
-        </div>
-        <div class="lc-footer">
-          <span class="lc-footer-item">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Set 3 &middot; 2h 14m
-          </span>
-          <span class="lc-footer-item mto">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            MTO: Djokovic (knee)
-          </span>
-        </div>
-      </div>
-      <!-- Floating notification cards -->
-      <div class="float-notif notif-1" id="floatNotif1">
-        <div class="notif-icon wd">WD</div>
-        <div class="notif-text">
-          <strong>Medvedev</strong> withdrew
-          <span>Dubai &middot; Shoulder injury</span>
-        </div>
-      </div>
-      <div class="float-notif notif-2" id="floatNotif2">
-        <div class="notif-icon ai">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="notif-text">
-          <strong>AI Prediction</strong>
-          <span>73% upset chance &middot; Rune vs Sinner</span>
-        </div>
-      </div>
-      <div class="float-notif notif-3" id="floatNotif3">
-        <div class="notif-icon odds">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        </div>
-        <div class="notif-text">
-          <strong>Odds Shift</strong>
-          <span>Sinner 1.45 &rarr; 1.28</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="scroll-cue">
-    <span>Scroll to decode</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- MYSTERY INTRO -->
-<section class="mystery-intro" id="features">
-  <div class="mystery-content">
-    <div class="mystery-text">
-      <span class="mystery-line">What if you could see what the sportsbooks don't want you to?</span>
-      <span class="mystery-line">What if every tool was powered by live AI?</span>
-      <span class="mystery-line accent">What if it was all free?</span>
-    </div>
-    <div class="mystery-cue">
-      <span class="mystery-cue-text">SCROLL TO DECODE</span>
-      <div class="mystery-cue-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TOOLS LIST -->
+<!-- TOOLS — pixel art carousel -->
 <section class="tools-section" id="tools">
-  <h2 class="tools-heading">What you get</h2>
-  <ul class="tools-list">
-    <li><span class="tool-num">01</span> Live Scores & Stats</li>
-    <li><span class="tool-num">02</span> Odds Master</li>
-    <li><span class="tool-num">03</span> MTO Tracker</li>
-    <li><span class="tool-num">04</span> edgeAI Tools</li>
-    <li><span class="tool-num">05</span> Live AI Predictions</li>
-    <li><span class="tool-num">06</span> Retirements & Returns</li>
-    <li><span class="tool-num">07</span> Entry Lists & Draws</li>
-    <li><span class="tool-num">08</span> Live Chatrooms</li>
-    <li><span class="tool-num">09</span> Smart Notifications</li>
-  </ul>
-  <p class="tools-free">Everything above — <strong>100% free.</strong></p>
-</section>
-
-<!-- DYNAMIC AI SECTION -->
-<section class="ai-section" id="ai-section">
-  <canvas id="aiCanvas"></canvas>
-  <div class="ai-text-overlay">
-    <h2 class="ai-overlay-title">Powered by our <span class="title-accent">AI Model</span></h2>
-    <p class="ai-overlay-desc">Running live during every match — statistical predictions, pattern recognition, and momentum analysis to give you the edge.</p>
-    <div class="ai-tags">
-      <span class="fd-tag">Live Predictions</span>
-      <span class="fd-tag">Pattern Recognition</span>
-      <span class="fd-tag">Momentum AI</span>
-      <span class="free-badge-inline">FREE</span>
+  <div class="tools-header">
+    <h1 class="tools-title">Live Tennis Intelligence</h1>
+    <p class="tools-sub">9 tools. Every match. 100% free.</p>
+  </div>
+  <div class="tools-grid">
+    <button class="tool-btn active" data-tool="live-scores" data-num="01"><span class="tool-btn-num">01</span><span class="tool-btn-name">Live Scores</span></button>
+    <button class="tool-btn" data-tool="odds-master" data-num="02"><span class="tool-btn-num">02</span><span class="tool-btn-name">Odds Master</span></button>
+    <button class="tool-btn" data-tool="mto" data-num="03"><span class="tool-btn-num">03</span><span class="tool-btn-name">MTO Tracker</span></button>
+    <button class="tool-btn" data-tool="edgeai-tools" data-num="04"><span class="tool-btn-num">04</span><span class="tool-btn-name">edgeAI Tools</span></button>
+    <button class="tool-btn" data-tool="live-ai" data-num="05"><span class="tool-btn-num">05</span><span class="tool-btn-name">Live AI</span></button>
+    <button class="tool-btn" data-tool="retirements" data-num="06"><span class="tool-btn-num">06</span><span class="tool-btn-name">Retirements</span></button>
+    <button class="tool-btn" data-tool="draws" data-num="07"><span class="tool-btn-num">07</span><span class="tool-btn-name">Draws</span></button>
+    <button class="tool-btn" data-tool="chatrooms" data-num="08"><span class="tool-btn-num">08</span><span class="tool-btn-name">Chatrooms</span></button>
+    <button class="tool-btn" data-tool="notifications" data-num="09"><span class="tool-btn-num">09</span><span class="tool-btn-name">Alerts</span></button>
+  </div>
+  <div class="tools-display">
+    <div class="pixel-canvas-wrapper">
+      <canvas class="pixel-art-canvas" id="pixelArtCanvas"></canvas>
+    </div>
+    <div class="tool-info">
+      <h2 class="tool-info-title" id="pixelToolTitle">Live Scores & Stats</h2>
+      <p class="tool-info-desc" id="pixelToolDesc"></p>
     </div>
   </div>
-</section>
-
-<!-- 100% FREE STATEMENT -->
-<section class="free-section">
-  <canvas id="freePixelCanvas"></canvas>
-  <div class="free-comparison">
-    <div class="compare-item">
-      <span class="compare-label">Industry Standard</span>
-      <span class="old-price">$199<span>/mo</span></span>
-    </div>
-    <div class="compare-arrow">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </div>
-    <div class="compare-item highlight">
-      <span class="compare-label">EdgeAI</span>
-      <span class="glitch-price" data-text="$0">$0</span>
-    </div>
+  <div class="tools-cta">
+    <a href="https://apps.apple.com" class="btn-primary" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Download Free
+    </a>
   </div>
-  <p class="free-tagline">Every tool. Every tournament. Every edge. <strong>Completely free.</strong></p>
-</section>
-
-<!-- PUZZLE — DJOKOVIC FACE JIGSAW -->
-<section class="puzzle-section" id="puzzle">
-  <div class="puzzle-header">
-    <span class="section-tag">UNLOCK YOUR EDGE</span>
-    <h2 class="section-title">Complete the <span class="title-accent">GOAT</span></h2>
-    <p class="section-sub">Place the final 2 pieces to unlock all tools</p>
-  </div>
-  <div class="puzzle-game-wrapper">
-    <canvas id="puzzleCanvas"></canvas>
-    <p class="puzzle-hint">Tap a piece, then tap where it belongs!</p>
-    <a href="#" class="puzzle-skip" id="puzzleSkip" style="display:none;">Skip &rarr;</a>
-  </div>
-</section>
-
-<!-- PUZZLE REWARD (hidden until solved) -->
-<section class="puzzle-reward" id="puzzleReward" style="display:none;">
-  <canvas id="confettiCanvas"></canvas>
-  <div class="reward-content">
-    <div class="reward-pixel-text">UNLOCKED</div>
-    <div class="reward-price">
-      <span class="reward-zero">$0</span>
-      <span class="reward-label">100% Free</span>
-    </div>
-    <div class="reward-buttons">
-      <a href="#" class="store-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        <div><small>Download on the</small><strong>App Store</strong></div>
-      </a>
-      <a href="#" class="store-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.834 1.64a1 1 0 0 1 0 1.726l-2.834 1.64-2.536-2.536 2.536-2.47zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
-        <div><small>GET IT ON</small><strong>Google Play</strong></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- APP SHOWCASE - PHONE MOCKUPS -->
-<section class="phone-showcase" id="phoneShowcase">
-  <div class="showcase-glow"></div>
-  <div class="showcase-phones">
-    <div class="showcase-phone left">
-      <div class="device-frame tiny">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="06-withdrawals.html" title="Withdrawals" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-    <div class="showcase-phone center">
-      <div class="device-frame">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="01-dashboard.html" title="Dashboard" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-    <div class="showcase-phone right">
-      <div class="device-frame tiny">
-        <div class="device-notch"></div>
-        <div class="device-screen">
-          <iframe src="03-tournaments.html" title="Tournaments" loading="lazy" scrolling="no"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-  <p class="showcase-caption">Built for sharp bettors, tennis professionals, and superfans</p>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <span class="logo-text small">Edge<span class="logo-accent">AI</span></span>
-      <span class="footer-tagline">Live Tennis Intelligence &middot; 100% Free</span>
-    </div>
-    <div class="footer-links">
-      <a href="#features">Features</a>
-      <a href="#showcase">Showcase</a>
-      <a href="#puzzle">Download</a>
-    </div>
-    <div class="footer-social">
-      <a href="https://x.com/tennisentrylist" target="_blank" rel="noopener" aria-label="Follow on X">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; 2025 EdgeAI. All rights reserved.</span>
+    <span class="logo-text small">Edge<span class="logo-accent">AI</span></span>
+    <span class="footer-sep">&middot;</span>
+    <span class="footer-copy">&copy; 2025</span>
+    <a href="https://x.com/tennisentrylist" target="_blank" rel="noopener" class="footer-x" aria-label="X">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
   </div>
 </footer>
 
