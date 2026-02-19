@@ -1097,8 +1097,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Responsive sizing
       const isMobile = window.innerWidth < 768;
-      const logW = isMobile ? Math.min(340, window.innerWidth - 40) : 360;
-      const logH = isMobile ? Math.min(460, window.innerHeight * 0.55) : 480;
+      const logW = isMobile ? Math.min(340, Math.max(280, window.innerWidth - 40)) : 360;
+      const vh = window.innerHeight || 800;
+      const logH = isMobile ? Math.min(460, Math.max(360, vh * 0.55)) : 480;
 
       const dpr = window.devicePixelRatio || 1;
       canvas.width = logW * dpr;
@@ -1416,15 +1417,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init puzzle when section is visible
   const puzzleCanvas = document.getElementById('puzzleCanvas');
   if (puzzleCanvas) {
+    let puzzleStarted = false;
+    function startPuzzleOnce() {
+      if (puzzleStarted) return;
+      puzzleStarted = true;
+      new TennisRallyPuzzle(puzzleCanvas);
+    }
     const puzzleObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          new TennisRallyPuzzle(puzzleCanvas);
+          startPuzzleOnce();
           puzzleObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.2 });
     puzzleObserver.observe(puzzleCanvas);
+    // Fallback: init after 5s if observer hasn't fired
+    setTimeout(startPuzzleOnce, 5000);
   }
 
 
@@ -1499,9 +1508,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const robotCanvas = document.getElementById('robotCanvas');
   if (robotCanvas) {
     const rctx = robotCanvas.getContext('2d');
-    const P = 6; // pixel size
     const isMobileRobot = window.innerWidth < 768;
-    const RP = isMobileRobot ? 5 : 6;
+    const RP = isMobileRobot ? 8 : 12;
 
     // Robot sprite: 18 wide x 24 tall pixel grid
     // Colors: 0=transparent, 1=accent green, 2=blue, 3=dark fill, 8=dark bg, 5=gold, 7=white
@@ -1628,15 +1636,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Start animation when visible
+    let robotStarted = false;
+    function startRobotOnce() {
+      if (robotStarted) return;
+      robotStarted = true;
+      drawRobot();
+    }
     const robotSection = document.querySelector('.ai-robot-section');
     if (robotSection) {
       const robObserver = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting) {
-          drawRobot();
+          startRobotOnce();
           robObserver.unobserve(robotSection);
         }
       }, { threshold: 0.2 });
       robObserver.observe(robotSection);
+      // Fallback: start after 4s if observer hasn't fired (e.g. user scrolled fast)
+      setTimeout(startRobotOnce, 4000);
+    } else {
+      // No section found, just start
+      startRobotOnce();
     }
   }
 
