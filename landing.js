@@ -783,36 +783,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Stat Counter Animation ───
-  function animateCounter(el) {
-    const target = parseInt(el.dataset.target);
-    const suffix = el.dataset.suffix || '';
-    const duration = 2000;
-    const start = performance.now();
-
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(eased * target);
-      el.textContent = current.toLocaleString() + suffix;
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  }
-
-  const statsSection = document.getElementById('stats');
-  if (statsSection) {
-    const statsObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.querySelectorAll('.stat-number').forEach(animateCounter);
-          statsObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    statsObserver.observe(statsSection);
-  }
 
 
   // ─── Mystery Intro — Scrambled Text Reveal ───
@@ -1097,17 +1067,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Tennis Rally Puzzle Game ───
-  class TennisRallyPuzzle {
+  // ─── Memory Match Puzzle Game ───
+  class MemoryMatchPuzzle {
     constructor(canvas) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
 
-      // Responsive sizing — use canvas parent width as fallback if innerWidth is 0
+      // Responsive sizing
       const vw = window.innerWidth || canvas.parentElement.clientWidth || 360;
       const isMobile = vw < 768;
-      const logW = isMobile ? Math.min(340, Math.max(280, vw - 40)) : 360;
-      const logH = isMobile ? 440 : 480;
+
+      // Card and grid dimensions
+      this.cols = 4;
+      this.rows = 3;
+      this.cardW = isMobile ? 60 : 72;
+      this.cardH = isMobile ? 68 : 80;
+      this.gap = isMobile ? 10 : 12;
+      this.padding = isMobile ? 12 : 16;
+
+      const logW = this.cols * this.cardW + (this.cols - 1) * this.gap + this.padding * 2;
+      const logH = this.rows * this.cardH + (this.rows - 1) * this.gap + this.padding * 2;
 
       const dpr = window.devicePixelRatio || 1;
       canvas.width = logW * dpr;
@@ -1118,57 +1097,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
       this.W = logW;
       this.H = logH;
-      this.ps = isMobile ? 4 : 5;
 
       // Game state
-      this.ralliesWon = 0;
-      this.ralliesNeeded = 3;
-      this.misses = 0;
-      this.maxMisses = 5;
-      this.state = 'idle'; // idle | falling | hit | miss | won
-      this.ballX = this.W / 2;
-      this.ballY = 40;
-      this.ballVY = 0;
-      this.ballVX = 0;
-      this.baseSpeed = isMobile ? 1.8 : 2.0; // slower for playability
-      this.racketY = this.H - 70;
-      this.racketX = this.W / 2;
-      this.netY = this.H * 0.4;
-      this.hitZoneSize = isMobile ? 70 : 60; // much more generous hit zone
-      this.flashTimer = 0;
-      this.flashColor = null;
+      this.matchesFound = 0;
+      this.matchesNeeded = 3;
+      this.failedAttempts = 0;
+      this.maxFails = 8;
+      this.state = 'idle'; // idle | firstPick | secondPick | checking | won
+      this.firstPick = null;
+      this.secondPick = null;
       this.solved = false;
-      this.showSkip = false;
-      this.clickBlocked = false; // prevent double-fire from click+touch
+
+      // Pick 6 random tools from the 9 available
+      const allKeys = Object.keys(PIXEL_ART);
+      const shuffled = allKeys.slice().sort(() => Math.random() - 0.5);
+      this.toolKeys = shuffled.slice(0, 6);
+
+      // Create 12 cards (6 pairs), shuffle positions
+      this.cards = [];
+      for (let i = 0; i < 6; i++) {
+        this.cards.push({ toolKey: this.toolKeys[i], matched: false, flipped: false });
+        this.cards.push({ toolKey: this.toolKeys[i], matched: false, flipped: false });
+      }
+      // Fisher-Yates shuffle
+      for (let i = this.cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+      }
+
+      // Pre-render mini pixel art for each tool into offscreen canvases
+      this.miniArts = {};
+      const miniSize = isMobile ? 2 : 3; // pixel size for mini art
+      for (const key of this.toolKeys) {
+        const grid = PIXEL_ART[key];
+        if (!grid) continue;
+        const rows = grid.length;
+        const cols = grid[0] ? grid[0].length : 0;
+        const offCanvas = document.createElement('canvas');
+        const artW = cols * miniSize;
+        const artH = rows * miniSize;
+        offCanvas.width = artW;
+        offCanvas.height = artH;
+        const offCtx = offCanvas.getContext('2d');
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const colorIdx = grid[r][c];
+            if (colorIdx === 0) continue;
+            const color = PIXEL_PALETTE[colorIdx];
+            if (color === 'transparent') continue;
+            offCtx.fillStyle = color;
+            offCtx.fillRect(c * miniSize, r * miniSize, miniSize, miniSize);
+          }
+        }
+        this.miniArts[key] = { canvas: offCanvas, w: artW, h: artH };
+      }
 
       this._setupEvents();
-      this._startIdle();
+      this._draw();
     }
 
     _setupEvents() {
       let lastTapTime = 0;
-
       const self = this;
+
       const handler = (e) => {
         e.preventDefault();
-        // Prevent double-firing
         const now = Date.now();
         if (now - lastTapTime < 300) return;
         lastTapTime = now;
-
         if (self.solved) return;
+        if (self.state === 'checking') return;
 
-        if (self.state === 'falling') {
-          // Check hit zone — very generous
-          if (self.ballY >= self.racketY - self.hitZoneSize && self.ballY <= self.racketY + 20) {
-            self._onHit();
-          }
-        } else if (self.state === 'idle') {
-          self._launchBall();
+        // Get click position relative to canvas
+        const rect = self.canvas.getBoundingClientRect();
+        let clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
         }
+        const x = (clientX - rect.left) * (self.W / rect.width);
+        const y = (clientY - rect.top) * (self.H / rect.height);
+
+        self._handleTap(x, y);
       };
 
-      // Bind all input methods — the 300ms debounce prevents double-fire
       this.canvas.addEventListener('pointerdown', handler, { passive: false });
       this.canvas.addEventListener('touchstart', handler, { passive: false });
       this.canvas.addEventListener('click', handler);
@@ -1178,63 +1193,99 @@ document.addEventListener('DOMContentLoaded', () => {
       if (skipBtn) {
         skipBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          this.solved = true;
-          this.state = 'won';
-          this._onPuzzleSolved();
+          self.solved = true;
+          self.state = 'won';
+          self._onPuzzleSolved();
         });
       }
     }
 
-    _startIdle() {
+    _getCardAt(x, y) {
+      for (let i = 0; i < this.cards.length; i++) {
+        const { cx, cy } = this._cardPosition(i);
+        if (x >= cx && x <= cx + this.cardW && y >= cy && y <= cy + this.cardH) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    _cardPosition(idx) {
+      const col = idx % this.cols;
+      const row = Math.floor(idx / this.cols);
+      const cx = this.padding + col * (this.cardW + this.gap);
+      const cy = this.padding + row * (this.cardH + this.gap);
+      return { cx, cy };
+    }
+
+    _handleTap(x, y) {
+      const idx = this._getCardAt(x, y);
+      if (idx === -1) return;
+
+      const card = this.cards[idx];
+      if (card.matched || card.flipped) return;
+
+      if (this.state === 'idle' || this.state === 'firstPick') {
+        if (this.state === 'idle') {
+          // First card
+          card.flipped = true;
+          this.firstPick = idx;
+          this.state = 'firstPick';
+          this._draw();
+        } else if (this.state === 'firstPick') {
+          // Second card — must be different from first
+          if (idx === this.firstPick) return;
+          card.flipped = true;
+          this.secondPick = idx;
+          this.state = 'checking';
+          this._draw();
+
+          // Check match after short delay
+          setTimeout(() => this._checkMatch(), 800);
+        }
+      }
+    }
+
+    _checkMatch() {
+      const card1 = this.cards[this.firstPick];
+      const card2 = this.cards[this.secondPick];
+
+      if (card1.toolKey === card2.toolKey) {
+        // Match found!
+        card1.matched = true;
+        card2.matched = true;
+        this.matchesFound++;
+        this._updateDots();
+
+        if (this.matchesFound >= this.matchesNeeded) {
+          this.solved = true;
+          this.state = 'won';
+          this._draw();
+          setTimeout(() => this._onPuzzleSolved(), 500);
+          return;
+        }
+      } else {
+        // No match
+        card1.flipped = false;
+        card2.flipped = false;
+        this.failedAttempts++;
+
+        if (this.failedAttempts >= this.maxFails) {
+          const skipBtn = document.getElementById('puzzleSkip');
+          if (skipBtn) skipBtn.style.display = 'inline-block';
+        }
+      }
+
+      this.firstPick = null;
+      this.secondPick = null;
       this.state = 'idle';
-      this.ballX = this.W / 2;
-      this.ballY = 40;
-      this._loop();
-    }
-
-    _launchBall() {
-      this.state = 'falling';
-      this.ballY = 30;
-      // Ball spawns closer to center for easier play
-      this.ballX = this.W / 2 + (Math.random() - 0.5) * (this.W * 0.25);
-      this.ballVY = this.baseSpeed + (this.ralliesWon * 0.3); // gentler speed ramp
-      this.ballVX = (Math.random() - 0.5) * 0.8;
-      this.racketX = this.ballX + (Math.random() - 0.5) * 20;
-    }
-
-    _onHit() {
-      this.state = 'hit';
-      this.ralliesWon++;
-      this.flashColor = '#00E68A';
-      this.flashTimer = 15;
-      this._hitTimer = 0;
-
-      this._updateDots();
-
-      if (this.ralliesWon >= this.ralliesNeeded) {
-        this.solved = true;
-        this._hitTimer = 40; // frames until showing reward
-      }
-    }
-
-    _onMiss() {
-      this.state = 'miss';
-      this.misses++;
-      this._missTimer = 0;
-      this.flashColor = '#EF4444';
-      this.flashTimer = 15;
-
-      if (this.misses >= this.maxMisses) {
-        this.showSkip = true;
-        const skipBtn = document.getElementById('puzzleSkip');
-        if (skipBtn) skipBtn.style.display = 'inline-block';
-      }
+      this._draw();
     }
 
     _updateDots() {
-      const dots = document.querySelectorAll('.rally-dot');
+      const dots = document.querySelectorAll('.match-dot');
       dots.forEach((dot, i) => {
-        if (i < this.ralliesWon) dot.classList.add('filled');
+        if (i < this.matchesFound) dot.classList.add('filled');
       });
     }
 
@@ -1262,7 +1313,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (btnsEl) btnsEl.classList.add('visible');
         }, 1200);
 
-        // Scroll to reward
         setTimeout(() => {
           rewardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
@@ -1271,162 +1321,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
     _draw() {
       const ctx = this.ctx;
-      const ps = this.ps;
       ctx.clearRect(0, 0, this.W, this.H);
 
-      // Flash effect
-      if (this.flashTimer > 0) {
-        ctx.fillStyle = this.flashColor;
-        ctx.globalAlpha = this.flashTimer / 30;
-        ctx.fillRect(0, 0, this.W, this.H);
-        ctx.globalAlpha = 1;
-        this.flashTimer--;
-      }
+      for (let i = 0; i < this.cards.length; i++) {
+        const card = this.cards[i];
+        const { cx, cy } = this._cardPosition(i);
 
-      // Draw pixel court
-      ctx.fillStyle = '#0D1A0D';
-      ctx.fillRect(20, 20, this.W - 40, this.H - 40);
+        if (card.matched) {
+          // Matched card — green glow background, show art
+          ctx.fillStyle = 'rgba(0, 230, 138, 0.12)';
+          ctx.strokeStyle = '#00E68A';
+          ctx.lineWidth = 2;
+          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
 
-      // Court lines
-      ctx.fillStyle = '#1A3A1A';
-      for (let y = 20; y < this.H - 20; y += ps + 1) {
-        ctx.fillRect(20, y, ps, ps);
-        ctx.fillRect(this.W - 20 - ps, y, ps, ps);
-      }
-      for (let x = 20; x < this.W - 20; x += ps + 1) {
-        ctx.fillRect(x, 20, ps, ps);
-        ctx.fillRect(x, this.H - 20 - ps, ps, ps);
-      }
+          // Draw mini pixel art centered
+          this._drawCardArt(ctx, card.toolKey, cx, cy);
 
-      // Net
-      ctx.fillStyle = '#FFFFFF';
-      for (let x = 20; x < this.W - 20; x += ps * 2) {
-        ctx.globalAlpha = 0.6;
-        ctx.fillRect(x, this.netY, ps, ps * 2);
-        ctx.globalAlpha = 1;
-      }
-
-      // Hit zone indicator — show a clear green line where to tap
-      if (this.state === 'falling') {
-        const distToRacket = Math.abs(this.ballY - this.racketY);
-        if (distToRacket < this.hitZoneSize * 2.5) {
-          const intensity = 1 - (distToRacket / (this.hitZoneSize * 2.5));
+          // Green checkmark
           ctx.fillStyle = '#00E68A';
-          ctx.globalAlpha = intensity * 0.25;
-          ctx.fillRect(20, this.racketY - this.hitZoneSize, this.W - 40, this.hitZoneSize + 20);
+          ctx.font = 'bold 12px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('✓', cx + this.cardW / 2, cy + this.cardH - 6);
+        } else if (card.flipped) {
+          // Flipped card — dark background, show art
+          ctx.fillStyle = 'rgba(17, 17, 24, 0.9)';
+          ctx.strokeStyle = 'rgba(77, 166, 255, 0.5)';
+          ctx.lineWidth = 2;
+          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
+
+          // Draw mini pixel art centered
+          this._drawCardArt(ctx, card.toolKey, cx, cy);
+        } else {
+          // Face-down card — accent border, question mark
+          ctx.fillStyle = 'rgba(10, 10, 15, 0.95)';
+          ctx.strokeStyle = 'rgba(0, 230, 138, 0.25)';
+          ctx.lineWidth = 1.5;
+          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
+
+          // Pixel question mark
+          ctx.fillStyle = '#00E68A';
+          ctx.globalAlpha = 0.4;
+          ctx.font = 'bold ' + (this.cardW * 0.4) + 'px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('?', cx + this.cardW / 2, cy + this.cardH / 2);
           ctx.globalAlpha = 1;
+          ctx.textBaseline = 'alphabetic';
+
+          // Subtle pixel grid pattern
+          ctx.fillStyle = 'rgba(0, 230, 138, 0.03)';
+          const ps = 4;
+          for (let py = cy + 6; py < cy + this.cardH - 6; py += ps + 2) {
+            for (let px = cx + 6; px < cx + this.cardW - 6; px += ps + 2) {
+              if (Math.random() < 0.3) {
+                ctx.fillRect(px, py, ps, ps);
+              }
+            }
+          }
         }
       }
 
-      // Racket — wider and more visible
-      ctx.fillStyle = '#FFFFFF';
-      const rw = ps * 12;
-      const rx = this.state === 'falling' ?
-        this.racketX + (this.ballX - this.racketX) * 0.5 :
-        this.W / 2;
-      for (let i = 0; i < 12; i++) {
-        ctx.fillRect(rx - rw / 2 + i * (ps + 1), this.racketY, ps, ps * 2);
-      }
-
-      // Ball — larger and more visible
-      ctx.fillStyle = '#F7C948';
-      const bps = ps * 2;
-      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 2, bps * 2);
-      // Ball trail when falling
-      if (this.state === 'falling') {
-        ctx.fillStyle = '#F7C948';
-        ctx.globalAlpha = 0.2;
-        ctx.fillRect(this.ballX - bps, this.ballY - bps - 8, bps * 2, 8);
-        ctx.globalAlpha = 0.1;
-        ctx.fillRect(this.ballX - bps, this.ballY - bps - 16, bps * 2, 8);
-        ctx.globalAlpha = 1;
-      }
-      // Ball shine
-      ctx.fillStyle = '#FFFFFF';
-      ctx.globalAlpha = 0.4;
-      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 0.7, bps * 0.7);
-      ctx.globalAlpha = 1;
-
-      // Score dots on canvas
-      for (let i = 0; i < this.ralliesNeeded; i++) {
+      // Match count indicator on canvas
+      for (let i = 0; i < this.matchesNeeded; i++) {
         ctx.fillStyle = '#00E68A';
-        ctx.globalAlpha = i < this.ralliesWon ? 1 : 0.2;
-        ctx.fillRect(this.W / 2 - 20 + i * 16, this.H - 14, 8, 8);
+        ctx.globalAlpha = i < this.matchesFound ? 1 : 0.2;
+        const dotX = this.W / 2 - (this.matchesNeeded * 16) / 2 + i * 16 + 4;
+        ctx.fillRect(dotX, this.H - 6, 8, 4);
       }
       ctx.globalAlpha = 1;
-
-      // Instructions
-      if (this.state === 'idle') {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 400) * 0.3;
-        ctx.font = '14px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(this.ralliesWon > 0 ? 'TAP TO SERVE AGAIN' : 'TAP TO SERVE', this.W / 2, this.H / 2 + 40);
-        ctx.globalAlpha = 1;
-      }
-
-      // Miss feedback
-      if (this.state === 'miss') {
-        ctx.fillStyle = '#EF4444';
-        ctx.globalAlpha = 0.6;
-        ctx.font = 'bold 16px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('MISS!', this.W / 2, this.H / 2 + 40);
-        ctx.globalAlpha = 1;
-      }
     }
 
-    _update() {
-      if (this.state === 'falling') {
-        this.ballY += this.ballVY;
-        this.ballX += this.ballVX;
-
-        // Bounce off walls
-        if (this.ballX < 30 || this.ballX > this.W - 30) {
-          this.ballVX *= -1;
-        }
-
-        // Racket tracks ball loosely
-        this.racketX += (this.ballX - this.racketX) * 0.04;
-
-        // Miss: ball goes past racket
-        if (this.ballY > this.racketY + 50) {
-          this._onMiss();
-        }
-      }
-
-      if (this.state === 'hit') {
-        // Ball flies upward
-        this.ballY -= 4;
-        this._hitTimer = (this._hitTimer || 0) + 1;
-
-        if (this.solved && this._hitTimer > 40) {
-          this.state = 'won';
-          this._onPuzzleSolved();
-        } else if (!this.solved && this._hitTimer > 50) {
-          // Reset to idle for next serve
-          this.state = 'idle';
-          this.ballY = 40;
-          this.ballX = this.W / 2;
-        }
-      }
-
-      if (this.state === 'miss') {
-        this._missTimer = (this._missTimer || 0) + 1;
-        if (this._missTimer > 40) {
-          this._missTimer = 0;
-          this.state = 'idle';
-          this.ballY = 40;
-          this.ballX = this.W / 2;
-        }
-      }
+    _drawCardArt(ctx, toolKey, cx, cy) {
+      const art = this.miniArts[toolKey];
+      if (!art) return;
+      // Center the mini art in the card
+      const artX = cx + (this.cardW - art.w) / 2;
+      const artY = cy + (this.cardH - art.h) / 2 - 2;
+      ctx.drawImage(art.canvas, artX, artY);
     }
 
-    _loop() {
-      if (this.solved && this.state === 'won') return;
-      this._update();
-      this._draw();
-      requestAnimationFrame(() => this._loop());
+    _roundRect(ctx, x, y, w, h, r, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
     }
   }
 
@@ -1434,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const puzzleCanvas = document.getElementById('puzzleCanvas');
   if (puzzleCanvas && !puzzleCanvas._puzzleInit) {
     puzzleCanvas._puzzleInit = true;
-    new TennisRallyPuzzle(puzzleCanvas);
+    new MemoryMatchPuzzle(puzzleCanvas);
   }
 
 
@@ -1505,45 +1492,79 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Animated Pixel Art Robot (Canvas) ───
+  // ─── Animated Pixel Art EdgeBot (Canvas) — Claude-inspired ───
   const robotCanvas = document.getElementById('robotCanvas');
   if (robotCanvas) {
     const rctx = robotCanvas.getContext('2d');
-    const isMobileRobot = window.innerWidth < 768;
-    const RP = isMobileRobot ? 8 : 12;
+    const isMobileRobot = (window.innerWidth || document.documentElement.clientWidth || 400) < 768;
+    const RP = isMobileRobot ? 8 : 11;
 
-    // Robot sprite: 18 wide x 24 tall pixel grid
-    // Colors: 0=transparent, 1=accent green, 2=blue, 3=dark fill, 8=dark bg, 5=gold, 7=white
-    const ROBOT_BASE = [
-      '..................',
-      '.......11.........',
-      '.......11.........',
-      '......1111........',
-      '....11111111......',
-      '...1111111111.....',
-      '...1333333331.....',
-      '...1333333331.....',
-      '...13311113331....',
-      '...13311113331....',
-      '...1333333331.....',
-      '...1332222331.....',
-      '...1332222331.....',
-      '...1333333331.....',
-      '....11111111......',
-      '..1.11111111.1....',
-      '..1.13333331.1....',
-      '..1.13311331.1....',
-      '..1.13355331.1....',
-      '..1.13355331.1....',
-      '..1.13311331.1....',
-      '..1.13333331.1....',
-      '....11111111......',
-      '....11....11......',
-      '....11....11......',
-      '....11....11......',
+    // EdgeBot sprite: 24 wide x 32 tall pixel grid
+    // Inspired by Claude's friendly, rounded aesthetic
+    // Colors: 0=transparent, 1=accent green, 2=blue, 3=dark fill, 4=pink, 5=gold, 7=white, 8=darker, 9=soft green
+    const EDGEBOT = [
+      // Row 0-1: Antenna
+      '............11..........',
+      '............11..........',
+      // Row 2: Antenna stem
+      '............11..........',
+      // Row 3: Head top — rounded
+      '.......1111111111.......',
+      // Row 4-5: Head expanding
+      '.....111111111111111....',
+      '....11111111111111111...',
+      // Row 6: Head — wide
+      '...1113333333333331111..',
+      // Row 7: Face — top
+      '...1133333333333333111..',
+      // Row 8: Eyes
+      '...1133311333113333111..',
+      // Row 9: Eyes bottom
+      '...1133311333113333111..',
+      // Row 10: Face middle
+      '...1133333333333333111..',
+      // Row 11: Smile
+      '...1133332222233333111..',
+      // Row 12: Below smile
+      '...1133333333333333111..',
+      // Row 13: Head bottom — rounded
+      '....11133333333331111...',
+      // Row 14: Head base
+      '.....111111111111111....',
+      // Row 15: Neck
+      '..........111111........',
+      // Row 16: Shoulders
+      '......11111111111111....',
+      // Row 17: Body top — with arm stubs
+      '..11..13333333333331.11.',
+      // Row 18: Body
+      '..11..13333333333331.11.',
+      // Row 19: Body — core glow
+      '..11..13335555333331.11.',
+      // Row 20: Body — core glow
+      '..11..13335555333331.11.',
+      // Row 21: Body
+      '..11..13333333333331.11.',
+      // Row 22: Body bottom
+      '......13333333333331....',
+      // Row 23: Body base
+      '.......1111111111111....',
+      // Row 24: Gap
+      '........................',
+      // Row 25: Hover disc — top
+      '.......222222222222.....',
+      // Row 26: Hover disc — center bright
+      '......22222222222222....',
+      // Row 27: Hover disc — bottom
+      '.......222222222222.....',
+      // Row 28-31: Glow trails
+      '.........22222222.......',
+      '..........222222........',
+      '...........2222.........',
+      '............22..........',
     ];
 
-    const robotGrid = ROBOT_BASE.map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
+    const robotGrid = EDGEBOT.map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
     const RCOLS = robotGrid[0].length;
     const RROWS = robotGrid.length;
 
@@ -1558,86 +1579,133 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ROBOT_COLORS = {
       0: null,
-      1: '#00E68A',
-      2: '#4DA6FF',
-      3: '#1A1A2E',
-      5: '#F7C948',
-      7: '#FFFFFF',
-      8: '#0D0D14',
+      1: '#00E68A',  // green accent — outline, antenna
+      2: '#4DA6FF',  // blue — hover disc
+      3: '#1A1A2E',  // dark fill — body/face interior
+      4: '#FF6B9D',  // pink
+      5: '#F7C948',  // gold — core glow
+      7: '#FFFFFF',  // white
+      8: '#0D0D14',  // darker
+      9: '#00B368',  // soft green
     };
 
     let robotFrame = 0;
     let robotBlinkTimer = 0;
-    let robotMouthFrame = 0;
 
-    function drawRobot() {
+    function drawEdgeBot() {
       rctx.clearRect(0, 0, rLogW, rLogH);
       robotFrame++;
       robotBlinkTimer++;
-      robotMouthFrame++;
 
-      // Blink: close eyes every 120 frames for 6 frames
-      const isBlinking = robotBlinkTimer > 120 && robotBlinkTimer < 128;
-      if (robotBlinkTimer > 128) robotBlinkTimer = 0;
+      // Blink: close eyes every ~240 frames for 8 frames
+      const isBlinking = robotBlinkTimer > 240 && robotBlinkTimer < 250;
+      if (robotBlinkTimer > 250) robotBlinkTimer = 0;
 
-      // Mouth animation: alternate width
-      const mouthPhase = Math.floor(robotMouthFrame / 20) % 3;
+      // Breathing — subtle vertical offset for body rows
+      const breathOffset = Math.sin(robotFrame * 0.03) * 0.5;
+
+      // Core glow pulse
+      const corePulse = 0.5 + Math.sin(robotFrame * 0.06) * 0.5;
+
+      // Hover disc shimmer
+      const hoverPulse = 0.4 + Math.sin(robotFrame * 0.08) * 0.3;
 
       for (let r = 0; r < RROWS; r++) {
         for (let c = 0; c < RCOLS; c++) {
           let colorIdx = robotGrid[r][c];
           if (colorIdx === 0) continue;
 
-          // Eye blink: rows 8-9, the "11" eye pixels
-          if (isBlinking && (r === 8 || r === 9) && colorIdx === 1) {
-            if (r === 9) continue; // hide bottom row of eye
-          }
+          let drawX = c * RP;
+          let drawY = r * RP;
 
-          // Mouth animation: rows 11-12, the "2222" mouth pixels
-          if ((r === 11 || r === 12) && colorIdx === 2) {
-            if (mouthPhase === 1 && (c === 5 || c === 10)) continue; // shrink
-            if (mouthPhase === 2 && c === 5) { colorIdx = 2; } // normal
-          }
-
-          // Arm wave: rows 15-21, columns 2 and 13
-          if ((c === 2 || c === 13) && r >= 15 && r <= 21) {
-            const wave = Math.sin(robotFrame * 0.05 + (c === 2 ? 0 : 1.5)) * 2;
-            const drawR = r + Math.round(wave);
-            const color = ROBOT_COLORS[colorIdx];
-            if (color && drawR >= 0 && drawR < RROWS) {
-              rctx.fillStyle = color;
-              rctx.fillRect(c * RP, drawR * RP, RP - 1, RP - 1);
-            }
-            continue;
-          }
-
-          // Antenna glow: rows 0-1
-          if (r <= 1 && colorIdx === 1) {
-            const glowPulse = 0.5 + Math.sin(robotFrame * 0.08) * 0.5;
+          // ─ Antenna glow (rows 0-2) ─
+          if (r <= 2 && colorIdx === 1) {
+            const glowPulse = 0.4 + Math.sin(robotFrame * 0.08) * 0.6;
             rctx.fillStyle = '#00E68A';
             rctx.globalAlpha = 0.3 + glowPulse * 0.7;
-            rctx.fillRect(c * RP, r * RP, RP - 1, RP - 1);
-            // Glow halo
-            rctx.fillStyle = '#00E68A';
-            rctx.globalAlpha = glowPulse * 0.2;
-            rctx.fillRect(c * RP - 2, r * RP - 2, RP + 3, RP + 3);
+            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            // Glow halo around antenna tip (row 0 only)
+            if (r === 0) {
+              rctx.fillStyle = '#00E68A';
+              rctx.globalAlpha = glowPulse * 0.15;
+              rctx.fillRect(drawX - RP, drawY - RP, RP * 3, RP * 3);
+            }
             rctx.globalAlpha = 1;
             continue;
           }
 
+          // ─ Eye blink (rows 8-9) ─
+          if (isBlinking && (r === 8 || r === 9) && colorIdx === 1) {
+            // Replace eye with dark fill during blink
+            rctx.fillStyle = ROBOT_COLORS[3];
+            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            continue;
+          }
+
+          // ─ Smile animation — subtle width change (row 11) ─
+          if (r === 11 && colorIdx === 2) {
+            const smilePhase = Math.floor(robotFrame / 60) % 3;
+            // On phase 1, skip outer smile pixels for a smaller smile
+            if (smilePhase === 1 && (c === 9 || c === 15)) {
+              rctx.fillStyle = ROBOT_COLORS[3];
+              rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+              continue;
+            }
+          }
+
+          // ─ Arm wave (rows 17-21, cols 2-3 and 22-23) ─
+          if ((c <= 3 || c >= 21) && r >= 17 && r <= 21 && colorIdx === 1) {
+            const side = c <= 3 ? 0 : 1;
+            const wave = Math.sin(robotFrame * 0.04 + side * 2.5) * 1.5;
+            const waveY = drawY + Math.round(wave) * RP;
+            rctx.fillStyle = ROBOT_COLORS[1];
+            if (waveY >= 0 && waveY < rLogH) {
+              rctx.fillRect(drawX, waveY, RP - 1, RP - 1);
+            }
+            continue;
+          }
+
+          // ─ Core glow (rows 19-20, color 5 = gold) ─
+          if ((r === 19 || r === 20) && colorIdx === 5) {
+            rctx.fillStyle = '#F7C948';
+            rctx.globalAlpha = 0.4 + corePulse * 0.6;
+            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            // Glow halo
+            rctx.globalAlpha = corePulse * 0.12;
+            rctx.fillRect(drawX - 1, drawY - 1, RP + 1, RP + 1);
+            rctx.globalAlpha = 1;
+            continue;
+          }
+
+          // ─ Hover disc (rows 25-31, color 2) — shimmer ─
+          if (r >= 25 && colorIdx === 2) {
+            const discFade = r >= 28 ? (0.6 - (r - 28) * 0.15) : 0.8;
+            rctx.fillStyle = '#4DA6FF';
+            rctx.globalAlpha = Math.max(0.05, discFade * hoverPulse);
+            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            rctx.globalAlpha = 1;
+            continue;
+          }
+
+          // ─ Body breathing offset (rows 16-23) ─
+          if (r >= 16 && r <= 23) {
+            drawY += Math.round(breathOffset);
+          }
+
+          // ─ Default draw ─
           const color = ROBOT_COLORS[colorIdx];
           if (color) {
             rctx.fillStyle = color;
-            rctx.fillRect(c * RP, r * RP, RP - 1, RP - 1);
+            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
           }
         }
       }
 
-      requestAnimationFrame(drawRobot);
+      requestAnimationFrame(drawEdgeBot);
     }
 
-    // Start robot animation immediately
-    drawRobot();
+    // Start EdgeBot animation immediately
+    drawEdgeBot();
   }
 
 
