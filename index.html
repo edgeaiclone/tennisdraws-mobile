@@ -16,13 +16,7 @@
 <div class="boot-screen" id="bootScreen">
   <div class="boot-container">
     <div class="boot-logo">
-      <svg class="boot-logo-svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="22" stroke="#00E68A" stroke-width="2" opacity="0.3"/>
-        <circle cx="24" cy="24" r="16" stroke="#00E68A" stroke-width="1.5" opacity="0.2"/>
-        <circle cx="24" cy="24" r="4" fill="#00E68A"/>
-        <path d="M24 2v44M2 24h44" stroke="#00E68A" stroke-width="0.5" opacity="0.15"/>
-        <path d="M6.7 6.7l34.6 34.6M41.3 6.7L6.7 41.3" stroke="#00E68A" stroke-width="0.5" opacity="0.1"/>
-      </svg>
+      <canvas class="boot-logo-canvas" id="bootLogoCanvas" width="64" height="64"></canvas>
     </div>
     <div class="boot-lines" id="bootLines"></div>
     <div class="boot-progress">
@@ -54,16 +48,17 @@
     <p class="tools-sub">21+ services. Every match. 100% free.</p>
   </div>
   <div class="tools-grid">
-    <button class="tool-btn active" data-tool="dropping-odds" data-num="01"><span class="tool-btn-num">01</span><span class="tool-btn-name">Dropping Odds</span></button>
-    <button class="tool-btn" data-tool="bet365" data-num="02"><span class="tool-btn-num">02</span><span class="tool-btn-name">Bet365 Alerts</span></button>
-    <button class="tool-btn" data-tool="mto" data-num="03"><span class="tool-btn-num">03</span><span class="tool-btn-name">MTO Intel</span></button>
-    <button class="tool-btn" data-tool="fatigue" data-num="04"><span class="tool-btn-num">04</span><span class="tool-btn-name">Fatigue Tracker</span></button>
-    <button class="tool-btn" data-tool="rain" data-num="05"><span class="tool-btn-num">05</span><span class="tool-btn-name">Rain Delays</span></button>
-    <button class="tool-btn" data-tool="itf" data-num="06"><span class="tool-btn-num">06</span><span class="tool-btn-name">ITF Deep Data</span></button>
-    <button class="tool-btn" data-tool="players" data-num="07"><span class="tool-btn-num">07</span><span class="tool-btn-name">Player Tracker</span></button>
-    <button class="tool-btn" data-tool="ai-chat" data-num="08"><span class="tool-btn-num">08</span><span class="tool-btn-name">AI Chat</span></button>
-    <button class="tool-btn" data-tool="alerts" data-num="09"><span class="tool-btn-num">09</span><span class="tool-btn-name">Live Alerts</span></button>
-    <button class="tool-btn" data-tool="uptime" data-num="10"><span class="tool-btn-num">10</span><span class="tool-btn-name">24/7 Uptime</span></button>
+    <button class="tool-btn active" data-tool="live-scores" data-num="01"><span class="tool-btn-num">01</span><span class="tool-btn-name">Live Scores</span></button>
+    <button class="tool-btn" data-tool="dropping-odds" data-num="02"><span class="tool-btn-num">02</span><span class="tool-btn-name">Dropping Odds</span></button>
+    <button class="tool-btn" data-tool="bet365" data-num="03"><span class="tool-btn-num">03</span><span class="tool-btn-name">Bet365 Monitors</span></button>
+    <button class="tool-btn" data-tool="mto" data-num="04"><span class="tool-btn-num">04</span><span class="tool-btn-name">MTO Intel</span></button>
+    <button class="tool-btn" data-tool="fatigue" data-num="05"><span class="tool-btn-num">05</span><span class="tool-btn-name">Fatigue Tracker</span></button>
+    <button class="tool-btn" data-tool="rain" data-num="06"><span class="tool-btn-num">06</span><span class="tool-btn-name">Rain Delays</span></button>
+    <button class="tool-btn" data-tool="entries" data-num="07"><span class="tool-btn-num">07</span><span class="tool-btn-name">Entry Lists & Draws</span></button>
+    <button class="tool-btn" data-tool="retired" data-num="08"><span class="tool-btn-num">08</span><span class="tool-btn-name">Retired / Returned</span></button>
+    <button class="tool-btn" data-tool="ai-chat" data-num="09"><span class="tool-btn-num">09</span><span class="tool-btn-name">AI Chat</span></button>
+    <button class="tool-btn" data-tool="alerts" data-num="10"><span class="tool-btn-num">10</span><span class="tool-btn-name">Live Alerts</span></button>
+    <button class="tool-btn" data-tool="uptime" data-num="11"><span class="tool-btn-num">11</span><span class="tool-btn-name">24/7 Uptime</span></button>
   </div>
   <div class="tools-display">
     <div class="pixel-canvas-wrapper">

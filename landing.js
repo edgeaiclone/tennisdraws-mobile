@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     9: '#0D0D14',  // darker bg
   };
 
-  // ─── 9 Pixel Art Illustrations (24x24 grids) ───
+  // ─── 11 Pixel Art Illustrations (24x24 grids) ───
   function parsePixelArt(str) {
     return str.trim().split('\n').map(row =>
       row.split('').map(ch => ch === '.' ? 0 : parseInt(ch) || 0)
@@ -26,7 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const PIXEL_ART = {
-    // 01: Dropping Odds — downward arrow + chart bars
+    // 01: Live Scores — scoreboard with live dot
+    'live-scores': parsePixelArt(
+      '........................\n' +
+      '..11111111111111111111..\n' +
+      '..1..................1..\n' +
+      '..1..77777....11111..1..\n' +
+      '..1..77777....11111..1..\n' +
+      '..1..................1..\n' +
+      '..1..55555....22222..1..\n' +
+      '..1..55555....22222..1..\n' +
+      '..1..................1..\n' +
+      '..1..11111....55555..1..\n' +
+      '..1..11111....55555..1..\n' +
+      '..1..................1..\n' +
+      '..11111111111111111111..\n' +
+      '........................\n' +
+      '........................\n' +
+      '........66..............\n' +
+      '.......6666.............\n' +
+      '........66..............\n' +
+      '..........777777777777..\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 02: Dropping Odds — downward arrow + chart bars
     'dropping-odds': parsePixelArt(
       '........................\n' +
       '..........66............\n' +
@@ -53,34 +80,34 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 02: Bet365 Alerts — lock + lightning bolt
+    // 03: Bet365 Monitors — eye + lock
     'bet365': parsePixelArt(
       '........................\n' +
       '........................\n' +
-      '......88888888..........\n' +
-      '....88........88........\n' +
-      '....88........88........\n' +
-      '..8888888888888888......\n' +
-      '..88............88......\n' +
-      '..88....5555....88......\n' +
-      '..88....5555....88......\n' +
-      '..88....5555....88......\n' +
-      '..88.....55.....88......\n' +
-      '..88............88......\n' +
-      '..8888888888888888......\n' +
+      '....11111111111111......\n' +
+      '..11................11..\n' +
+      '.1.......222222......1..\n' +
+      '1......2222222222.....1.\n' +
+      '1.....222277222222....1.\n' +
+      '1.....222277222222....1.\n' +
+      '1......2222222222.....1.\n' +
+      '.1.......222222......1..\n' +
+      '..11................11..\n' +
+      '....11111111111111......\n' +
       '........................\n' +
-      '..............5555......\n' +
-      '.............5555.......\n' +
-      '............55555555....\n' +
-      '...........5555.........\n' +
       '..........5555..........\n' +
-      '.........5555...........\n' +
-      '........................\n' +
+      '.........5....5.........\n' +
+      '.........5....5.........\n' +
+      '........55555555........\n' +
+      '........5......5........\n' +
+      '........5..55..5........\n' +
+      '........5..55..5........\n' +
+      '........55555555........\n' +
       '........................\n' +
       '........................\n' +
       '........................'
     ),
-    // 03: MTO Intel — medical cross + heartbeat
+    // 04: MTO Intel — medical cross + heartbeat
     'mto': parsePixelArt(
       '........................\n' +
       '........................\n' +
@@ -107,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '..1111..................\n' +
       '........................'
     ),
-    // 04: Fatigue Tracker — running figure + clock
+    // 05: Fatigue Tracker — running figure + clock
     'fatigue': parsePixelArt(
       '........................\n' +
       '....55..................\n' +
@@ -134,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 05: Rain Delays — cloud + rain drops
+    // 06: Rain Delays — cloud + rain drops
     'rain': parsePixelArt(
       '........................\n' +
       '........................\n' +
@@ -161,61 +188,61 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 06: ITF Deep Data — database stack + signal
-    'itf': parsePixelArt(
+    // 07: Entry Lists & Draws — bracket/list
+    'entries': parsePixelArt(
       '........................\n' +
-      '........................\n' +
-      '....111111111111111.....\n' +
-      '...1111111111111111.....\n' +
-      '....111111111111111.....\n' +
-      '....1.............1.....\n' +
-      '....111111111111111.....\n' +
-      '...1111111111111111.....\n' +
-      '....111111111111111.....\n' +
-      '....1.............1.....\n' +
-      '....111111111111111.....\n' +
-      '...1111111111111111.....\n' +
-      '....111111111111111.....\n' +
-      '........................\n' +
-      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
       '..........1.............\n' +
-      '.........111............\n' +
-      '........11111...........\n' +
-      '.......1111111..........\n' +
+      '..........11111111111...\n' +
+      '..........1.........1...\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
       '..........1.............\n' +
+      '..........11111111111...\n' +
+      '..........1.........1...\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
       '..........1.............\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 08: Retired / Returned — exit door + return arrow
+    'retired': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '...66666666666666666....\n' +
+      '...6...............6....\n' +
+      '...6...............6....\n' +
+      '...6.......66......6....\n' +
+      '...6.......66......6....\n' +
+      '...6.......66......6....\n' +
+      '...6......6666.....6....\n' +
+      '...6...............6....\n' +
+      '...6...............6....\n' +
+      '...66666666666666666....\n' +
+      '........................\n' +
+      '........1111111.........\n' +
+      '.......1..............1.\n' +
+      '......1...............1.\n' +
+      '.....1111111111111111...\n' +
+      '......1.................\n' +
+      '.......1................\n' +
+      '........1111111.........\n' +
+      '........................\n' +
       '........................\n' +
       '........................\n' +
       '........................'
     ),
-    // 07: Player Tracker — person + stats lines
-    'players': parsePixelArt(
-      '........................\n' +
-      '........................\n' +
-      '......3333..............\n' +
-      '.....333333.............\n' +
-      '......3333..............\n' +
-      '.....331133.............\n' +
-      '.....331133.............\n' +
-      '.....331133.............\n' +
-      '......3333..............\n' +
-      '.....3....3.............\n' +
-      '.....3....3.............\n' +
-      '........................\n' +
-      '..............1111111...\n' +
-      '..............1111111...\n' +
-      '........................\n' +
-      '..............2222222...\n' +
-      '..............2222222...\n' +
-      '........................\n' +
-      '..............5555555...\n' +
-      '..............5555555...\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 08: AI Chat — brain + chat bubble
+    // 09: AI Chat — brain + chat bubble
     'ai-chat': parsePixelArt(
       '........................\n' +
       '......3333333333........\n' +
@@ -242,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 09: Live Alerts — bell + phone
+    // 10: Live Alerts — bell + notification waves
     'alerts': parsePixelArt(
       '........................\n' +
       '...........55...........\n' +
@@ -269,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 10: 24/7 Uptime — shield + checkmark
+    // 11: 24/7 Uptime — shield + checkmark
     'uptime': parsePixelArt(
       '........................\n' +
       '........................\n' +
@@ -300,13 +327,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tool metadata
   const TOOL_DATA = {
+    'live-scores': {
+      title: 'Live Scores & Stats',
+      desc: 'Point-by-point live scores across ATP, WTA, ITF, and Challengers. Serve stats, aces, break points, first serve % — full match data pipeline in real-time.',
+    },
     'dropping-odds': {
       title: 'Dropping Odds Monitor',
       desc: 'Scrapes live odds every hour across all matches. Tracks which player\'s odds are falling, by how much, and flags sharp money movement — the earliest signal of insider info.',
     },
     'bet365': {
-      title: 'Bet365 Alerts',
-      desc: 'Detects odds locks, score freezes, and tiebreak triggers on Bet365 in real-time. Instant Telegram alerts the moment something unusual happens on court.',
+      title: 'Bet365 Monitors',
+      desc: 'Three dedicated monitors watching Bet365 around the clock — odds lock detection, score freeze alerts, and tiebreak triggers. Instant Telegram alerts when anomalies hit.',
     },
     'mto': {
       title: 'MTO Intel',
@@ -320,13 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Rain Delays',
       desc: 'Monitors live rain delays across every venue. Alerts when play stops and resumes — key for momentum disruption and in-play opportunities.',
     },
-    'itf': {
-      title: 'ITF Deep Data',
-      desc: 'Full 6-service pipeline for ITF/Challenger live data. Scores, stats, court changes, and data glitches — coverage most platforms don\'t touch.',
+    'entries': {
+      title: 'Entry Lists & Draws',
+      desc: '3,000+ players tracked across every tier. Grand Slams to ITF Futures. Full entry lists, draws, withdrawal reasons, lucky losers, and qualifiers.',
     },
-    'players': {
-      title: 'Player Tracker',
-      desc: 'Continuous tracking of 3,000+ players. Rankings, form trajectory, entry lists, withdrawals, and surface performance across ATP, WTA, and ITF.',
+    'retired': {
+      title: 'Retired / Returned',
+      desc: 'Tracks every mid-match retirement with date, tournament, score, and odds at retirement. Monitors who is returning to play and flags re-injury risk.',
     },
     'ai-chat': {
       title: 'AI Chatbot',
@@ -472,6 +503,73 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+
+  // ─── Pixelated Boot Logo ───
+  function drawBootLogo() {
+    const canvas = document.getElementById('bootLogoCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 64;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.imageSmoothingEnabled = false;
+
+    const g = '#00E68A';
+    const gd = 'rgba(0,230,138,0.3)';
+    const gdd = 'rgba(0,230,138,0.12)';
+    const ps = 4; // pixel size
+
+    // Draw crosshair grid (dim)
+    for (let i = 0; i < 16; i++) {
+      ctx.fillStyle = gdd;
+      ctx.fillRect(i * ps, 7 * ps, ps, ps); // horizontal
+      ctx.fillRect(i * ps, 8 * ps, ps, ps);
+      ctx.fillRect(7 * ps, i * ps, ps, ps); // vertical
+      ctx.fillRect(8 * ps, i * ps, ps, ps);
+    }
+
+    // Draw outer ring (dim)
+    const ring = [
+      [5,1],[6,1],[7,1],[8,1],[9,1],[10,1],
+      [3,2],[4,2],[11,2],[12,2],
+      [2,3],[13,3],
+      [1,4],[14,4],
+      [1,5],[14,5],
+      [1,6],[14,6],
+      [1,9],[14,9],
+      [1,10],[14,10],
+      [1,11],[14,11],
+      [2,12],[13,12],
+      [3,13],[4,13],[11,13],[12,13],
+      [5,14],[6,14],[7,14],[8,14],[9,14],[10,14],
+    ];
+    ring.forEach(([x,y]) => {
+      ctx.fillStyle = gd;
+      ctx.fillRect(x * ps, y * ps, ps, ps);
+    });
+
+    // Draw center dot (bright)
+    const center = [[7,7],[8,7],[7,8],[8,8]];
+    center.forEach(([x,y]) => {
+      ctx.fillStyle = g;
+      ctx.fillRect(x * ps, y * ps, ps, ps);
+    });
+
+    // Add glow effect
+    ctx.shadowColor = g;
+    ctx.shadowBlur = 8;
+    center.forEach(([x,y]) => {
+      ctx.fillStyle = g;
+      ctx.fillRect(x * ps, y * ps, ps, ps);
+    });
+    ctx.shadowBlur = 0;
+  }
+  drawBootLogo();
 
 
   // ─── Boot Sequence ───
