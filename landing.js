@@ -515,68 +515,122 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixelated Boot Logo ───
+  // ─── Pixelated Boot Logo + Robot Mascot ───
   function drawBootLogo() {
     const canvas = document.getElementById('bootLogoCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const size = 64;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = size + 'px';
-    canvas.style.height = size + 'px';
+    const w = 240, h = 80;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
     ctx.scale(dpr, dpr);
     ctx.imageSmoothingEnabled = false;
 
     const g = '#00E68A';
-    const gd = 'rgba(0,230,138,0.3)';
-    const gdd = 'rgba(0,230,138,0.12)';
-    const ps = 4; // pixel size
+    const W = '#FFFFFF';
+    const dim = 'rgba(0,230,138,0.25)';
+    const ps = 3; // pixel size
 
-    // Draw crosshair grid (dim)
-    for (let i = 0; i < 16; i++) {
-      ctx.fillStyle = gdd;
-      ctx.fillRect(i * ps, 7 * ps, ps, ps); // horizontal
-      ctx.fillRect(i * ps, 8 * ps, ps, ps);
-      ctx.fillRect(7 * ps, i * ps, ps, ps); // vertical
-      ctx.fillRect(8 * ps, i * ps, ps, ps);
+    // Tennis ball (top-left, 12x12 grid) — green circle with seam
+    const ball = [
+      '....1111....',
+      '..11111111..',
+      '.1111..1111.',
+      '1111....1111',
+      '111......111',
+      '11........11',
+      '11........11',
+      '111......111',
+      '1111....1111',
+      '.1111..1111.',
+      '..11111111..',
+      '....1111....',
+    ];
+    const ballX = 8, ballY = 6;
+    ball.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] === '1') {
+          ctx.fillStyle = g;
+          ctx.fillRect((ballX + c) * ps, (ballY + r) * ps, ps, ps);
+        }
+      }
+    });
+
+    // "edgeAI" pixel text (5px tall letters, next to ball)
+    // Each letter is a 2D array, 5 rows tall, variable width
+    const letters = {
+      e: ['1111','1...','111.','1...','1111'],
+      d: ['111.','1..1','1..1','1..1','111.'],
+      g: ['1111','1...','1.11','1..1','1111'],
+      A: ['1111','1..1','1111','1..1','1..1'],
+      I: ['111','.1.','.1.','.1.','111'],
+    };
+    const word = [
+      { ch: 'e', color: W },
+      { ch: 'd', color: W },
+      { ch: 'g', color: W },
+      { ch: 'e', color: W },
+      { ch: 'A', color: g },
+      { ch: 'I', color: g },
+    ];
+    let textX = 24; // start after ball
+    const textY = 8;
+    const scale = 2; // each pixel = 2x2 for the text
+    word.forEach(({ ch, color }) => {
+      const glyph = letters[ch];
+      glyph.forEach((row, r) => {
+        for (let c = 0; c < row.length; c++) {
+          if (row[c] === '1') {
+            ctx.fillStyle = color;
+            ctx.fillRect(textX + c * ps * scale, (textY + r * scale) * ps, ps * scale, ps * scale);
+          }
+        }
+      });
+      textX += (letters[ch][0].length + 1) * ps * scale;
+    });
+
+    // Green underline bar (pixelated)
+    const barY = (textY + 12) * ps;
+    const barStartX = 24;
+    for (let i = 0; i < 28; i++) {
+      ctx.fillStyle = g;
+      ctx.fillRect(barStartX + i * (ps + 1), barY, ps, ps);
     }
 
-    // Draw outer ring (dim)
-    const ring = [
-      [5,1],[6,1],[7,1],[8,1],[9,1],[10,1],
-      [3,2],[4,2],[11,2],[12,2],
-      [2,3],[13,3],
-      [1,4],[14,4],
-      [1,5],[14,5],
-      [1,6],[14,6],
-      [1,9],[14,9],
-      [1,10],[14,10],
-      [1,11],[14,11],
-      [2,12],[13,12],
-      [3,13],[4,13],[11,13],[12,13],
-      [5,14],[6,14],[7,14],[8,14],[9,14],[10,14],
+    // Pixel robot mascot (right side, 10x12)
+    const robot = [
+      '....11....',
+      '...1111...',
+      '..111111..',
+      '..1.11.1..',  // eyes
+      '..111111..',
+      '..111111..',
+      '...1111...',
+      '.1.1111.1.',  // arms
+      '1..1111..1',
+      '...1..1...',  // legs
+      '...1..1...',
+      '..11..11..',
     ];
-    ring.forEach(([x,y]) => {
-      ctx.fillStyle = gd;
-      ctx.fillRect(x * ps, y * ps, ps, ps);
+    const robotX = 68, robotY = 2;
+    robot.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] === '1') {
+          ctx.fillStyle = (r === 3 && (c === 3 || c === 4 || c === 6 || c === 7)) ? g : W;
+          ctx.fillRect((robotX + c) * ps, (robotY + r) * ps, ps, ps);
+        }
+      }
     });
 
-    // Draw center dot (bright)
-    const center = [[7,7],[8,7],[7,8],[8,8]];
-    center.forEach(([x,y]) => {
-      ctx.fillStyle = g;
-      ctx.fillRect(x * ps, y * ps, ps, ps);
-    });
-
-    // Add glow effect
+    // Antenna glow
+    ctx.fillStyle = g;
+    ctx.fillRect((robotX + 4) * ps, (robotY - 1) * ps, ps * 2, ps);
     ctx.shadowColor = g;
-    ctx.shadowBlur = 8;
-    center.forEach(([x,y]) => {
-      ctx.fillStyle = g;
-      ctx.fillRect(x * ps, y * ps, ps, ps);
-    });
+    ctx.shadowBlur = 6;
+    ctx.fillRect((robotX + 4) * ps, (robotY - 1) * ps, ps * 2, ps);
     ctx.shadowBlur = 0;
   }
   drawBootLogo();
@@ -611,20 +665,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
-    const blockW = 6;
-    const gap = 2;
+    const blockW = 8;
+    const gap = 3;
     const totalBlocks = Math.floor(w / (blockW + gap));
     const filledBlocks = Math.floor(progress * totalBlocks);
 
+    // Dim empty blocks
+    for (let i = 0; i < totalBlocks; i++) {
+      ctx.fillStyle = 'rgba(0, 230, 138, 0.08)';
+      ctx.fillRect(i * (blockW + gap), 1, blockW, h - 2);
+    }
+    // Filled blocks with glow
+    ctx.shadowColor = '#00E68A';
+    ctx.shadowBlur = 4;
     for (let i = 0; i < filledBlocks; i++) {
       ctx.fillStyle = '#00E68A';
       ctx.fillRect(i * (blockW + gap), 0, blockW, h);
     }
-    // Dim remaining blocks
-    for (let i = filledBlocks; i < totalBlocks; i++) {
-      ctx.fillStyle = 'rgba(0, 230, 138, 0.06)';
-      ctx.fillRect(i * (blockW + gap), 0, blockW, h);
-    }
+    ctx.shadowBlur = 0;
   }
 
   async function runBootSequence() {
