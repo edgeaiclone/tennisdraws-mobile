@@ -1067,26 +1067,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Memory Match Puzzle Game ───
-  class MemoryMatchPuzzle {
+  // ─── Djokovic Face Pixel Puzzle ───
+  class DjokovicPuzzle {
     constructor(canvas) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
 
-      // Responsive sizing
       const vw = window.innerWidth || canvas.parentElement.clientWidth || 360;
       const isMobile = vw < 768;
 
-      // Card and grid dimensions
-      this.cols = 4;
-      this.rows = 3;
-      this.cardW = isMobile ? 60 : 72;
-      this.cardH = isMobile ? 68 : 80;
-      this.gap = isMobile ? 10 : 12;
-      this.padding = isMobile ? 12 : 16;
+      // Grid: 24 cols x 32 rows
+      this.gridCols = 24;
+      this.gridRows = 32;
+      this.ps = isMobile ? 6 : 9; // pixel size
+      this.padding = isMobile ? 12 : 20;
 
-      const logW = this.cols * this.cardW + (this.cols - 1) * this.gap + this.padding * 2;
-      const logH = this.rows * this.cardH + (this.rows - 1) * this.gap + this.padding * 2;
+      // Space for loose pieces on the right
+      this.pieceAreaW = isMobile ? 80 : 120;
+
+      const gridW = this.gridCols * this.ps;
+      const gridH = this.gridRows * this.ps;
+      this.gridOffX = this.padding;
+      this.gridOffY = this.padding;
+
+      const logW = gridW + this.pieceAreaW + this.padding * 3;
+      const logH = gridH + this.padding * 2;
 
       const dpr = window.devicePixelRatio || 1;
       canvas.width = logW * dpr;
@@ -1094,63 +1099,73 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.style.width = logW + 'px';
       canvas.style.height = logH + 'px';
       this.ctx.scale(dpr, dpr);
-
       this.W = logW;
       this.H = logH;
 
-      // Game state
-      this.matchesFound = 0;
-      this.matchesNeeded = 3;
+      // Djokovic pixel face — 24x32
+      // Colors: 0=transparent, 1=green, 2=blue(headband), 3=skin, 4=hair(dark), 5=gold, 6=red, 7=white, 8=dark, 9=darker
+      this.face = [
+        '........................', // 0
+        '......44444444444.......',  // 1
+        '.....4444444444444......',  // 2
+        '....444444444444444.....',  // 3
+        '...44444444444444444....',  // 4
+        '..7777777777777777777...',  // 5 headband
+        '..7777777777777777777...',  // 6 headband
+        '..4433333333333333344...',  // 7
+        '..4433333333333333344...',  // 8
+        '..3333333333333333333...',  // 9
+        '..3338833338833333333...',  // 10 eyes
+        '..3338833338833333333...',  // 11 eyes
+        '..3333333333333333333...',  // 12
+        '..3333333333333333333...',  // 13
+        '..3333388888833333333...',  // 14 eyebrows
+        '..3333333333333333333...',  // 15
+        '..3333333883333333333...',  // 16 nose
+        '..3333333883333333333...',  // 17 nose
+        '..3333333333333333333...',  // 18
+        '..3333366666663333333...',  // 19 mouth
+        '..3333367777763333333...',  // 20 mouth/teeth
+        '..3333366666663333333...',  // 21 mouth
+        '..3333333333333333333...',  // 22
+        '...33333333333333333....',  // 23 jaw
+        '....333333333333333.....',  // 24 jaw
+        '.....3333333333333......',  // 25 chin
+        '......33333333333.......',  // 26 chin
+        '.......333333333........',  // 27
+        '........................',  // 28
+        '..1111111111111111111...',  // 29 shirt
+        '..1111115551111111111...',  // 30 shirt
+        '..1111111111111111111...',  // 31 shirt
+      ].map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
+
+      // Define 2 missing pieces (row range, col range)
+      // Piece A: headband area (rows 5-6, cols 10-17) — 2 rows x 8 cols
+      // Piece B: chin/mouth area (rows 23-26, cols 7-16) — 4 rows x 10 cols
+      this.pieces = [
+        { id: 'A', r1: 5, r2: 6, c1: 10, c2: 17, placed: false },
+        { id: 'B', r1: 23, r2: 26, c1: 7, c2: 16, placed: false },
+      ];
+
+      // Position loose pieces in the right area
+      const pieceAreaX = gridW + this.padding * 2;
+      this.loosePieces = this.pieces.map((p, i) => {
+        const pw = (p.c2 - p.c1 + 1) * this.ps;
+        const ph = (p.r2 - p.r1 + 1) * this.ps;
+        return {
+          ...p,
+          looseX: pieceAreaX + (this.pieceAreaW - pw) / 2,
+          looseY: this.padding + 20 + i * (ph + 40),
+          w: pw,
+          h: ph,
+        };
+      });
+
+      this.selectedPiece = null; // index of selected loose piece
+      this.state = 'idle'; // idle | piecePicked | solved
+      this.wrongFlash = null; // {slotIdx, timer}
       this.failedAttempts = 0;
-      this.maxFails = 8;
-      this.state = 'idle'; // idle | firstPick | secondPick | checking | won
-      this.firstPick = null;
-      this.secondPick = null;
       this.solved = false;
-
-      // Pick 6 random tools from the 9 available
-      const allKeys = Object.keys(PIXEL_ART);
-      const shuffled = allKeys.slice().sort(() => Math.random() - 0.5);
-      this.toolKeys = shuffled.slice(0, 6);
-
-      // Create 12 cards (6 pairs), shuffle positions
-      this.cards = [];
-      for (let i = 0; i < 6; i++) {
-        this.cards.push({ toolKey: this.toolKeys[i], matched: false, flipped: false });
-        this.cards.push({ toolKey: this.toolKeys[i], matched: false, flipped: false });
-      }
-      // Fisher-Yates shuffle
-      for (let i = this.cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-      }
-
-      // Pre-render mini pixel art for each tool into offscreen canvases
-      this.miniArts = {};
-      const miniSize = isMobile ? 2 : 3; // pixel size for mini art
-      for (const key of this.toolKeys) {
-        const grid = PIXEL_ART[key];
-        if (!grid) continue;
-        const rows = grid.length;
-        const cols = grid[0] ? grid[0].length : 0;
-        const offCanvas = document.createElement('canvas');
-        const artW = cols * miniSize;
-        const artH = rows * miniSize;
-        offCanvas.width = artW;
-        offCanvas.height = artH;
-        const offCtx = offCanvas.getContext('2d');
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const colorIdx = grid[r][c];
-            if (colorIdx === 0) continue;
-            const color = PIXEL_PALETTE[colorIdx];
-            if (color === 'transparent') continue;
-            offCtx.fillStyle = color;
-            offCtx.fillRect(c * miniSize, r * miniSize, miniSize, miniSize);
-          }
-        }
-        this.miniArts[key] = { canvas: offCanvas, w: artW, h: artH };
-      }
 
       this._setupEvents();
       this._draw();
@@ -1163,12 +1178,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const handler = (e) => {
         e.preventDefault();
         const now = Date.now();
-        if (now - lastTapTime < 300) return;
+        if (now - lastTapTime < 250) return;
         lastTapTime = now;
         if (self.solved) return;
-        if (self.state === 'checking') return;
 
-        // Get click position relative to canvas
         const rect = self.canvas.getBoundingClientRect();
         let clientX, clientY;
         if (e.touches && e.touches.length > 0) {
@@ -1188,131 +1201,129 @@ document.addEventListener('DOMContentLoaded', () => {
       this.canvas.addEventListener('touchstart', handler, { passive: false });
       this.canvas.addEventListener('click', handler);
 
-      // Skip button
       const skipBtn = document.getElementById('puzzleSkip');
       if (skipBtn) {
         skipBtn.addEventListener('click', (e) => {
           e.preventDefault();
           self.solved = true;
-          self.state = 'won';
+          self.state = 'solved';
+          self.pieces.forEach(p => p.placed = true);
+          self._draw();
           self._onPuzzleSolved();
         });
       }
     }
 
-    _getCardAt(x, y) {
-      for (let i = 0; i < this.cards.length; i++) {
-        const { cx, cy } = this._cardPosition(i);
-        if (x >= cx && x <= cx + this.cardW && y >= cy && y <= cy + this.cardH) {
-          return i;
-        }
-      }
-      return -1;
-    }
-
-    _cardPosition(idx) {
-      const col = idx % this.cols;
-      const row = Math.floor(idx / this.cols);
-      const cx = this.padding + col * (this.cardW + this.gap);
-      const cy = this.padding + row * (this.cardH + this.gap);
-      return { cx, cy };
-    }
-
     _handleTap(x, y) {
-      const idx = this._getCardAt(x, y);
-      if (idx === -1) return;
-
-      const card = this.cards[idx];
-      if (card.matched || card.flipped) return;
-
-      if (this.state === 'idle' || this.state === 'firstPick') {
-        if (this.state === 'idle') {
-          // First card
-          card.flipped = true;
-          this.firstPick = idx;
-          this.state = 'firstPick';
-          this._draw();
-        } else if (this.state === 'firstPick') {
-          // Second card — must be different from first
-          if (idx === this.firstPick) return;
-          card.flipped = true;
-          this.secondPick = idx;
-          this.state = 'checking';
-          this._draw();
-
-          // Check match after short delay
-          setTimeout(() => this._checkMatch(), 800);
+      if (this.state === 'idle') {
+        // Check if tapping a loose piece
+        for (let i = 0; i < this.loosePieces.length; i++) {
+          const lp = this.loosePieces[i];
+          if (lp.placed) continue;
+          if (x >= lp.looseX && x <= lp.looseX + lp.w &&
+              y >= lp.looseY && y <= lp.looseY + lp.h) {
+            this.selectedPiece = i;
+            this.state = 'piecePicked';
+            this._draw();
+            return;
+          }
         }
+      } else if (this.state === 'piecePicked') {
+        // Check if tapping the correct slot on the face
+        const piece = this.loosePieces[this.selectedPiece];
+
+        // Check each slot
+        for (let si = 0; si < this.pieces.length; si++) {
+          const slot = this.pieces[si];
+          if (slot.placed) continue;
+
+          const slotX = this.gridOffX + slot.c1 * this.ps;
+          const slotY = this.gridOffY + slot.r1 * this.ps;
+          const slotW = (slot.c2 - slot.c1 + 1) * this.ps;
+          const slotH = (slot.r2 - slot.r1 + 1) * this.ps;
+
+          if (x >= slotX && x <= slotX + slotW && y >= slotY && y <= slotY + slotH) {
+            if (si === this.selectedPiece) {
+              // Correct slot!
+              piece.placed = true;
+              slot.placed = true;
+              this.selectedPiece = null;
+              this.state = 'idle';
+              this._draw();
+
+              // Check if all placed
+              if (this.pieces.every(p => p.placed)) {
+                this.solved = true;
+                this.state = 'solved';
+                setTimeout(() => this._onPuzzleSolved(), 500);
+              }
+              return;
+            } else {
+              // Wrong slot — flash red
+              this.wrongFlash = { slotIdx: si, timer: 20 };
+              this.failedAttempts++;
+              this.selectedPiece = null;
+              this.state = 'idle';
+              this._draw();
+              this._animateWrongFlash();
+
+              if (this.failedAttempts >= 6) {
+                const skipBtn = document.getElementById('puzzleSkip');
+                if (skipBtn) skipBtn.style.display = 'inline-block';
+              }
+              return;
+            }
+          }
+        }
+
+        // Tapped elsewhere — also check if re-tapping a loose piece to switch selection
+        for (let i = 0; i < this.loosePieces.length; i++) {
+          const lp = this.loosePieces[i];
+          if (lp.placed) continue;
+          if (x >= lp.looseX && x <= lp.looseX + lp.w &&
+              y >= lp.looseY && y <= lp.looseY + lp.h) {
+            this.selectedPiece = i;
+            this._draw();
+            return;
+          }
+        }
+
+        // Deselect
+        this.selectedPiece = null;
+        this.state = 'idle';
+        this._draw();
       }
     }
 
-    _checkMatch() {
-      const card1 = this.cards[this.firstPick];
-      const card2 = this.cards[this.secondPick];
-
-      if (card1.toolKey === card2.toolKey) {
-        // Match found!
-        card1.matched = true;
-        card2.matched = true;
-        this.matchesFound++;
-        this._updateDots();
-
-        if (this.matchesFound >= this.matchesNeeded) {
-          this.solved = true;
-          this.state = 'won';
-          this._draw();
-          setTimeout(() => this._onPuzzleSolved(), 500);
-          return;
-        }
-      } else {
-        // No match
-        card1.flipped = false;
-        card2.flipped = false;
-        this.failedAttempts++;
-
-        if (this.failedAttempts >= this.maxFails) {
-          const skipBtn = document.getElementById('puzzleSkip');
-          if (skipBtn) skipBtn.style.display = 'inline-block';
-        }
+    _animateWrongFlash() {
+      if (!this.wrongFlash || this.wrongFlash.timer <= 0) {
+        this.wrongFlash = null;
+        this._draw();
+        return;
       }
-
-      this.firstPick = null;
-      this.secondPick = null;
-      this.state = 'idle';
+      this.wrongFlash.timer--;
       this._draw();
-    }
-
-    _updateDots() {
-      const dots = document.querySelectorAll('.match-dot');
-      dots.forEach((dot, i) => {
-        if (i < this.matchesFound) dot.classList.add('filled');
-      });
+      requestAnimationFrame(() => this._animateWrongFlash());
     }
 
     _onPuzzleSolved() {
       const rewardEl = document.getElementById('puzzleReward');
-
       if (rewardEl) {
         rewardEl.style.display = 'flex';
         rewardEl.classList.add('active');
-
         launchConfetti();
-
         setTimeout(() => {
           const unlockedEl = document.querySelector('.reward-pixel-text');
           if (unlockedEl) unlockedEl.classList.add('visible');
         }, 400);
-
         setTimeout(() => {
           const priceEl = document.querySelector('.reward-price');
           if (priceEl) priceEl.classList.add('visible');
         }, 800);
-
         setTimeout(() => {
           const btnsEl = document.querySelector('.reward-buttons');
           if (btnsEl) btnsEl.classList.add('visible');
         }, 1200);
-
         setTimeout(() => {
           rewardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
@@ -1321,83 +1332,146 @@ document.addEventListener('DOMContentLoaded', () => {
 
     _draw() {
       const ctx = this.ctx;
+      const ps = this.ps;
       ctx.clearRect(0, 0, this.W, this.H);
 
-      for (let i = 0; i < this.cards.length; i++) {
-        const card = this.cards[i];
-        const { cx, cy } = this._cardPosition(i);
+      // Skin color map
+      const FACE_COLORS = {
+        0: null,
+        1: '#00E68A',  // green shirt
+        2: '#4DA6FF',  // blue
+        3: '#D4A574',  // skin
+        4: '#2C1810',  // hair (dark brown)
+        5: '#F7C948',  // gold detail
+        6: '#CC4444',  // lips/mouth
+        7: '#FFFFFF',  // white (headband + teeth)
+        8: '#1A1A2E',  // dark (eyes, eyebrows)
+        9: '#0D0D14',  // darker
+      };
 
-        if (card.matched) {
-          // Matched card — green glow background, show art
-          ctx.fillStyle = 'rgba(0, 230, 138, 0.12)';
-          ctx.strokeStyle = '#00E68A';
-          ctx.lineWidth = 2;
-          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
+      // Draw the face grid
+      for (let r = 0; r < this.gridRows; r++) {
+        for (let c = 0; c < this.gridCols; c++) {
+          const colorIdx = this.face[r] ? this.face[r][c] : 0;
+          if (colorIdx === 0) continue;
 
-          // Draw mini pixel art centered
-          this._drawCardArt(ctx, card.toolKey, cx, cy);
+          // Check if this pixel is in a missing (unplaced) piece
+          let inMissingPiece = false;
+          for (const p of this.pieces) {
+            if (!p.placed && r >= p.r1 && r <= p.r2 && c >= p.c1 && c <= p.c2) {
+              inMissingPiece = true;
+              break;
+            }
+          }
 
-          // Green checkmark
-          ctx.fillStyle = '#00E68A';
-          ctx.font = 'bold 12px "JetBrains Mono", monospace';
-          ctx.textAlign = 'center';
-          ctx.fillText('✓', cx + this.cardW / 2, cy + this.cardH - 6);
-        } else if (card.flipped) {
-          // Flipped card — dark background, show art
-          ctx.fillStyle = 'rgba(17, 17, 24, 0.9)';
-          ctx.strokeStyle = 'rgba(77, 166, 255, 0.5)';
-          ctx.lineWidth = 2;
-          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
+          const drawX = this.gridOffX + c * ps;
+          const drawY = this.gridOffY + r * ps;
 
-          // Draw mini pixel art centered
-          this._drawCardArt(ctx, card.toolKey, cx, cy);
-        } else {
-          // Face-down card — accent border, question mark
-          ctx.fillStyle = 'rgba(10, 10, 15, 0.95)';
-          ctx.strokeStyle = 'rgba(0, 230, 138, 0.25)';
-          ctx.lineWidth = 1.5;
-          this._roundRect(ctx, cx, cy, this.cardW, this.cardH, 8, true, true);
-
-          // Pixel question mark
-          ctx.fillStyle = '#00E68A';
-          ctx.globalAlpha = 0.4;
-          ctx.font = 'bold ' + (this.cardW * 0.4) + 'px "JetBrains Mono", monospace';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('?', cx + this.cardW / 2, cy + this.cardH / 2);
-          ctx.globalAlpha = 1;
-          ctx.textBaseline = 'alphabetic';
-
-          // Subtle pixel grid pattern
-          ctx.fillStyle = 'rgba(0, 230, 138, 0.03)';
-          const ps = 4;
-          for (let py = cy + 6; py < cy + this.cardH - 6; py += ps + 2) {
-            for (let px = cx + 6; px < cx + this.cardW - 6; px += ps + 2) {
-              if (Math.random() < 0.3) {
-                ctx.fillRect(px, py, ps, ps);
-              }
+          if (inMissingPiece) {
+            // Draw a dark hatched placeholder
+            ctx.fillStyle = '#0A0A0F';
+            ctx.fillRect(drawX, drawY, ps, ps);
+            // Hatching pattern
+            if ((r + c) % 2 === 0) {
+              ctx.fillStyle = 'rgba(0, 230, 138, 0.06)';
+              ctx.fillRect(drawX, drawY, ps, ps);
+            }
+          } else {
+            const color = FACE_COLORS[colorIdx];
+            if (color) {
+              ctx.fillStyle = color;
+              ctx.fillRect(drawX, drawY, ps - (ps > 6 ? 1 : 0), ps - (ps > 6 ? 1 : 0));
             }
           }
         }
       }
 
-      // Match count indicator on canvas
-      for (let i = 0; i < this.matchesNeeded; i++) {
-        ctx.fillStyle = '#00E68A';
-        ctx.globalAlpha = i < this.matchesFound ? 1 : 0.2;
-        const dotX = this.W / 2 - (this.matchesNeeded * 16) / 2 + i * 16 + 4;
-        ctx.fillRect(dotX, this.H - 6, 8, 4);
-      }
-      ctx.globalAlpha = 1;
-    }
+      // Draw slot outlines for missing pieces
+      for (let si = 0; si < this.pieces.length; si++) {
+        const slot = this.pieces[si];
+        if (slot.placed) continue;
 
-    _drawCardArt(ctx, toolKey, cx, cy) {
-      const art = this.miniArts[toolKey];
-      if (!art) return;
-      // Center the mini art in the card
-      const artX = cx + (this.cardW - art.w) / 2;
-      const artY = cy + (this.cardH - art.h) / 2 - 2;
-      ctx.drawImage(art.canvas, artX, artY);
+        const slotX = this.gridOffX + slot.c1 * ps;
+        const slotY = this.gridOffY + slot.r1 * ps;
+        const slotW = (slot.c2 - slot.c1 + 1) * ps;
+        const slotH = (slot.r2 - slot.r1 + 1) * ps;
+
+        // Flash red on wrong attempt
+        if (this.wrongFlash && this.wrongFlash.slotIdx === si && this.wrongFlash.timer > 0) {
+          ctx.strokeStyle = '#EF4444';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([]);
+          ctx.strokeRect(slotX, slotY, slotW, slotH);
+          ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+          ctx.fillRect(slotX, slotY, slotW, slotH);
+        } else {
+          // Dashed outline
+          ctx.strokeStyle = 'rgba(0, 230, 138, 0.4)';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([4, 4]);
+          ctx.strokeRect(slotX, slotY, slotW, slotH);
+        }
+        ctx.setLineDash([]);
+
+        // Label in center
+        ctx.fillStyle = 'rgba(0, 230, 138, 0.3)';
+        ctx.font = 'bold ' + Math.max(10, ps * 1.2) + 'px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', slotX + slotW / 2, slotY + slotH / 2);
+        ctx.textBaseline = 'alphabetic';
+      }
+
+      // Draw loose pieces on the right side
+      const pieceAreaX = this.gridOffX + this.gridCols * ps + this.padding;
+
+      // Label
+      ctx.fillStyle = 'rgba(0, 230, 138, 0.5)';
+      ctx.font = 'bold 10px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('PIECES', pieceAreaX + this.pieceAreaW / 2, this.padding + 10);
+
+      for (let i = 0; i < this.loosePieces.length; i++) {
+        const lp = this.loosePieces[i];
+        if (lp.placed) continue;
+
+        const isSelected = this.selectedPiece === i;
+
+        // Draw piece background
+        ctx.fillStyle = isSelected ? 'rgba(0, 230, 138, 0.12)' : 'rgba(17, 17, 24, 0.8)';
+        ctx.strokeStyle = isSelected ? '#00E68A' : 'rgba(0, 230, 138, 0.25)';
+        ctx.lineWidth = isSelected ? 2.5 : 1.5;
+        this._roundRect(ctx, lp.looseX - 4, lp.looseY - 4, lp.w + 8, lp.h + 8, 6, true, true);
+
+        // Draw the piece pixel art
+        for (let r = lp.r1; r <= lp.r2; r++) {
+          for (let c = lp.c1; c <= lp.c2; c++) {
+            const colorIdx = this.face[r] ? this.face[r][c] : 0;
+            if (colorIdx === 0) continue;
+            const color = FACE_COLORS[colorIdx];
+            if (!color) continue;
+            ctx.fillStyle = color;
+            const px = lp.looseX + (c - lp.c1) * ps;
+            const py = lp.looseY + (r - lp.r1) * ps;
+            ctx.fillRect(px, py, ps - (ps > 6 ? 1 : 0), ps - (ps > 6 ? 1 : 0));
+          }
+        }
+
+        // Piece label
+        ctx.fillStyle = isSelected ? '#00E68A' : 'rgba(255,255,255,0.3)';
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(isSelected ? 'SELECTED' : 'TAP', lp.looseX + lp.w / 2, lp.looseY + lp.h + 16);
+      }
+
+      // Progress indicator at bottom
+      const placed = this.pieces.filter(p => p.placed).length;
+      ctx.fillStyle = '#00E68A';
+      ctx.font = 'bold 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.globalAlpha = 0.6;
+      ctx.fillText(placed + '/2 pieces placed', this.W / 2, this.H - 8);
+      ctx.globalAlpha = 1;
     }
 
     _roundRect(ctx, x, y, w, h, r, fill, stroke) {
@@ -1421,7 +1495,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const puzzleCanvas = document.getElementById('puzzleCanvas');
   if (puzzleCanvas && !puzzleCanvas._puzzleInit) {
     puzzleCanvas._puzzleInit = true;
-    new MemoryMatchPuzzle(puzzleCanvas);
+    new DjokovicPuzzle(puzzleCanvas);
   }
 
 
@@ -1492,220 +1566,256 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Animated Pixel Art EdgeBot (Canvas) — Claude-inspired ───
-  const robotCanvas = document.getElementById('robotCanvas');
-  if (robotCanvas) {
-    const rctx = robotCanvas.getContext('2d');
-    const isMobileRobot = (window.innerWidth || document.documentElement.clientWidth || 400) < 768;
-    const RP = isMobileRobot ? 8 : 11;
+  // ─── Dynamic AI Wanderer — Full-Width Canvas ───
+  const aiCanvas = document.getElementById('aiCanvas');
+  if (aiCanvas) {
+    const actx = aiCanvas.getContext('2d');
+    const aiSection = document.getElementById('ai-section');
 
-    // EdgeBot sprite: 24 wide x 32 tall pixel grid
-    // Inspired by Claude's friendly, rounded aesthetic
-    // Colors: 0=transparent, 1=accent green, 2=blue, 3=dark fill, 4=pink, 5=gold, 7=white, 8=darker, 9=soft green
-    const EDGEBOT = [
-      // Row 0-1: Antenna
+    // Same sprite as before but rendered on a full-width canvas and moving
+    const AI_SPRITE = [
       '............11..........',
       '............11..........',
-      // Row 2: Antenna stem
       '............11..........',
-      // Row 3: Head top — rounded
       '.......1111111111.......',
-      // Row 4-5: Head expanding
       '.....111111111111111....',
       '....11111111111111111...',
-      // Row 6: Head — wide
       '...1113333333333331111..',
-      // Row 7: Face — top
       '...1133333333333333111..',
-      // Row 8: Eyes
       '...1133311333113333111..',
-      // Row 9: Eyes bottom
       '...1133311333113333111..',
-      // Row 10: Face middle
       '...1133333333333333111..',
-      // Row 11: Smile
       '...1133332222233333111..',
-      // Row 12: Below smile
       '...1133333333333333111..',
-      // Row 13: Head bottom — rounded
       '....11133333333331111...',
-      // Row 14: Head base
       '.....111111111111111....',
-      // Row 15: Neck
       '..........111111........',
-      // Row 16: Shoulders
       '......11111111111111....',
-      // Row 17: Body top — with arm stubs
       '..11..13333333333331.11.',
-      // Row 18: Body
       '..11..13333333333331.11.',
-      // Row 19: Body — core glow
       '..11..13335555333331.11.',
-      // Row 20: Body — core glow
       '..11..13335555333331.11.',
-      // Row 21: Body
       '..11..13333333333331.11.',
-      // Row 22: Body bottom
       '......13333333333331....',
-      // Row 23: Body base
       '.......1111111111111....',
-      // Row 24: Gap
       '........................',
-      // Row 25: Hover disc — top
       '.......222222222222.....',
-      // Row 26: Hover disc — center bright
       '......22222222222222....',
-      // Row 27: Hover disc — bottom
       '.......222222222222.....',
-      // Row 28-31: Glow trails
       '.........22222222.......',
       '..........222222........',
       '...........2222.........',
       '............22..........',
     ];
 
-    const robotGrid = EDGEBOT.map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
-    const RCOLS = robotGrid[0].length;
-    const RROWS = robotGrid.length;
+    const spriteGrid = AI_SPRITE.map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
+    const SCOLS = spriteGrid[0].length;
+    const SROWS = spriteGrid.length;
 
-    const rLogW = RCOLS * RP;
-    const rLogH = RROWS * RP;
-    const rdpr = window.devicePixelRatio || 1;
-    robotCanvas.width = rLogW * rdpr;
-    robotCanvas.height = rLogH * rdpr;
-    robotCanvas.style.width = rLogW + 'px';
-    robotCanvas.style.height = rLogH + 'px';
-    rctx.scale(rdpr, rdpr);
-
-    const ROBOT_COLORS = {
-      0: null,
-      1: '#00E68A',  // green accent — outline, antenna
-      2: '#4DA6FF',  // blue — hover disc
-      3: '#1A1A2E',  // dark fill — body/face interior
-      4: '#FF6B9D',  // pink
-      5: '#F7C948',  // gold — core glow
-      7: '#FFFFFF',  // white
-      8: '#0D0D14',  // darker
-      9: '#00B368',  // soft green
+    const AI_COLORS = {
+      0: null, 1: '#00E68A', 2: '#4DA6FF', 3: '#1A1A2E',
+      4: '#FF6B9D', 5: '#F7C948', 7: '#FFFFFF', 8: '#0D0D14', 9: '#00B368',
     };
 
-    let robotFrame = 0;
-    let robotBlinkTimer = 0;
+    let aW, aH;
+    const isMobileAI = (window.innerWidth || 400) < 768;
+    const SP = isMobileAI ? 5 : 7; // sprite pixel size
+    const spriteW = SCOLS * SP;
+    const spriteH = SROWS * SP;
 
-    function drawEdgeBot() {
-      rctx.clearRect(0, 0, rLogW, rLogH);
-      robotFrame++;
-      robotBlinkTimer++;
+    // Position & velocity
+    let ax, ay, avx, avy;
+    let aiFrame = 0;
+    let aiBlinkTimer = 0;
+    let dirChangeTimer = 0;
 
-      // Blink: close eyes every ~240 frames for 8 frames
-      const isBlinking = robotBlinkTimer > 240 && robotBlinkTimer < 250;
-      if (robotBlinkTimer > 250) robotBlinkTimer = 0;
+    // Trail for particle effect
+    const trail = [];
+    const TRAIL_MAX = 20;
 
-      // Breathing — subtle vertical offset for body rows
-      const breathOffset = Math.sin(robotFrame * 0.03) * 0.5;
+    function resizeAI() {
+      if (!aiSection) return;
+      aW = aiSection.offsetWidth;
+      aH = aiSection.offsetHeight;
+      const dpr = window.devicePixelRatio || 1;
+      aiCanvas.width = aW * dpr;
+      aiCanvas.height = aH * dpr;
+      aiCanvas.style.width = aW + 'px';
+      aiCanvas.style.height = aH + 'px';
+      actx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
 
-      // Core glow pulse
-      const corePulse = 0.5 + Math.sin(robotFrame * 0.06) * 0.5;
+    function initAIPosition() {
+      resizeAI();
+      ax = aW * 0.3 + Math.random() * aW * 0.4;
+      ay = aH * 0.3 + Math.random() * aH * 0.3;
+      avx = (Math.random() - 0.5) * 1.5;
+      avy = (Math.random() - 0.5) * 1.0;
+    }
+    initAIPosition();
+    window.addEventListener('resize', resizeAI);
 
-      // Hover disc shimmer
-      const hoverPulse = 0.4 + Math.sin(robotFrame * 0.08) * 0.3;
+    function drawSpriteAt(x, y) {
+      aiFrame++;
+      aiBlinkTimer++;
 
-      for (let r = 0; r < RROWS; r++) {
-        for (let c = 0; c < RCOLS; c++) {
-          let colorIdx = robotGrid[r][c];
+      const isBlinking = aiBlinkTimer > 240 && aiBlinkTimer < 250;
+      if (aiBlinkTimer > 250) aiBlinkTimer = 0;
+
+      const corePulse = 0.5 + Math.sin(aiFrame * 0.06) * 0.5;
+      const hoverPulse = 0.4 + Math.sin(aiFrame * 0.08) * 0.3;
+      const breathOffset = Math.sin(aiFrame * 0.03) * 0.5;
+
+      for (let r = 0; r < SROWS; r++) {
+        for (let c = 0; c < SCOLS; c++) {
+          let colorIdx = spriteGrid[r][c];
           if (colorIdx === 0) continue;
 
-          let drawX = c * RP;
-          let drawY = r * RP;
+          let drawX = x + c * SP;
+          let drawY = y + r * SP;
 
-          // ─ Antenna glow (rows 0-2) ─
+          // Antenna glow
           if (r <= 2 && colorIdx === 1) {
-            const glowPulse = 0.4 + Math.sin(robotFrame * 0.08) * 0.6;
-            rctx.fillStyle = '#00E68A';
-            rctx.globalAlpha = 0.3 + glowPulse * 0.7;
-            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
-            // Glow halo around antenna tip (row 0 only)
+            const gp = 0.4 + Math.sin(aiFrame * 0.08) * 0.6;
+            actx.fillStyle = '#00E68A';
+            actx.globalAlpha = 0.3 + gp * 0.7;
+            actx.fillRect(drawX, drawY, SP - 1, SP - 1);
             if (r === 0) {
-              rctx.fillStyle = '#00E68A';
-              rctx.globalAlpha = glowPulse * 0.15;
-              rctx.fillRect(drawX - RP, drawY - RP, RP * 3, RP * 3);
+              actx.globalAlpha = gp * 0.15;
+              actx.fillRect(drawX - SP, drawY - SP, SP * 3, SP * 3);
             }
-            rctx.globalAlpha = 1;
+            actx.globalAlpha = 1;
             continue;
           }
 
-          // ─ Eye blink (rows 8-9) ─
+          // Eye blink
           if (isBlinking && (r === 8 || r === 9) && colorIdx === 1) {
-            // Replace eye with dark fill during blink
-            rctx.fillStyle = ROBOT_COLORS[3];
-            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            actx.fillStyle = AI_COLORS[3];
+            actx.fillRect(drawX, drawY, SP - 1, SP - 1);
             continue;
           }
 
-          // ─ Smile animation — subtle width change (row 11) ─
-          if (r === 11 && colorIdx === 2) {
-            const smilePhase = Math.floor(robotFrame / 60) % 3;
-            // On phase 1, skip outer smile pixels for a smaller smile
-            if (smilePhase === 1 && (c === 9 || c === 15)) {
-              rctx.fillStyle = ROBOT_COLORS[3];
-              rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
-              continue;
-            }
-          }
-
-          // ─ Arm wave (rows 17-21, cols 2-3 and 22-23) ─
-          if ((c <= 3 || c >= 21) && r >= 17 && r <= 21 && colorIdx === 1) {
-            const side = c <= 3 ? 0 : 1;
-            const wave = Math.sin(robotFrame * 0.04 + side * 2.5) * 1.5;
-            const waveY = drawY + Math.round(wave) * RP;
-            rctx.fillStyle = ROBOT_COLORS[1];
-            if (waveY >= 0 && waveY < rLogH) {
-              rctx.fillRect(drawX, waveY, RP - 1, RP - 1);
-            }
-            continue;
-          }
-
-          // ─ Core glow (rows 19-20, color 5 = gold) ─
+          // Core glow
           if ((r === 19 || r === 20) && colorIdx === 5) {
-            rctx.fillStyle = '#F7C948';
-            rctx.globalAlpha = 0.4 + corePulse * 0.6;
-            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
-            // Glow halo
-            rctx.globalAlpha = corePulse * 0.12;
-            rctx.fillRect(drawX - 1, drawY - 1, RP + 1, RP + 1);
-            rctx.globalAlpha = 1;
+            actx.fillStyle = '#F7C948';
+            actx.globalAlpha = 0.4 + corePulse * 0.6;
+            actx.fillRect(drawX, drawY, SP - 1, SP - 1);
+            actx.globalAlpha = corePulse * 0.12;
+            actx.fillRect(drawX - 1, drawY - 1, SP + 1, SP + 1);
+            actx.globalAlpha = 1;
             continue;
           }
 
-          // ─ Hover disc (rows 25-31, color 2) — shimmer ─
+          // Hover disc shimmer
           if (r >= 25 && colorIdx === 2) {
             const discFade = r >= 28 ? (0.6 - (r - 28) * 0.15) : 0.8;
-            rctx.fillStyle = '#4DA6FF';
-            rctx.globalAlpha = Math.max(0.05, discFade * hoverPulse);
-            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
-            rctx.globalAlpha = 1;
+            actx.fillStyle = '#4DA6FF';
+            actx.globalAlpha = Math.max(0.05, discFade * hoverPulse);
+            actx.fillRect(drawX, drawY, SP - 1, SP - 1);
+            actx.globalAlpha = 1;
             continue;
           }
 
-          // ─ Body breathing offset (rows 16-23) ─
+          // Body breathing
           if (r >= 16 && r <= 23) {
             drawY += Math.round(breathOffset);
           }
 
-          // ─ Default draw ─
-          const color = ROBOT_COLORS[colorIdx];
+          // Arm wave
+          if ((c <= 3 || c >= 21) && r >= 17 && r <= 21 && colorIdx === 1) {
+            const side = c <= 3 ? 0 : 1;
+            const wave = Math.sin(aiFrame * 0.04 + side * 2.5) * 1.5;
+            const waveY = drawY + Math.round(wave) * SP;
+            actx.fillStyle = AI_COLORS[1];
+            actx.fillRect(drawX, waveY, SP - 1, SP - 1);
+            continue;
+          }
+
+          const color = AI_COLORS[colorIdx];
           if (color) {
-            rctx.fillStyle = color;
-            rctx.fillRect(drawX, drawY, RP - 1, RP - 1);
+            actx.fillStyle = color;
+            actx.fillRect(drawX, drawY, SP - 1, SP - 1);
           }
         }
       }
-
-      requestAnimationFrame(drawEdgeBot);
     }
 
-    // Start EdgeBot animation immediately
-    drawEdgeBot();
+    function drawTrail() {
+      for (let i = 0; i < trail.length; i++) {
+        const t = trail[i];
+        const age = i / trail.length; // 0 = oldest, 1 = newest
+        actx.fillStyle = '#00E68A';
+        actx.globalAlpha = age * 0.15;
+        const size = 3 + age * 4;
+        actx.beginPath();
+        actx.arc(t.x + spriteW / 2, t.y + spriteH / 2, size, 0, Math.PI * 2);
+        actx.fill();
+      }
+      actx.globalAlpha = 1;
+    }
+
+    let aiAnimId = null;
+
+    function loopAI() {
+      actx.clearRect(0, 0, aW, aH);
+
+      // Update direction periodically
+      dirChangeTimer++;
+      if (dirChangeTimer > 120 + Math.random() * 120) {
+        dirChangeTimer = 0;
+        avx += (Math.random() - 0.5) * 1.2;
+        avy += (Math.random() - 0.5) * 0.8;
+        // Speed limit
+        const speed = Math.sqrt(avx * avx + avy * avy);
+        const maxSpeed = isMobileAI ? 1.5 : 2.0;
+        if (speed > maxSpeed) {
+          avx = (avx / speed) * maxSpeed;
+          avy = (avy / speed) * maxSpeed;
+        }
+      }
+
+      // Move
+      ax += avx;
+      ay += avy;
+
+      // Bounce off edges
+      const margin = 20;
+      if (ax < margin) { ax = margin; avx = Math.abs(avx) * 0.7; }
+      if (ax + spriteW > aW - margin) { ax = aW - margin - spriteW; avx = -Math.abs(avx) * 0.7; }
+      if (ay < margin) { ay = margin; avy = Math.abs(avy) * 0.7; }
+      if (ay + spriteH > aH - margin) { ay = aH - margin - spriteH; avy = -Math.abs(avy) * 0.7; }
+
+      // Damping
+      avx *= 0.998;
+      avy *= 0.998;
+
+      // Record trail
+      if (aiFrame % 3 === 0) {
+        trail.push({ x: ax, y: ay });
+        if (trail.length > TRAIL_MAX) trail.shift();
+      }
+
+      // Draw trail then sprite
+      drawTrail();
+      drawSpriteAt(ax, ay);
+
+      aiAnimId = requestAnimationFrame(loopAI);
+    }
+
+    // Start when section is visible
+    const aiObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (!aiAnimId) loopAI();
+        } else {
+          if (aiAnimId) { cancelAnimationFrame(aiAnimId); aiAnimId = null; }
+        }
+      });
+    }, { threshold: 0.05 });
+    if (aiSection) aiObserver.observe(aiSection);
+
+    // Fallback: start after 3s if observer doesn't fire
+    setTimeout(() => { if (!aiAnimId) loopAI(); }, 3000);
   }
 
 
