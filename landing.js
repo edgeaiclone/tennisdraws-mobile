@@ -1067,32 +1067,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    function startFreeReveal() {
-      if (freeRevealed) return;
-      freeRevealed = true;
-      let prog = 0;
-      function animFree() {
-        prog += 0.02;
-        drawFreeText(Math.min(prog, 1));
-        if (prog < 1) requestAnimationFrame(animFree);
-      }
-      animFree();
-    }
-
+    // Reveal free text with scroll-triggered animation
     const freeSection = document.querySelector('.free-section');
     if (freeSection) {
       const freeObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            startFreeReveal();
+          if (entry.isIntersecting && !freeRevealed) {
+            freeRevealed = true;
+            let prog = 0;
+            function animFree() {
+              prog += 0.02;
+              drawFreeText(Math.min(prog, 1));
+              if (prog < 1) requestAnimationFrame(animFree);
+            }
+            animFree();
             freeObserver.unobserve(freeSection);
           }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.1 });
       freeObserver.observe(freeSection);
-      // Fallback: reveal after 6s if observer hasn't fired
-      setTimeout(startFreeReveal, 6000);
     }
+    // Fallback: if not revealed after 8s, just show it
+    setTimeout(() => {
+      if (!freeRevealed) {
+        freeRevealed = true;
+        drawFreeText(1);
+      }
+    }, 8000);
   }
 
 
@@ -1102,11 +1103,11 @@ document.addEventListener('DOMContentLoaded', () => {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
 
-      // Responsive sizing
-      const isMobile = window.innerWidth < 768;
-      const logW = isMobile ? Math.min(340, Math.max(280, window.innerWidth - 40)) : 360;
-      const vh = window.innerHeight || 800;
-      const logH = isMobile ? Math.min(460, Math.max(360, vh * 0.55)) : 480;
+      // Responsive sizing — use canvas parent width as fallback if innerWidth is 0
+      const vw = window.innerWidth || canvas.parentElement.clientWidth || 360;
+      const isMobile = vw < 768;
+      const logW = isMobile ? Math.min(340, Math.max(280, vw - 40)) : 360;
+      const logH = isMobile ? 440 : 480;
 
       const dpr = window.devicePixelRatio || 1;
       canvas.width = logW * dpr;
@@ -1150,30 +1151,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const self = this;
       const handler = (e) => {
         e.preventDefault();
-        e.stopPropagation();
-        // Prevent double-firing from both click and touchstart
+        // Prevent double-firing
         const now = Date.now();
-        if (now - lastTapTime < 250) return;
+        if (now - lastTapTime < 300) return;
         lastTapTime = now;
 
         if (self.solved) return;
 
-        console.log('[PUZZLE] tap state=' + self.state + ' ballY=' + Math.round(self.ballY));
         if (self.state === 'falling') {
           // Check hit zone — very generous
           if (self.ballY >= self.racketY - self.hitZoneSize && self.ballY <= self.racketY + 20) {
             self._onHit();
-          } else {
-            console.log('[PUZZLE] tap during fall but out of zone, ballY=' + Math.round(self.ballY) + ' zone=' + (self.racketY - self.hitZoneSize) + '-' + (self.racketY + 20));
           }
         } else if (self.state === 'idle') {
           self._launchBall();
-          console.log('[PUZZLE] ball launched! speed=' + self.ballVY);
         }
       };
 
-      this.canvas.addEventListener('click', handler);
-      this.canvas.addEventListener('touchstart', handler, { passive: false });
+      // Use pointerdown for unified mouse+touch, with click fallback
+      if (window.PointerEvent) {
+        this.canvas.addEventListener('pointerdown', handler, { passive: false });
+      } else {
+        this.canvas.addEventListener('touchstart', handler, { passive: false });
+        this.canvas.addEventListener('click', handler);
+      }
 
       // Skip button
       const skipBtn = document.getElementById('puzzleSkip');
@@ -1209,27 +1210,20 @@ document.addEventListener('DOMContentLoaded', () => {
       this.ralliesWon++;
       this.flashColor = '#00E68A';
       this.flashTimer = 15;
+      this._hitTimer = 0;
 
       this._updateDots();
 
       if (this.ralliesWon >= this.ralliesNeeded) {
         this.solved = true;
-        setTimeout(() => {
-          this.state = 'won';
-          this._onPuzzleSolved();
-        }, 600);
-      } else {
-        // Ball bounces back up
-        this.ballVY = -(this.baseSpeed + this.ralliesWon * 0.3) * 1.8;
-        setTimeout(() => {
-          this.state = 'idle';
-        }, 1000);
+        this._hitTimer = 40; // frames until showing reward
       }
     }
 
     _onMiss() {
       this.state = 'miss';
       this.misses++;
+      this._missTimer = 0;
       this.flashColor = '#EF4444';
       this.flashTimer = 15;
 
@@ -1238,12 +1232,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const skipBtn = document.getElementById('puzzleSkip');
         if (skipBtn) skipBtn.style.display = 'inline-block';
       }
-
-      setTimeout(() => {
-        this.state = 'idle';
-        this.ballY = 40;
-        this.ballX = this.W / 2;
-      }, 600);
     }
 
     _updateDots() {
@@ -1411,10 +1399,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (this.state === 'hit') {
-        this.ballY += this.ballVY;
-        this.ballVY += 0.15;
-        if (this.ballY < -30) {
+        // Ball flies upward
+        this.ballY -= 4;
+        this._hitTimer = (this._hitTimer || 0) + 1;
+
+        if (this.solved && this._hitTimer > 40) {
+          this.state = 'won';
+          this._onPuzzleSolved();
+        } else if (!this.solved && this._hitTimer > 50) {
+          // Reset to idle for next serve
           this.state = 'idle';
+          this.ballY = 40;
+          this.ballX = this.W / 2;
+        }
+      }
+
+      if (this.state === 'miss') {
+        this._missTimer = (this._missTimer || 0) + 1;
+        if (this._missTimer > 40) {
+          this._missTimer = 0;
+          this.state = 'idle';
+          this.ballY = 40;
+          this.ballX = this.W / 2;
         }
       }
     }
@@ -1423,32 +1429,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.solved && this.state === 'won') return;
       this._update();
       this._draw();
-      this._frameCount = (this._frameCount || 0) + 1;
-      if (this._frameCount % 300 === 1) console.log('[PUZZLE] frame=' + this._frameCount + ' state=' + this.state);
       requestAnimationFrame(() => this._loop());
     }
   }
 
-  // Init puzzle when section is visible
+  // Init puzzle immediately — no observer, no delay, no duplicates
   const puzzleCanvas = document.getElementById('puzzleCanvas');
-  if (puzzleCanvas) {
-    let puzzleStarted = false;
-    function startPuzzleOnce() {
-      if (puzzleStarted) return;
-      puzzleStarted = true;
-      new TennisRallyPuzzle(puzzleCanvas);
-    }
-    const puzzleObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          startPuzzleOnce();
-          puzzleObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    puzzleObserver.observe(puzzleCanvas);
-    // Fallback: init after 5s if observer hasn't fired
-    setTimeout(startPuzzleOnce, 5000);
+  if (puzzleCanvas && !puzzleCanvas._puzzleInit) {
+    puzzleCanvas._puzzleInit = true;
+    new TennisRallyPuzzle(puzzleCanvas);
   }
 
 
@@ -1650,28 +1639,8 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(drawRobot);
     }
 
-    // Start animation when visible
-    let robotStarted = false;
-    function startRobotOnce() {
-      if (robotStarted) return;
-      robotStarted = true;
-      drawRobot();
-    }
-    const robotSection = document.querySelector('.ai-robot-section');
-    if (robotSection) {
-      const robObserver = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          startRobotOnce();
-          robObserver.unobserve(robotSection);
-        }
-      }, { threshold: 0.2 });
-      robObserver.observe(robotSection);
-      // Fallback: start after 4s if observer hasn't fired (e.g. user scrolled fast)
-      setTimeout(startRobotOnce, 4000);
-    } else {
-      // No section found, just start
-      startRobotOnce();
-    }
+    // Start robot animation immediately
+    drawRobot();
   }
 
 
