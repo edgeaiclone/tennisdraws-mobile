@@ -1067,24 +1067,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    function startFreeReveal() {
+      if (freeRevealed) return;
+      freeRevealed = true;
+      let prog = 0;
+      function animFree() {
+        prog += 0.02;
+        drawFreeText(Math.min(prog, 1));
+        if (prog < 1) requestAnimationFrame(animFree);
+      }
+      animFree();
+    }
+
     const freeSection = document.querySelector('.free-section');
     if (freeSection) {
       const freeObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !freeRevealed) {
-            freeRevealed = true;
-            // Animate the pixel text building
-            let prog = 0;
-            function animFree() {
-              prog += 0.02;
-              drawFreeText(Math.min(prog, 1));
-              if (prog < 1) requestAnimationFrame(animFree);
-            }
-            animFree();
+          if (entry.isIntersecting) {
+            startFreeReveal();
+            freeObserver.unobserve(freeSection);
           }
         });
       }, { threshold: 0.3 });
       freeObserver.observe(freeSection);
+      // Fallback: reveal after 6s if observer hasn't fired
+      setTimeout(startFreeReveal, 6000);
     }
   }
 
