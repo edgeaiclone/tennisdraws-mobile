@@ -531,7 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startLiveTicker();
     startLiveOdds();
     initMysteryIntro();
-    initPixelReveals();
   }
 
   function typewriterLine(container, text, speed) {
@@ -561,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navbar.classList.add('visible');
     startLiveTicker();
     startLiveOdds();
-    setTimeout(() => { initMysteryIntro(); initPixelReveals(); }, 100);
+    setTimeout(() => { initMysteryIntro(); }, 100);
   } else {
     runBootSequence();
   }
@@ -822,138 +821,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixel Art Reveal System ───
-  let currentRenderer = null;
-  let currentToolKey = null;
-  const toolKeys = ['live-scores', 'odds-master', 'mto', 'edgeai-tools', 'live-ai', 'retirements', 'draws', 'chatrooms', 'notifications'];
-  const renderers = {};
-
-  function initPixelReveals() {
-    const pixelCanvas = document.getElementById('pixelArtCanvas');
-    const titleEl = document.getElementById('pixelToolTitle');
-    const descEl = document.getElementById('pixelToolDesc');
-    const numEl = document.getElementById('pixelToolNum');
-    const tagsEl = document.getElementById('pixelToolTags');
-    const triggers = document.querySelectorAll('.pixel-trigger');
-
-    if (!pixelCanvas || !triggers.length) return;
-
-    // Create a renderer for the shared canvas (we'll swap grids)
-    const titleScramble = new TextScramble(titleEl);
-    let activeIdx = -1;
-    let lastActiveIdx = -1;
-    let isTypingDesc = false;
-
-    // Scroll-driven update
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateReveals();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-
-    function updateReveals() {
-      const vh = window.innerHeight;
-      let bestIdx = -1;
-      let bestDist = Infinity;
-
-      triggers.forEach((trigger, idx) => {
-        const rect = trigger.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const dist = Math.abs(center - vh / 2);
-
-        // Pick the trigger whose center is closest to the viewport center
-        if (rect.bottom > 0 && rect.top < vh && dist < bestDist) {
-          bestDist = dist;
-          bestIdx = idx;
-        }
-      });
-
-      if (bestIdx >= 0) {
-        const trigger = triggers[bestIdx];
-        const rect = trigger.getBoundingClientRect();
-        // rawProgress: 0 when trigger top enters viewport bottom, 1 when trigger top exits viewport top
-        const rawProgress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
-        // Remap: start building at 15% progress, complete at 75%
-        const artProgress = Math.max(0, Math.min(1, (rawProgress - 0.15) / 0.6));
-
-        const toolKey = trigger.dataset.tool;
-
-        // Switch tool if different
-        if (bestIdx !== lastActiveIdx) {
-          lastActiveIdx = bestIdx;
-          currentToolKey = toolKey;
-
-          // Create or reuse renderer
-          if (!renderers[toolKey] && PIXEL_ART[toolKey]) {
-            // We need a fresh canvas context for each, so we recreate
-            renderers[toolKey] = new PixelArtRenderer(pixelCanvas, PIXEL_ART[toolKey]);
-          }
-          currentRenderer = renderers[toolKey] || null;
-
-          // Actually we need to re-create renderer each time since we share one canvas
-          if (PIXEL_ART[toolKey]) {
-            currentRenderer = new PixelArtRenderer(pixelCanvas, PIXEL_ART[toolKey]);
-          }
-
-          // Update number
-          if (numEl) numEl.textContent = trigger.dataset.num;
-
-          // Scramble title
-          const data = TOOL_DATA[toolKey];
-          if (data && titleEl) {
-            titleScramble.setText(data.title);
-          }
-
-          // Clear desc and tags (will type in when progress > 0.7)
-          if (descEl) { descEl.textContent = ''; descEl.style.opacity = '0'; }
-          if (tagsEl) { tagsEl.innerHTML = ''; tagsEl.style.opacity = '0'; }
-          isTypingDesc = false;
-        }
-
-        // Draw pixel art at progress
-        if (currentRenderer) {
-          currentRenderer.drawAtProgress(artProgress);
-        }
-
-        // Type description when art is >70% built
-        if (artProgress > 0.7 && !isTypingDesc) {
-          isTypingDesc = true;
-          const data = TOOL_DATA[toolKey];
-          if (data) {
-            if (descEl) {
-              descEl.style.opacity = '1';
-              typewriterText(descEl, data.desc, 8);
-            }
-            if (tagsEl && data.tags) {
-              setTimeout(() => {
-                tagsEl.style.opacity = '1';
-                tagsEl.innerHTML = data.tags.map(t => '<span class="fd-tag">' + t + '</span>').join('') +
-                  '<span class="free-badge-inline">FREE</span>';
-              }, 400);
-            }
-          }
-        }
-      }
-    }
-
-    // Simple typewriter for description text
-    function typewriterText(el, text, speed) {
-      el.textContent = '';
-      let i = 0;
-      const timer = setInterval(() => {
-        el.textContent = text.substring(0, ++i);
-        if (i >= text.length) clearInterval(timer);
-      }, speed);
-    }
-
-    // Initial call
-    updateReveals();
-  }
 
 
   // ─── "100% FREE" Pixel Text Canvas ───
