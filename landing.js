@@ -1109,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       this.W = logW;
       this.H = logH;
-      this.ps = isMobile ? 4 : 5; // pixel size for game elements
+      this.ps = isMobile ? 4 : 5;
 
       // Game state
       this.ralliesWon = 0;
@@ -1121,33 +1121,39 @@ document.addEventListener('DOMContentLoaded', () => {
       this.ballY = 40;
       this.ballVY = 0;
       this.ballVX = 0;
-      this.baseSpeed = isMobile ? 2.5 : 3;
-      this.racketY = this.H - 60;
+      this.baseSpeed = isMobile ? 1.8 : 2.0; // slower for playability
+      this.racketY = this.H - 70;
       this.racketX = this.W / 2;
-      this.netY = this.H * 0.42;
-      this.hitZoneSize = isMobile ? 50 : 40;
+      this.netY = this.H * 0.4;
+      this.hitZoneSize = isMobile ? 70 : 60; // much more generous hit zone
       this.flashTimer = 0;
       this.flashColor = null;
       this.solved = false;
       this.showSkip = false;
+      this.clickBlocked = false; // prevent double-fire from click+touch
 
       this._setupEvents();
       this._startIdle();
     }
 
     _setupEvents() {
+      let lastTapTime = 0;
+
       const handler = (e) => {
+        // Prevent double-firing from both click and touchstart
+        const now = Date.now();
+        if (now - lastTapTime < 200) return;
+        lastTapTime = now;
+
         e.preventDefault();
         if (this.solved) return;
 
         if (this.state === 'falling') {
-          // Check hit zone
-          if (this.ballY >= this.racketY - this.hitZoneSize && this.ballY <= this.racketY + 10) {
+          // Check hit zone — very generous
+          if (this.ballY >= this.racketY - this.hitZoneSize && this.ballY <= this.racketY + 20) {
             this._onHit();
-          } else {
-            // Too early or too late — let it play out
           }
-        } else if (this.state === 'idle' || this.state === 'miss') {
+        } else if (this.state === 'idle') {
           this._launchBall();
         }
       };
@@ -1168,7 +1174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     _startIdle() {
-      // Show "TAP TO START" state
       this.state = 'idle';
       this.ballX = this.W / 2;
       this.ballY = 40;
@@ -1178,11 +1183,11 @@ document.addEventListener('DOMContentLoaded', () => {
     _launchBall() {
       this.state = 'falling';
       this.ballY = 30;
-      this.ballX = this.W / 2 + (Math.random() - 0.5) * (this.W * 0.4);
-      this.ballVY = this.baseSpeed + (this.ralliesWon * 0.6);
-      this.ballVX = (Math.random() - 0.5) * 1.2;
-      // Move racket to track ball loosely
-      this.racketX = this.ballX + (Math.random() - 0.5) * 30;
+      // Ball spawns closer to center for easier play
+      this.ballX = this.W / 2 + (Math.random() - 0.5) * (this.W * 0.25);
+      this.ballVY = this.baseSpeed + (this.ralliesWon * 0.3); // gentler speed ramp
+      this.ballVX = (Math.random() - 0.5) * 0.8;
+      this.racketX = this.ballX + (Math.random() - 0.5) * 20;
     }
 
     _onHit() {
@@ -1191,7 +1196,6 @@ document.addEventListener('DOMContentLoaded', () => {
       this.flashColor = '#00E68A';
       this.flashTimer = 15;
 
-      // Update dots
       this._updateDots();
 
       if (this.ralliesWon >= this.ralliesNeeded) {
@@ -1202,10 +1206,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 600);
       } else {
         // Ball bounces back up
-        this.ballVY = -(this.baseSpeed + this.ralliesWon * 0.5) * 1.5;
+        this.ballVY = -(this.baseSpeed + this.ralliesWon * 0.3) * 1.8;
         setTimeout(() => {
           this.state = 'idle';
-        }, 800);
+        }, 1000);
       }
     }
 
@@ -1224,7 +1228,8 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         this.state = 'idle';
         this.ballY = 40;
-      }, 800);
+        this.ballX = this.W / 2;
+      }, 600);
     }
 
     _updateDots() {
@@ -1235,18 +1240,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     _onPuzzleSolved() {
-      // Trigger the reward
       const rewardEl = document.getElementById('puzzleReward');
-      const puzzleSection = document.querySelector('.puzzle-section');
 
       if (rewardEl) {
         rewardEl.style.display = 'flex';
         rewardEl.classList.add('active');
 
-        // Launch confetti
         launchConfetti();
 
-        // Build "UNLOCKED" pixel text
         setTimeout(() => {
           const unlockedEl = document.querySelector('.reward-pixel-text');
           if (unlockedEl) unlockedEl.classList.add('visible');
@@ -1261,6 +1262,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const btnsEl = document.querySelector('.reward-buttons');
           if (btnsEl) btnsEl.classList.add('visible');
         }, 1200);
+
+        // Scroll to reward
+        setTimeout(() => {
+          rewardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
       }
     }
 
@@ -1284,20 +1290,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Court lines
       ctx.fillStyle = '#1A3A1A';
-      // Side lines
       for (let y = 20; y < this.H - 20; y += ps + 1) {
         ctx.fillRect(20, y, ps, ps);
         ctx.fillRect(this.W - 20 - ps, y, ps, ps);
       }
-      // Base lines
       for (let x = 20; x < this.W - 20; x += ps + 1) {
         ctx.fillRect(x, 20, ps, ps);
         ctx.fillRect(x, this.H - 20 - ps, ps, ps);
-      }
-      // Service lines
-      for (let x = 20; x < this.W - 20; x += ps + 1) {
-        ctx.fillRect(x, this.netY - 60, ps, 1);
-        ctx.fillRect(x, this.netY + 60, ps, 1);
       }
 
       // Net
@@ -1308,45 +1307,52 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.globalAlpha = 1;
       }
 
-      // Hit zone indicator (subtle glow when ball is near)
+      // Hit zone indicator — show a clear green line where to tap
       if (this.state === 'falling') {
         const distToRacket = Math.abs(this.ballY - this.racketY);
-        if (distToRacket < this.hitZoneSize * 2) {
-          const intensity = 1 - (distToRacket / (this.hitZoneSize * 2));
+        if (distToRacket < this.hitZoneSize * 2.5) {
+          const intensity = 1 - (distToRacket / (this.hitZoneSize * 2.5));
           ctx.fillStyle = '#00E68A';
-          ctx.globalAlpha = intensity * 0.15;
-          ctx.fillRect(20, this.racketY - this.hitZoneSize, this.W - 40, this.hitZoneSize + 10);
+          ctx.globalAlpha = intensity * 0.25;
+          ctx.fillRect(20, this.racketY - this.hitZoneSize, this.W - 40, this.hitZoneSize + 20);
           ctx.globalAlpha = 1;
         }
       }
 
-      // Racket (pixel art)
+      // Racket — wider and more visible
       ctx.fillStyle = '#FFFFFF';
-      const rw = ps * 10;
+      const rw = ps * 12;
       const rx = this.state === 'falling' ?
-        this.racketX + (this.ballX - this.racketX) * 0.3 : // Track ball loosely
+        this.racketX + (this.ballX - this.racketX) * 0.5 :
         this.W / 2;
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 12; i++) {
         ctx.fillRect(rx - rw / 2 + i * (ps + 1), this.racketY, ps, ps * 2);
       }
 
-      // Ball (3x3 pixel)
+      // Ball — larger and more visible
       ctx.fillStyle = '#F7C948';
-      const bps = ps * 1.5;
+      const bps = ps * 2;
       ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 2, bps * 2);
+      // Ball trail when falling
+      if (this.state === 'falling') {
+        ctx.fillStyle = '#F7C948';
+        ctx.globalAlpha = 0.2;
+        ctx.fillRect(this.ballX - bps, this.ballY - bps - 8, bps * 2, 8);
+        ctx.globalAlpha = 0.1;
+        ctx.fillRect(this.ballX - bps, this.ballY - bps - 16, bps * 2, 8);
+        ctx.globalAlpha = 1;
+      }
       // Ball shine
       ctx.fillStyle = '#FFFFFF';
       ctx.globalAlpha = 0.4;
-      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 0.8, bps * 0.8);
+      ctx.fillRect(this.ballX - bps, this.ballY - bps, bps * 0.7, bps * 0.7);
       ctx.globalAlpha = 1;
 
-      // Score dots
-      ctx.fillStyle = '#00E68A';
+      // Score dots on canvas
       for (let i = 0; i < this.ralliesNeeded; i++) {
+        ctx.fillStyle = '#00E68A';
         ctx.globalAlpha = i < this.ralliesWon ? 1 : 0.2;
-        ctx.beginPath();
-        ctx.arc(this.W / 2 - 20 + i * 20, this.H - 10, 4, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(this.W / 2 - 20 + i * 16, this.H - 14, 8, 8);
       }
       ctx.globalAlpha = 1;
 
@@ -1354,9 +1360,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.state === 'idle') {
         ctx.fillStyle = '#FFFFFF';
         ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 400) * 0.3;
-        ctx.font = '13px "JetBrains Mono", monospace';
+        ctx.font = '14px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('TAP TO SERVE', this.W / 2, this.H / 2 + 40);
+        ctx.fillText(this.ralliesWon > 0 ? 'TAP TO SERVE AGAIN' : 'TAP TO SERVE', this.W / 2, this.H / 2 + 40);
+        ctx.globalAlpha = 1;
+      }
+
+      // Miss feedback
+      if (this.state === 'miss') {
+        ctx.fillStyle = '#EF4444';
+        ctx.globalAlpha = 0.6;
+        ctx.font = 'bold 16px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('MISS!', this.W / 2, this.H / 2 + 40);
         ctx.globalAlpha = 1;
       }
     }
@@ -1371,16 +1387,19 @@ document.addEventListener('DOMContentLoaded', () => {
           this.ballVX *= -1;
         }
 
+        // Racket tracks ball loosely
+        this.racketX += (this.ballX - this.racketX) * 0.04;
+
         // Miss: ball goes past racket
-        if (this.ballY > this.racketY + 40) {
+        if (this.ballY > this.racketY + 50) {
           this._onMiss();
         }
       }
 
       if (this.state === 'hit') {
         this.ballY += this.ballVY;
-        this.ballVY += 0.1; // decelerate
-        if (this.ballY < -20) {
+        this.ballVY += 0.15;
+        if (this.ballY < -30) {
           this.state = 'idle';
         }
       }
@@ -1473,6 +1492,152 @@ document.addEventListener('DOMContentLoaded', () => {
       if (alive && frame < 180) requestAnimationFrame(animConfetti);
     }
     animConfetti();
+  }
+
+
+  // ─── Animated Pixel Art Robot (Canvas) ───
+  const robotCanvas = document.getElementById('robotCanvas');
+  if (robotCanvas) {
+    const rctx = robotCanvas.getContext('2d');
+    const P = 6; // pixel size
+    const isMobileRobot = window.innerWidth < 768;
+    const RP = isMobileRobot ? 5 : 6;
+
+    // Robot sprite: 18 wide x 24 tall pixel grid
+    // Colors: 0=transparent, 1=accent green, 2=blue, 3=dark fill, 8=dark bg, 5=gold, 7=white
+    const ROBOT_BASE = [
+      '..................',
+      '.......11.........',
+      '.......11.........',
+      '......1111........',
+      '....11111111......',
+      '...1111111111.....',
+      '...1333333331.....',
+      '...1333333331.....',
+      '...13311113331....',
+      '...13311113331....',
+      '...1333333331.....',
+      '...1332222331.....',
+      '...1332222331.....',
+      '...1333333331.....',
+      '....11111111......',
+      '..1.11111111.1....',
+      '..1.13333331.1....',
+      '..1.13311331.1....',
+      '..1.13355331.1....',
+      '..1.13355331.1....',
+      '..1.13311331.1....',
+      '..1.13333331.1....',
+      '....11111111......',
+      '....11....11......',
+      '....11....11......',
+      '....11....11......',
+    ];
+
+    const robotGrid = ROBOT_BASE.map(row => row.split('').map(ch => ch === '.' ? 0 : parseInt(ch)));
+    const RCOLS = robotGrid[0].length;
+    const RROWS = robotGrid.length;
+
+    const rLogW = RCOLS * RP;
+    const rLogH = RROWS * RP;
+    const rdpr = window.devicePixelRatio || 1;
+    robotCanvas.width = rLogW * rdpr;
+    robotCanvas.height = rLogH * rdpr;
+    robotCanvas.style.width = rLogW + 'px';
+    robotCanvas.style.height = rLogH + 'px';
+    rctx.scale(rdpr, rdpr);
+
+    const ROBOT_COLORS = {
+      0: null,
+      1: '#00E68A',
+      2: '#4DA6FF',
+      3: '#1A1A2E',
+      5: '#F7C948',
+      7: '#FFFFFF',
+      8: '#0D0D14',
+    };
+
+    let robotFrame = 0;
+    let robotBlinkTimer = 0;
+    let robotMouthFrame = 0;
+
+    function drawRobot() {
+      rctx.clearRect(0, 0, rLogW, rLogH);
+      robotFrame++;
+      robotBlinkTimer++;
+      robotMouthFrame++;
+
+      // Blink: close eyes every 120 frames for 6 frames
+      const isBlinking = robotBlinkTimer > 120 && robotBlinkTimer < 128;
+      if (robotBlinkTimer > 128) robotBlinkTimer = 0;
+
+      // Mouth animation: alternate width
+      const mouthPhase = Math.floor(robotMouthFrame / 20) % 3;
+
+      for (let r = 0; r < RROWS; r++) {
+        for (let c = 0; c < RCOLS; c++) {
+          let colorIdx = robotGrid[r][c];
+          if (colorIdx === 0) continue;
+
+          // Eye blink: rows 8-9, the "11" eye pixels
+          if (isBlinking && (r === 8 || r === 9) && colorIdx === 1) {
+            if (r === 9) continue; // hide bottom row of eye
+          }
+
+          // Mouth animation: rows 11-12, the "2222" mouth pixels
+          if ((r === 11 || r === 12) && colorIdx === 2) {
+            if (mouthPhase === 1 && (c === 5 || c === 10)) continue; // shrink
+            if (mouthPhase === 2 && c === 5) { colorIdx = 2; } // normal
+          }
+
+          // Arm wave: rows 15-21, columns 2 and 13
+          if ((c === 2 || c === 13) && r >= 15 && r <= 21) {
+            const wave = Math.sin(robotFrame * 0.05 + (c === 2 ? 0 : 1.5)) * 2;
+            const drawR = r + Math.round(wave);
+            const color = ROBOT_COLORS[colorIdx];
+            if (color && drawR >= 0 && drawR < RROWS) {
+              rctx.fillStyle = color;
+              rctx.fillRect(c * RP, drawR * RP, RP - 1, RP - 1);
+            }
+            continue;
+          }
+
+          // Antenna glow: rows 0-1
+          if (r <= 1 && colorIdx === 1) {
+            const glowPulse = 0.5 + Math.sin(robotFrame * 0.08) * 0.5;
+            rctx.fillStyle = '#00E68A';
+            rctx.globalAlpha = 0.3 + glowPulse * 0.7;
+            rctx.fillRect(c * RP, r * RP, RP - 1, RP - 1);
+            // Glow halo
+            rctx.fillStyle = '#00E68A';
+            rctx.globalAlpha = glowPulse * 0.2;
+            rctx.fillRect(c * RP - 2, r * RP - 2, RP + 3, RP + 3);
+            rctx.globalAlpha = 1;
+            continue;
+          }
+
+          const color = ROBOT_COLORS[colorIdx];
+          if (color) {
+            rctx.fillStyle = color;
+            rctx.fillRect(c * RP, r * RP, RP - 1, RP - 1);
+          }
+        }
+      }
+
+      requestAnimationFrame(drawRobot);
+    }
+
+    // Start animation when visible
+    const robotSection = document.querySelector('.ai-robot-section');
+    if (robotSection) {
+      const robObserver = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          drawRobot();
+          robObserver.unobserve(robotSection);
+        }
+      }, { threshold: 0.2 });
+      robObserver.observe(robotSection);
+    }
   }
 
 
