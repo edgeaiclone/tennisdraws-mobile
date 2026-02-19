@@ -1168,13 +1168,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      // Use pointerdown for unified mouse+touch, with click fallback
-      if (window.PointerEvent) {
-        this.canvas.addEventListener('pointerdown', handler, { passive: false });
-      } else {
-        this.canvas.addEventListener('touchstart', handler, { passive: false });
-        this.canvas.addEventListener('click', handler);
-      }
+      // Bind all input methods — the 300ms debounce prevents double-fire
+      this.canvas.addEventListener('pointerdown', handler, { passive: false });
+      this.canvas.addEventListener('touchstart', handler, { passive: false });
+      this.canvas.addEventListener('click', handler);
 
       // Skip button
       const skipBtn = document.getElementById('puzzleSkip');
