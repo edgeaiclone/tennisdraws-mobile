@@ -1147,22 +1147,28 @@ document.addEventListener('DOMContentLoaded', () => {
     _setupEvents() {
       let lastTapTime = 0;
 
+      const self = this;
       const handler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         // Prevent double-firing from both click and touchstart
         const now = Date.now();
-        if (now - lastTapTime < 200) return;
+        if (now - lastTapTime < 250) return;
         lastTapTime = now;
 
-        e.preventDefault();
-        if (this.solved) return;
+        if (self.solved) return;
 
-        if (this.state === 'falling') {
+        console.log('[PUZZLE] tap state=' + self.state + ' ballY=' + Math.round(self.ballY));
+        if (self.state === 'falling') {
           // Check hit zone — very generous
-          if (this.ballY >= this.racketY - this.hitZoneSize && this.ballY <= this.racketY + 20) {
-            this._onHit();
+          if (self.ballY >= self.racketY - self.hitZoneSize && self.ballY <= self.racketY + 20) {
+            self._onHit();
+          } else {
+            console.log('[PUZZLE] tap during fall but out of zone, ballY=' + Math.round(self.ballY) + ' zone=' + (self.racketY - self.hitZoneSize) + '-' + (self.racketY + 20));
           }
-        } else if (this.state === 'idle') {
-          this._launchBall();
+        } else if (self.state === 'idle') {
+          self._launchBall();
+          console.log('[PUZZLE] ball launched! speed=' + self.ballVY);
         }
       };
 
@@ -1417,6 +1423,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.solved && this.state === 'won') return;
       this._update();
       this._draw();
+      this._frameCount = (this._frameCount || 0) + 1;
+      if (this._frameCount % 300 === 1) console.log('[PUZZLE] frame=' + this._frameCount + ' state=' + this.state);
       requestAnimationFrame(() => this._loop());
     }
   }
