@@ -30,7 +30,11 @@ a { text-decoration: none; color: inherit; }
 .boot-container { max-width: 520px; width: 100%; padding: 0 24px; position: relative; z-index: 2; }
 .boot-logo { text-align: center; margin-bottom: 32px; opacity: 0; animation: bootLogoIn 0.6s ease 0.2s forwards; }
 @keyframes bootLogoIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-.boot-logo-canvas { image-rendering: pixelated; display: block; margin: 0 auto; }
+.boot-logo-wrap { display: inline-flex; align-items: center; gap: 10px; position: relative; }
+.boot-logo-mark { display: flex; }
+.boot-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+.boot-logo-accent { color: var(--accent); }
+.boot-spider-canvas { position: absolute; top: -24px; right: -8px; width: 28px; height: 24px; image-rendering: pixelated; }
 .boot-lines { font-family: var(--mono); font-size: 13px; line-height: 2; min-height: 220px; image-rendering: pixelated; }
 .boot-line { color: var(--accent); opacity: 0; animation: lineIn 0.05s ease forwards; text-shadow: 0 0 8px rgba(0, 230, 138, 0.4); }
 @keyframes lineIn { to { opacity: 0.8; } }

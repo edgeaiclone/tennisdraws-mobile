@@ -16,7 +16,17 @@
 <div class="boot-screen" id="bootScreen">
   <div class="boot-container">
     <div class="boot-logo">
-      <canvas class="boot-logo-canvas" id="bootLogoCanvas" width="240" height="80"></canvas>
+      <div class="boot-logo-wrap">
+        <canvas class="boot-spider-canvas" id="bootSpiderCanvas"></canvas>
+        <div class="boot-logo-mark">
+          <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="#00E68A" stroke-width="2.5"/>
+            <circle cx="24" cy="24" r="4" fill="#00E68A"/>
+            <path d="M24 2v44M2 24h44" stroke="#00E68A" stroke-width="1" opacity="0.3"/>
+          </svg>
+        </div>
+        <span class="boot-logo-text">edge<span class="boot-logo-accent">AI</span></span>
+      </div>
     </div>
     <div class="boot-lines" id="bootLines"></div>
     <div class="boot-progress">

@@ -515,13 +515,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixelated Boot Logo + Robot Mascot ───
-  function drawBootLogo() {
-    const canvas = document.getElementById('bootLogoCanvas');
+  // ─── Pixel Spider on Boot Logo ───
+  function drawBootSpider() {
+    const canvas = document.getElementById('bootSpiderCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const w = 240, h = 80;
+    const w = 28, h = 24;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     canvas.style.width = w + 'px';
@@ -530,110 +530,45 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.imageSmoothingEnabled = false;
 
     const g = '#00E68A';
-    const W = '#FFFFFF';
-    const dim = 'rgba(0,230,138,0.25)';
-    const ps = 3; // pixel size
+    const ps = 2;
 
-    // Tennis ball (top-left, 12x12 grid) — green circle with seam
-    const ball = [
-      '....1111....',
-      '..11111111..',
-      '.1111..1111.',
-      '1111....1111',
-      '111......111',
-      '11........11',
-      '11........11',
-      '111......111',
-      '1111....1111',
-      '.1111..1111.',
-      '..11111111..',
-      '....1111....',
+    // Spider: 14x12 pixel grid
+    // Body with 8 legs, 2 green eyes, hanging thread
+    const spider = [
+      '......11......',  // thread
+      '......11......',
+      '......11......',
+      '..1..1111..1..',  // top legs + head
+      '.1..111111..1.',
+      '1..1111.111..1',  // eyes row: . = gap
+      '1..11111111..1',
+      '.1..111111..1.',  // bottom body
+      '..1..1111..1..',  // bottom legs
+      '..1..1..1..1..',
+      '.1...1..1...1.',
+      '1....1..1....1',  // feet
     ];
-    const ballX = 8, ballY = 6;
-    ball.forEach((row, r) => {
+
+    spider.forEach((row, r) => {
       for (let c = 0; c < row.length; c++) {
         if (row[c] === '1') {
-          ctx.fillStyle = g;
-          ctx.fillRect((ballX + c) * ps, (ballY + r) * ps, ps, ps);
+          // Eyes: green dots at specific positions on row 5
+          const isEye = (r === 5) && (c === 5 || c === 8);
+          ctx.fillStyle = isEye ? g : 'rgba(255,255,255,0.85)';
+          ctx.fillRect(c * ps, r * ps, ps, ps);
         }
       }
     });
 
-    // "edgeAI" pixel text (5px tall letters, next to ball)
-    // Each letter is a 2D array, 5 rows tall, variable width
-    const letters = {
-      e: ['1111','1...','111.','1...','1111'],
-      d: ['111.','1..1','1..1','1..1','111.'],
-      g: ['1111','1...','1.11','1..1','1111'],
-      A: ['1111','1..1','1111','1..1','1..1'],
-      I: ['111','.1.','.1.','.1.','111'],
-    };
-    const word = [
-      { ch: 'e', color: W },
-      { ch: 'd', color: W },
-      { ch: 'g', color: W },
-      { ch: 'e', color: W },
-      { ch: 'A', color: g },
-      { ch: 'I', color: g },
-    ];
-    let textX = 24; // start after ball
-    const textY = 8;
-    const scale = 2; // each pixel = 2x2 for the text
-    word.forEach(({ ch, color }) => {
-      const glyph = letters[ch];
-      glyph.forEach((row, r) => {
-        for (let c = 0; c < row.length; c++) {
-          if (row[c] === '1') {
-            ctx.fillStyle = color;
-            ctx.fillRect(textX + c * ps * scale, (textY + r * scale) * ps, ps * scale, ps * scale);
-          }
-        }
-      });
-      textX += (letters[ch][0].length + 1) * ps * scale;
-    });
-
-    // Green underline bar (pixelated)
-    const barY = (textY + 12) * ps;
-    const barStartX = 24;
-    for (let i = 0; i < 28; i++) {
-      ctx.fillStyle = g;
-      ctx.fillRect(barStartX + i * (ps + 1), barY, ps, ps);
-    }
-
-    // Pixel robot mascot (right side, 10x12)
-    const robot = [
-      '....11....',
-      '...1111...',
-      '..111111..',
-      '..1.11.1..',  // eyes
-      '..111111..',
-      '..111111..',
-      '...1111...',
-      '.1.1111.1.',  // arms
-      '1..1111..1',
-      '...1..1...',  // legs
-      '...1..1...',
-      '..11..11..',
-    ];
-    const robotX = 68, robotY = 2;
-    robot.forEach((row, r) => {
-      for (let c = 0; c < row.length; c++) {
-        if (row[c] === '1') {
-          ctx.fillStyle = (r === 3 && (c === 3 || c === 4 || c === 6 || c === 7)) ? g : W;
-          ctx.fillRect((robotX + c) * ps, (robotY + r) * ps, ps, ps);
-        }
-      }
-    });
-
-    // Antenna glow
-    ctx.fillStyle = g;
-    ctx.fillRect((robotX + 4) * ps, (robotY - 1) * ps, ps * 2, ps);
+    // Glow on eyes
     ctx.shadowColor = g;
-    ctx.shadowBlur = 6;
-    ctx.fillRect((robotX + 4) * ps, (robotY - 1) * ps, ps * 2, ps);
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = g;
+    ctx.fillRect(5 * ps, 5 * ps, ps, ps);
+    ctx.fillRect(8 * ps, 5 * ps, ps, ps);
     ctx.shadowBlur = 0;
   }
-  drawBootLogo();
+  drawBootSpider();
 
 
   // ─── Boot Sequence ───
