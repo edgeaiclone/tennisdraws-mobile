@@ -451,12 +451,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── TextScramble Class ───
+  // ─── TextScramble Class (throttled for perf) ───
   class TextScramble {
     constructor(el) {
       this.el = el;
       this.chars = '!<>-_\\/[]{}=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       this.frameReq = null;
+      this.tickCount = 0;
     }
 
     setText(newText) {
@@ -464,12 +465,13 @@ document.addEventListener('DOMContentLoaded', () => {
       this.queue = [];
       for (let i = 0; i < length; i++) {
         const to = newText[i];
-        const start = Math.floor(Math.random() * 15);
-        const end = start + Math.floor(Math.random() * 15) + 5;
+        const start = Math.floor(Math.random() * 10);
+        const end = start + Math.floor(Math.random() * 10) + 4;
         this.queue.push({ to, start, end, char: '' });
       }
       cancelAnimationFrame(this.frameReq);
       this.frame = 0;
+      this.tickCount = 0;
       return new Promise(resolve => {
         this.resolve = resolve;
         this._update();
@@ -477,6 +479,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     _update() {
+      this.tickCount++;
+      // Throttle: only update DOM every 3rd rAF tick
+      if (this.tickCount % 3 !== 0) {
+        this.frame++;
+        this.frameReq = requestAnimationFrame(() => this._update());
+        return;
+      }
+
       let output = '';
       let complete = 0;
       for (let i = 0; i < this.queue.length; i++) {
@@ -585,15 +595,44 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const bootLinesEl = document.getElementById('bootLines');
-  const bootProgressBar = document.getElementById('bootProgressBar');
+  const bootProgressCanvas = document.getElementById('bootProgressCanvas');
   const bootScreen = document.getElementById('bootScreen');
   const navbar = document.getElementById('navbar');
 
+  // Pixelated progress bar drawn on canvas
+  function drawPixelProgress(progress) {
+    const canvas = bootProgressCanvas;
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    const w = parent.clientWidth;
+    const h = parent.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    const blockW = 6;
+    const gap = 2;
+    const totalBlocks = Math.floor(w / (blockW + gap));
+    const filledBlocks = Math.floor(progress * totalBlocks);
+
+    for (let i = 0; i < filledBlocks; i++) {
+      ctx.fillStyle = '#00E68A';
+      ctx.fillRect(i * (blockW + gap), 0, blockW, h);
+    }
+    // Dim remaining blocks
+    for (let i = filledBlocks; i < totalBlocks; i++) {
+      ctx.fillStyle = 'rgba(0, 230, 138, 0.06)';
+      ctx.fillRect(i * (blockW + gap), 0, blockW, h);
+    }
+  }
+
   async function runBootSequence() {
+    drawPixelProgress(0);
     for (let i = 0; i < bootLines.length; i++) {
       const { text, delay } = bootLines[i];
       await typewriterLine(bootLinesEl, text, 10);
-      bootProgressBar.style.width = ((i + 1) / bootLines.length * 100) + '%';
+      drawPixelProgress((i + 1) / bootLines.length);
       await sleep(delay);
     }
     await sleep(250);
@@ -673,9 +712,9 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (data && descEl) {
           descEl.style.opacity = '1';
-          typeDesc(descEl, data.desc, 10);
+          typeDesc(descEl, data.desc);
         }
-      }, 1000);
+      }, 600);
 
       currentIdx = idx;
     }
@@ -692,13 +731,14 @@ document.addEventListener('DOMContentLoaded', () => {
       step();
     }
 
-    function typeDesc(el, text, speed) {
+    function typeDesc(el, text) {
       el.textContent = '';
       let i = 0;
       descTimer = setInterval(() => {
-        el.textContent = text.substring(0, ++i);
+        i += 3; // type 3 chars per tick for speed
+        el.textContent = text.substring(0, Math.min(i, text.length));
         if (i >= text.length) clearInterval(descTimer);
-      }, speed);
+      }, 16);
     }
 
     buttons.forEach((btn, idx) => {
