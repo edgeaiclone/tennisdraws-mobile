@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════ */
-/* EdgeAI Landing — Minimal Black + Pixel Tools    */
+/* edgeAI Landing — Minimal Black + Pixel Tools    */
 /* ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Boot Sequence ───
   const bootLines = [
-    { text: '> EDGE AI v2.1.0 — Initializing...', delay: 0 },
+    { text: '> edgeAI v2.1.0 — Initializing...', delay: 0 },
     { text: '> Live match feed connected...           [OK]', delay: 40 },
     { text: '> ATP / WTA / ITF data pipeline...       [OK]', delay: 30 },
     { text: '> Odds Master stream online...           [OK]', delay: 30 },
@@ -580,5 +580,65 @@ document.addEventListener('DOMContentLoaded', () => {
     showTool(0);
     resetAutoTimer();
   }
+
+
+  // ─── Pixelated Store Icons ───
+  function drawPixelIcon(canvasId, grid, colors) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 28;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+
+    const rows = grid.length;
+    const cols = grid[0].length;
+    const ps = size / Math.max(rows, cols);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const ch = grid[r][c];
+        if (ch === '.') continue;
+        ctx.fillStyle = colors[ch] || '#fff';
+        ctx.fillRect(c * ps, r * ps, ps, ps);
+      }
+    }
+  }
+
+  // Apple logo — 10x12 pixel grid
+  drawPixelIcon('iosIcon', [
+    '....77....',
+    '...77.....',
+    '..7777777.',
+    '.77777777.',
+    '777777777.',
+    '777777777.',
+    '777777777.',
+    '.77777777.',
+    '..7777777.',
+    '..777.777.',
+    '..77...77.',
+    '..7.....7.',
+  ], { '7': '#ffffff' });
+
+  // Android robot — 10x12 pixel grid
+  drawPixelIcon('androidIcon', [
+    '..1....1..',
+    '...1..1...',
+    '.11111111.',
+    '1111111111',
+    '1111111111',
+    '1.11111.11',
+    '1111111111',
+    '1111111111',
+    '.11111111.',
+    '.11....11.',
+    '.11....11.',
+    '.11....11.',
+  ], { '1': '#00E68A' });
 
 });
