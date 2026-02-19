@@ -515,46 +515,48 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixel Spider on Boot Logo ───
-  function drawBootSpider() {
-    const canvas = document.getElementById('bootSpiderCanvas');
+  // ─── Pixel Robot Logo Mark ───
+  function drawBootRobot() {
+    const canvas = document.getElementById('bootRobotCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const w = 28, h = 24;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
+    const size = 36;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
     ctx.scale(dpr, dpr);
     ctx.imageSmoothingEnabled = false;
 
     const g = '#00E68A';
-    const ps = 2;
+    const W = '#FFFFFF';
+    const ps = 3;
 
-    // Spider: 14x12 pixel grid
-    // Body with 8 legs, 2 green eyes, hanging thread
-    const spider = [
-      '......11......',  // thread
-      '......11......',
-      '......11......',
-      '..1..1111..1..',  // top legs + head
-      '.1..111111..1.',
-      '1..1111.111..1',  // eyes row: . = gap
-      '1..11111111..1',
-      '.1..111111..1.',  // bottom body
-      '..1..1111..1..',  // bottom legs
-      '..1..1..1..1..',
-      '.1...1..1...1.',
-      '1....1..1....1',  // feet
+    // Robot: 12x12 pixel grid
+    const robot = [
+      '....11......',  // antenna
+      '....11......',
+      '..111111....',  // head top
+      '..1G..G1....',  // head with eyes (G = green)
+      '..111111....',  // head bottom
+      '..111111....',  // mouth
+      '...1111.....',  // neck
+      '.1.1111.1...',  // body + arms
+      '1..1111..1..',
+      '...1..1.....',  // legs
+      '...1..1.....',
+      '..11..11....',  // feet
     ];
 
-    spider.forEach((row, r) => {
+    robot.forEach((row, r) => {
       for (let c = 0; c < row.length; c++) {
-        if (row[c] === '1') {
-          // Eyes: green dots at specific positions on row 5
-          const isEye = (r === 5) && (c === 5 || c === 8);
-          ctx.fillStyle = isEye ? g : 'rgba(255,255,255,0.85)';
+        const ch = row[c];
+        if (ch === '1') {
+          ctx.fillStyle = W;
+          ctx.fillRect(c * ps, r * ps, ps, ps);
+        } else if (ch === 'G') {
+          ctx.fillStyle = g;
           ctx.fillRect(c * ps, r * ps, ps, ps);
         }
       }
@@ -562,13 +564,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Glow on eyes
     ctx.shadowColor = g;
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = g;
+    ctx.fillRect(3 * ps, 3 * ps, ps, ps);
+    ctx.fillRect(6 * ps, 3 * ps, ps, ps);
+    ctx.shadowBlur = 0;
+
+    // Antenna tip glow
+    ctx.shadowColor = g;
     ctx.shadowBlur = 4;
     ctx.fillStyle = g;
-    ctx.fillRect(5 * ps, 5 * ps, ps, ps);
-    ctx.fillRect(8 * ps, 5 * ps, ps, ps);
+    ctx.fillRect(4 * ps, 0, ps * 2, ps);
     ctx.shadowBlur = 0;
   }
-  drawBootSpider();
+  drawBootRobot();
+
+  // ─── Small Nav Robot (same design, smaller) ───
+  function drawNavRobot() {
+    const canvas = document.getElementById('navRobotCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const size = 24;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.imageSmoothingEnabled = false;
+
+    const g = '#00E68A';
+    const W = '#FFFFFF';
+    const ps = 2;
+
+    const robot = [
+      '....11......',
+      '....11......',
+      '..111111....',
+      '..1G..G1....',
+      '..111111....',
+      '..111111....',
+      '...1111.....',
+      '.1.1111.1...',
+      '1..1111..1..',
+      '...1..1.....',
+      '...1..1.....',
+      '..11..11....',
+    ];
+
+    robot.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) {
+        const ch = row[c];
+        if (ch === '1') {
+          ctx.fillStyle = W;
+          ctx.fillRect(c * ps, r * ps, ps, ps);
+        } else if (ch === 'G') {
+          ctx.fillStyle = g;
+          ctx.fillRect(c * ps, r * ps, ps, ps);
+        }
+      }
+    });
+  }
+  drawNavRobot();
 
 
   // ─── Boot Sequence ───
