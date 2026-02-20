@@ -5,21 +5,22 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Pixel Logo Renderer (robot + edgeAI text) ───
-  // Robot: 7x10 grid, Text: "edgeAI" 5px tall pixel font
+  // Icon: 11x11 grid, Text: "edgeAI" 5px tall pixel font
   // Colors: W = white, G = green, D = dim gray, . = transparent
 
-  // Humanoid robot — 7x10 pixel grid
+  // Claude sparkle starburst — 11x11 pixel grid
   const ROBOT_GRID = [
-    '..GGG..',
-    '.GWWWG.',
-    '.GW.WG.',
-    '.GWWWG.',
-    '..GGG..',
-    '.GGGGG.',
-    'G.GGG.G',
-    '..GGG..',
-    '.G...G.',
-    '.G...G.',
+    '....W.W....',
+    '.....W.....',
+    '..W..W..W..',
+    '...W.W.W...',
+    '....WWW....',
+    'WWWWWWWWWWW',
+    '....WWW....',
+    '...W.W.W...',
+    '..W..W..W..',
+    '.....W.....',
+    '....W.W....',
   ];
 
   // 5px tall pixel font for "edgeAI" — each char is a grid
@@ -69,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ps = scale; // pixel size
     const gap = Math.max(1, Math.floor(scale / 4));
 
-    // Robot dimensions
-    const robotCols = 7;
-    const robotRows = 10;
+    // Sparkle dimensions
+    const robotCols = 11;
+    const robotRows = 11;
     const robotW = robotCols * (ps + gap);
     const robotH = robotRows * (ps + gap);
 
