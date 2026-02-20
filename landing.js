@@ -513,14 +513,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── Boot Sequence ───
   const bootLines = [
     { text: '> edgeAI — Initializing...', delay: 0 },
-    { text: '> Live match feed connected...              [ARMED]', delay: 40 },
-    { text: '> ATP / WTA / Challenger / ITF livescores...[ARMED]', delay: 30 },
-    { text: '> MTO tracking & alerts pipeline...         [ARMED]', delay: 30 },
-    { text: '> Retired & Returned player monitor...      [ARMED]', delay: 30 },
-    { text: '> Entry lists, draws & withdrawals...       [ARMED]', delay: 30 },
-    { text: '> AI Stats engine — live comparisons...     [ARMED]', delay: 30 },
-    { text: '> edgeAI Tools loaded...                    [ARMED]', delay: 30 },
-    { text: '> AI Chatbot ready...                       [ARMED]', delay: 80 },
+    { text: '> Live match feed connected...              [ARMED]', delay: 20 },
+    { text: '> ATP / WTA / Challenger / ITF livescores...[ARMED]', delay: 15 },
+    { text: '> MTO tracking & alerts pipeline...         [ARMED]', delay: 15 },
+    { text: '> Retired & Returned player monitor...      [ARMED]', delay: 15 },
+    { text: '> Entry lists, draws & withdrawals...       [ARMED]', delay: 15 },
+    { text: '> AI Stats engine — live comparisons...     [ARMED]', delay: 15 },
+    { text: '> edgeAI Tools loaded...                    [ARMED]', delay: 15 },
+    { text: '> AI Chatbot ready...                       [ARMED]', delay: 30 },
   ];
 
   const bootLinesEl = document.getElementById('bootLines');
@@ -567,13 +567,13 @@ document.addEventListener('DOMContentLoaded', () => {
     updateBootPct(0);
     for (let i = 0; i < bootLines.length; i++) {
       const { text, delay } = bootLines[i];
-      await typewriterLine(bootLinesEl, text, 10);
+      await typewriterLine(bootLinesEl, text, 5);
       const pct = (i + 1) / bootLines.length;
       drawPixelProgress(pct);
       updateBootPct(pct);
       await sleep(delay);
     }
-    await sleep(400);
+    await sleep(200);
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
     initToolCarousel();
