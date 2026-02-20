@@ -705,8 +705,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewCanvas = document.getElementById('toolPreviewCanvas');
     const isMobileDevice = window.innerWidth < 768;
 
-    // Wireframe image paths — replace placeholders with real wireframes later
-    const WIREFRAME_IMAGES = {};
+    // Wireframe image paths for tooltip previews
+    const WIREFRAME_IMAGES = {
+      'livescores': 'wireframes/Home %231.png',
+    };
 
     function showPreview(btn) {
       if (isMobileDevice || !previewCard) return;
