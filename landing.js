@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Draw all three logos at different scales
-  drawPixelLogo('bootLogoCanvas', 4);
+  drawPixelLogo('bootLogoCanvas', 2);
   drawPixelLogo('navLogoCanvas', 2);
   drawPixelLogo('footerLogoCanvas', 2);
 
