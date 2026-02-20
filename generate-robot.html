@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head><title>edgeAI Sparkle + Logo PNG Generator</title></head>
+<head><title>edgeAI Logo PNG Generator</title></head>
 <body style="background:#222;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:24px;font-family:sans-serif;color:#fff;padding:40px;">
-<h2>edgeAI — Transparent PNG Assets for Lottie</h2>
-<p style="opacity:0.5;max-width:500px;text-align:center;">Claude-style sparkle icon + pixelated "edgeAI" logo. Download both as transparent PNGs, then upload to LottieFiles AI.</p>
+<h2>edgeAI — Transparent PNG for Lottie</h2>
+<p style="opacity:0.5;max-width:500px;text-align:center;">Claude sparkle + "edgeAI" side by side. Download as transparent PNG, upload to LottieFiles AI.</p>
+
+<!-- SVG source (hidden) for rendering to canvas -->
+<svg id="sparkleSvg" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 16 16" fill="white" style="display:none;">
+  <path d="m3.127 10.604 3.135-1.76.053-.153-.053-.085H6.11l-.525-.032-1.791-.048-1.554-.065-1.505-.08-.38-.081L0 7.832l.036-.234.32-.214.455.04 1.009.069 1.513.105 1.097.064 1.626.17h.259l.036-.105-.089-.065-.068-.064-1.566-1.062-1.695-1.121-.887-.646-.48-.327-.243-.306-.104-.67.435-.48.585.04.15.04.593.456 1.267.981 1.654 1.218.242.202.097-.068.012-.049-.109-.181-.9-1.626-.96-1.655-.428-.686-.113-.411a2 2 0 0 1-.068-.484l.496-.674L4.446 0l.662.089.279.242.411.94.666 1.48 1.033 2.014.302.597.162.553.06.17h.105v-.097l.085-1.134.157-1.392.154-1.792.052-.504.25-.605.497-.327.387.186.319.456-.045.294-.19 1.23-.37 1.93-.243 1.29h.142l.161-.16.654-.868 1.097-1.372.484-.545.565-.601.363-.287h.686l.505.751-.226.775-.707.895-.585.759-.839 1.13-.524.904.048.072.125-.012 1.897-.403 1.024-.186 1.223-.21.553.258.06.263-.218.536-1.307.323-1.533.307-2.284.54-.028.02.032.04 1.029.098.44.024h1.077l2.005.15.525.346.315.424-.053.323-.807.411-3.631-.863-.872-.218h-.12v.073l.726.71 1.331 1.202 1.667 1.55.084.383-.214.302-.226-.032-1.464-1.101-.565-.497-1.28-1.077h-.084v.113l.295.432 1.557 2.34.08.718-.112.234-.404.141-.444-.08-.911-1.28-.94-1.44-.759-1.291-.093.053-.448 4.821-.21.246-.484.186-.403-.307-.214-.496.214-.98.258-1.28.21-1.016.19-1.263.112-.42-.008-.028-.092.012-.953 1.307-1.448 1.957-1.146 1.227-.274.109-.477-.247.045-.44.266-.39 1.586-2.018.956-1.25.617-.723-.004-.105h-.036l-4.212 2.736-.75.096-.324-.302.04-.496.154-.162 1.267-.871z"/>
+</svg>
 
 <div style="display:flex;gap:60px;flex-wrap:wrap;justify-content:center;align-items:start;margin-top:20px;">
 
-<!-- SPARKLE IMAGE -->
+<!-- SPARKLE ONLY -->
 <div style="text-align:center;">
-  <h3>1. Claude Sparkle (Pixel)</h3>
+  <h3>1. Claude Sparkle Icon</h3>
   <canvas id="sparkleCanvas"></canvas>
   <br><br>
   <img id="sparkleOut" style="border:1px solid #333;background:repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 0 0/16px 16px;" />
@@ -17,55 +22,23 @@
   <a id="sparkleDL" download="edgeai-sparkle.png" style="padding:12px 24px;background:#00E68A;color:#000;border-radius:8px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;">Download Sparkle PNG</a>
 </div>
 
-<!-- LOGO IMAGE -->
+<!-- COMBINED: sparkle + edgeAI side by side -->
 <div style="text-align:center;">
-  <h3>2. Pixelated "edgeAI" Logo</h3>
-  <canvas id="logoCanvas"></canvas>
-  <br><br>
-  <img id="logoOut" style="border:1px solid #333;background:repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 0 0/16px 16px;max-width:600px;" />
-  <br><br>
-  <a id="logoDL" download="edgeai-logo-pixel.png" style="padding:12px 24px;background:#00E68A;color:#000;border-radius:8px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;">Download Logo PNG</a>
-</div>
-
-</div>
-
-<!-- COMBINED -->
-<div style="text-align:center;margin-top:40px;">
-  <h3>3. Combined: Sparkle + Logo</h3>
+  <h3>2. Sparkle + edgeAI (Side by Side)</h3>
   <canvas id="comboCanvas"></canvas>
   <br><br>
   <img id="comboOut" style="border:1px solid #333;background:repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 0 0/16px 16px;max-width:700px;" />
   <br><br>
-  <a id="comboDL" download="edgeai-sparkle-logo.png" style="padding:12px 24px;background:#00E68A;color:#000;border-radius:8px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;">Download Combined PNG</a>
+  <a id="comboDL" download="edgeai-logo-with-sparkle.png" style="padding:12px 24px;background:#00E68A;color:#000;border-radius:8px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;">Download Combined PNG</a>
+</div>
+
 </div>
 
 <script>
 const GREEN = '#00E68A';
 const WHITE = '#FFFFFF';
 
-// ══════════════════════════════════════
-// Claude-style 8-rayed sparkle (14x14 pixel grid)
-// ══════════════════════════════════════
-const SPARKLE = [
-  '......11......',
-  '......11......',
-  '.1....11....1.',
-  '..1...11...1..',
-  '...1..11..1...',
-  '....1.11.1....',
-  '.111111111111.',
-  '.111111111111.',
-  '....1.11.1....',
-  '...1..11..1...',
-  '..1...11...1..',
-  '.1....11....1.',
-  '......11......',
-  '......11......',
-];
-
-// ══════════════════════════════════════
 // Pixel font for "edgeAI" (5x7 per char)
-// ══════════════════════════════════════
 const FONT = {
   'e': ['11111','1....','1....','1111.','1....','1....','11111'],
   'd': ['1111.','1...1','1...1','1...1','1...1','1...1','1111.'],
@@ -74,158 +47,87 @@ const FONT = {
   'I': ['111','.1.','.1.','.1.','.1.','.1.','111'],
 };
 
-// ──────────────────────────────
-// 1. SPARKLE
-// ──────────────────────────────
-function drawSparkle() {
-  const canvas = document.getElementById('sparkleCanvas');
-  const ctx = canvas.getContext('2d');
-  const PS = 24;
-  const cols = 14, rows = 14;
-  const pad = 30;
-  canvas.width = cols * PS + pad * 2;
-  canvas.height = rows * PS + pad * 2;
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (SPARKLE[r][c] === '1') {
-        ctx.fillStyle = WHITE;
-        ctx.fillRect(pad + c * PS, pad + r * PS, PS, PS);
-      }
-    }
-  }
-
-  // Glow on center
-  ctx.shadowColor = 'rgba(255,255,255,0.5)';
-  ctx.shadowBlur = 12;
-  ctx.fillStyle = WHITE;
-  ctx.fillRect(pad + 6 * PS, pad + 6 * PS, PS * 2, PS * 2);
-  ctx.shadowBlur = 0;
-
-  const url = canvas.toDataURL('image/png');
-  document.getElementById('sparkleOut').src = url;
-  document.getElementById('sparkleDL').href = url;
+// Render the hidden SVG to an image, then draw everything
+function renderSvgToImage(callback) {
+  const svgEl = document.getElementById('sparkleSvg');
+  const svgData = new XMLSerializer().serializeToString(svgEl);
+  const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    callback(img);
+  };
+  img.src = url;
 }
 
-// ──────────────────────────────
-// 2. PIXELATED "edgeAI" LOGO
-// ──────────────────────────────
-function drawLogo() {
-  const canvas = document.getElementById('logoCanvas');
-  const ctx = canvas.getContext('2d');
-  const PS = 8, GAP = 2, CGAP = 12;
+renderSvgToImage(function(sparkleImg) {
+
+  // ─── 1. SPARKLE ONLY ───
+  const sSize = 400;
+  const sPad = 40;
+  const sc = document.getElementById('sparkleCanvas');
+  sc.width = sSize + sPad * 2;
+  sc.height = sSize + sPad * 2;
+  const sctx = sc.getContext('2d');
+  sctx.drawImage(sparkleImg, sPad, sPad, sSize, sSize);
+
+  const sUrl = sc.toDataURL('image/png');
+  document.getElementById('sparkleOut').src = sUrl;
+  document.getElementById('sparkleDL').href = sUrl;
+
+  // ─── 2. COMBINED: sparkle on LEFT + "edgeAI" text on RIGHT ───
+  const cc = document.getElementById('comboCanvas');
+  const cctx = cc.getContext('2d');
+
+  // Layout params
+  const iconSize = 120;       // sparkle icon size
+  const PS = 8, GAP = 2, CGAP = 10;  // pixel font params
   const letters = [
     {ch:'e',color:WHITE},{ch:'d',color:WHITE},{ch:'g',color:WHITE},{ch:'e',color:WHITE},
     {ch:'A',color:GREEN},{ch:'I',color:GREEN},
   ];
 
-  let totalW = 0;
+  // Calculate text width
+  let textW = 0;
   letters.forEach((l,i) => {
-    totalW += FONT[l.ch][0].length * (PS+GAP);
-    if (i < letters.length-1) totalW += CGAP;
+    textW += FONT[l.ch][0].length * (PS+GAP);
+    if (i < letters.length-1) textW += CGAP;
   });
-  const totalH = 7 * (PS+GAP);
-  const pad = 40;
-  canvas.width = totalW + pad*2;
-  canvas.height = totalH + pad*2;
+  const textH = 7 * (PS+GAP);
 
-  let x = pad;
+  const spacing = 24;   // gap between sparkle and text
+  const pad = 40;
+  const totalW = iconSize + spacing + textW + pad * 2;
+  const totalH = Math.max(iconSize, textH) + pad * 2;
+
+  cc.width = totalW;
+  cc.height = totalH;
+
+  // Draw sparkle on left, vertically centered
+  const iconY = (totalH - iconSize) / 2;
+  cctx.drawImage(sparkleImg, pad, iconY, iconSize, iconSize);
+
+  // Draw "edgeAI" text on right, vertically centered
+  const textY = (totalH - textH) / 2;
+  let x = pad + iconSize + spacing;
   letters.forEach(l => {
     const g = FONT[l.ch];
     for (let r = 0; r < g.length; r++) {
       for (let c = 0; c < g[r].length; c++) {
         if (g[r][c] === '1') {
-          ctx.fillStyle = l.color;
-          ctx.fillRect(x + c*(PS+GAP), pad + r*(PS+GAP), PS, PS);
+          cctx.fillStyle = l.color;
+          cctx.fillRect(x + c*(PS+GAP), textY + r*(PS+GAP), PS, PS);
         }
       }
     }
     x += g[0].length * (PS+GAP) + CGAP;
   });
 
-  const url = canvas.toDataURL('image/png');
-  document.getElementById('logoOut').src = url;
-  document.getElementById('logoDL').href = url;
-}
-
-// ──────────────────────────────
-// 3. COMBINED: sparkle floating above logo
-// ──────────────────────────────
-function drawCombo() {
-  const canvas = document.getElementById('comboCanvas');
-  const ctx = canvas.getContext('2d');
-
-  // Logo metrics
-  const LPS = 6, LGAP = 1, LCGAP = 8;
-  const letters = [
-    {ch:'e',color:WHITE},{ch:'d',color:WHITE},{ch:'g',color:WHITE},{ch:'e',color:WHITE},
-    {ch:'A',color:GREEN},{ch:'I',color:GREEN},
-  ];
-  let logoW = 0;
-  letters.forEach((l,i) => {
-    logoW += FONT[l.ch][0].length*(LPS+LGAP);
-    if(i<letters.length-1) logoW += LCGAP;
-  });
-  const logoH = 7*(LPS+LGAP);
-
-  // Sparkle metrics
-  const SPS = 4;
-  const sparkleW = 14*SPS, sparkleH = 14*SPS;
-
-  const pad = 30;
-  const gap = 12;
-  const totalW = Math.max(logoW, sparkleW) + pad*2;
-  const totalH = sparkleH + gap + logoH + pad*2;
-  canvas.width = totalW;
-  canvas.height = totalH;
-
-  // Draw sparkle centered above logo
-  const sx = (totalW - sparkleW) / 2;
-  const sy = pad;
-  for (let r = 0; r < 14; r++) {
-    for (let c = 0; c < 14; c++) {
-      if (SPARKLE[r][c] === '1') {
-        ctx.fillStyle = WHITE;
-        ctx.fillRect(sx + c*SPS, sy + r*SPS, SPS, SPS);
-      }
-    }
-  }
-  // Center glow
-  ctx.shadowColor = 'rgba(255,255,255,0.4)';
-  ctx.shadowBlur = 8;
-  ctx.fillStyle = WHITE;
-  ctx.fillRect(sx + 6*SPS, sy + 6*SPS, SPS*2, SPS*2);
-  ctx.shadowBlur = 0;
-
-  // Draw logo below
-  const logoY = sy + sparkleH + gap;
-  const logoX = (totalW - logoW) / 2;
-  let x = logoX;
-  letters.forEach(l => {
-    const g = FONT[l.ch];
-    for (let r = 0; r < g.length; r++) {
-      for (let c = 0; c < g[r].length; c++) {
-        if (g[r][c] === '1') {
-          ctx.fillStyle = l.color;
-          ctx.fillRect(x + c*(LPS+LGAP), logoY + r*(LPS+LGAP), LPS, LPS);
-        }
-      }
-    }
-    x += g[0].length*(LPS+LGAP) + LCGAP;
-  });
-
-  // Green underline
-  ctx.fillStyle = GREEN;
-  ctx.fillRect(logoX, logoY + logoH + 6, logoW, 3);
-
-  const url = canvas.toDataURL('image/png');
-  document.getElementById('comboOut').src = url;
-  document.getElementById('comboDL').href = url;
-}
-
-drawSparkle();
-drawLogo();
-drawCombo();
+  const cUrl = cc.toDataURL('image/png');
+  document.getElementById('comboOut').src = cUrl;
+  document.getElementById('comboDL').href = cUrl;
+});
 </script>
 </body>
 </html>
