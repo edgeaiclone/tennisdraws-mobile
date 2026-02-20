@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Text uses full scale, icon uses half scale
     const tps = scale;       // text pixel size
     const tgap = Math.max(1, Math.floor(scale / 4));
-    const ips = Math.max(1, Math.floor(scale / 4)); // icon pixel size (quarter)
+    const ips = Math.max(1, scale * 3 / 8); // icon pixel size (1.5x)
     const igap = Math.max(1, Math.floor(ips / 4));
 
     // Sparkle dimensions (at half scale)
