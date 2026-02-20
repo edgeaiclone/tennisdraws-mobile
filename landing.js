@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Draw all three logos at different scales
-  drawPixelLogo('bootLogoCanvas', 5);
-  drawPixelLogo('navLogoCanvas', 3);
+  drawPixelLogo('bootLogoCanvas', 4);
+  drawPixelLogo('navLogoCanvas', 2);
   drawPixelLogo('footerLogoCanvas', 2);
 
   // ─── Pixel Art Color Palette ───
