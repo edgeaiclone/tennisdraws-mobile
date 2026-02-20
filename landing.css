@@ -24,21 +24,23 @@ a { text-decoration: none; color: inherit; }
 /* ═══════════════════════════════════════════════ */
 /* BOOT SEQUENCE                                   */
 /* ═══════════════════════════════════════════════ */
-.boot-screen { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s; image-rendering: pixelated; }
-.boot-screen::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px); pointer-events: none; z-index: 1; }
-.boot-screen.done { opacity: 0; visibility: hidden; pointer-events: none; }
-.boot-container { max-width: 520px; width: 100%; padding: 0 24px; position: relative; z-index: 2; }
-.boot-logo { text-align: center; margin-bottom: 32px; opacity: 0; animation: bootLogoIn 0.6s ease 0.2s forwards; }
+.boot-screen { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s, transform 0.5s ease; image-rendering: pixelated; }
+.boot-screen::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.25) 2px, rgba(0,0,0,0.25) 4px); pointer-events: none; z-index: 1; }
+.boot-screen.done { opacity: 0; visibility: hidden; pointer-events: none; transform: scale(1.02); }
+.boot-container { max-width: 560px; width: 100%; padding: 0 24px; position: relative; z-index: 2; }
+.boot-logo { text-align: center; margin-bottom: 24px; opacity: 0; animation: bootLogoIn 0.6s ease 0.2s forwards; }
 @keyframes bootLogoIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 .boot-logo-wrap { display: inline-flex; align-items: center; gap: 12px; position: relative; }
 .boot-sparkle { width: 36px; height: 36px; flex-shrink: 0; color: #fff; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3)); }
 .boot-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
 .boot-logo-accent { color: var(--accent); }
-.boot-lines { font-family: var(--mono); font-size: 13px; line-height: 2; min-height: 220px; image-rendering: pixelated; }
+.boot-lines { font-family: var(--mono); font-size: 13px; line-height: 1.9; min-height: 280px; image-rendering: pixelated; }
 .boot-line { color: var(--accent); opacity: 0; animation: lineIn 0.05s ease forwards; text-shadow: 0 0 8px rgba(0, 230, 138, 0.4); }
-@keyframes lineIn { to { opacity: 0.8; } }
-.boot-progress { width: 100%; height: 10px; background: transparent; margin-top: 24px; overflow: hidden; image-rendering: pixelated; }
+.boot-line .armed { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+@keyframes lineIn { to { opacity: 0.85; } }
+.boot-progress { width: 100%; height: 10px; background: transparent; margin-top: 16px; overflow: hidden; image-rendering: pixelated; }
 .boot-progress-canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+.boot-pct { font-family: var(--mono); font-size: 11px; color: var(--accent); text-align: right; margin-top: 6px; opacity: 0.6; letter-spacing: 1px; }
 
 /* ═══════════════════════════════════════════════ */
 /* NAVBAR                                          */

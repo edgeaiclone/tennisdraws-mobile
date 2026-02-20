@@ -517,14 +517,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Boot Sequence ───
   const bootLines = [
-    { text: '> edgeAI v2.1.0 — Initializing...', delay: 0 },
-    { text: '> Live match feed connected...           [OK]', delay: 40 },
-    { text: '> ATP / WTA / ITF data pipeline...       [OK]', delay: 30 },
-    { text: '> Odds Master stream online...           [OK]', delay: 30 },
-    { text: '> edgeAI tools loaded...                 ARMED', delay: 30 },
-    { text: '> Live AI predictions engine...          ARMED', delay: 30 },
-    { text: '> Subscription check...                  FREE TIER', delay: 30 },
-    { text: '> System nominal. Welcome.', delay: 80 },
+    { text: '> edgeAI — Initializing...', delay: 0 },
+    { text: '> Live match feed connected...              [ARMED]', delay: 40 },
+    { text: '> ATP / WTA / Challenger / ITF livescores...[ARMED]', delay: 30 },
+    { text: '> MTO tracking & alerts pipeline...         [ARMED]', delay: 30 },
+    { text: '> Retired & Returned player monitor...      [ARMED]', delay: 30 },
+    { text: '> Entry lists, draws & withdrawals...       [ARMED]', delay: 30 },
+    { text: '> AI Stats engine — live comparisons...     [ARMED]', delay: 30 },
+    { text: '> edgeAI Tools loaded...                    [ARMED]', delay: 30 },
+    { text: '> AI Chatbot ready...                       [ARMED]', delay: 80 },
   ];
 
   const bootLinesEl = document.getElementById('bootLines');
@@ -564,18 +565,27 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.shadowBlur = 0;
   }
 
+  const bootPctEl = document.getElementById('bootPct');
+
   async function runBootSequence() {
     drawPixelProgress(0);
+    updateBootPct(0);
     for (let i = 0; i < bootLines.length; i++) {
       const { text, delay } = bootLines[i];
       await typewriterLine(bootLinesEl, text, 10);
-      drawPixelProgress((i + 1) / bootLines.length);
+      const pct = (i + 1) / bootLines.length;
+      drawPixelProgress(pct);
+      updateBootPct(pct);
       await sleep(delay);
     }
-    await sleep(250);
+    await sleep(400);
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
     initToolCarousel();
+  }
+
+  function updateBootPct(pct) {
+    if (bootPctEl) bootPctEl.textContent = Math.round(pct * 100) + '%';
   }
 
   function typewriterLine(container, text, speed) {
@@ -585,7 +595,8 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(p);
       let i = 0;
       const timer = setInterval(() => {
-        p.textContent = text.substring(0, ++i);
+        const partial = text.substring(0, ++i);
+        p.innerHTML = partial.replace(/\[ARMED\]/g, '<span class="armed">[ARMED]</span>');
         if (i >= text.length) {
           clearInterval(timer);
           resolve();
