@@ -67,14 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const ps = scale; // pixel size
-    const gap = Math.max(1, Math.floor(scale / 4));
 
-    // Sparkle dimensions
+    // Text uses full scale, icon uses half scale
+    const tps = scale;       // text pixel size
+    const tgap = Math.max(1, Math.floor(scale / 4));
+    const ips = Math.max(1, Math.floor(scale / 4)); // icon pixel size (quarter)
+    const igap = Math.max(1, Math.floor(ips / 4));
+
+    // Sparkle dimensions (at half scale)
     const robotCols = 11;
     const robotRows = 11;
-    const robotW = robotCols * (ps + gap);
-    const robotH = robotRows * (ps + gap);
+    const robotW = robotCols * (ips + igap);
+    const robotH = robotRows * (ips + igap);
 
     // Text: "edgeAI" — 6 chars, each 3px wide + 1px spacing
     const text = ['e','d','g','e','A','I'];
@@ -82,11 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const charH = 5;
     const charSpacing = 1;
     const textTotalCols = text.length * (charW + charSpacing) - charSpacing;
-    const textW = textTotalCols * (ps + gap);
-    const textH = charH * (ps + gap);
+    const textW = textTotalCols * (tps + tgap);
+    const textH = charH * (tps + tgap);
 
-    // Spacing between robot and text
-    const midGap = ps * 3;
+    // Spacing between icon and text
+    const midGap = tps * 2;
 
     const totalW = robotW + midGap + textW;
     const totalH = Math.max(robotH, textH);
@@ -100,14 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const colors = { 'W': '#FFFFFF', 'G': '#00E68A', 'D': 'rgba(255,255,255,0.15)' };
 
-    // Draw robot (vertically centered)
+    // Draw icon (vertically centered)
     const robotOffY = Math.floor((totalH - robotH) / 2);
     for (let r = 0; r < ROBOT_GRID.length; r++) {
       for (let c = 0; c < ROBOT_GRID[r].length; c++) {
         const ch = ROBOT_GRID[r][c];
         if (ch === '.') continue;
         ctx.fillStyle = colors[ch] || '#fff';
-        ctx.fillRect(c * (ps + gap), robotOffY + r * (ps + gap), ps, ps);
+        ctx.fillRect(c * (ips + igap), robotOffY + r * (ips + igap), ips, ips);
       }
     }
 
@@ -123,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const ch = glyph[r][c];
           if (ch === '.') continue;
           ctx.fillStyle = colors[ch] || '#fff';
-          ctx.fillRect(textOffX + (cursorX + c) * (ps + gap), textOffY + r * (ps + gap), ps, ps);
+          ctx.fillRect(textOffX + (cursorX + c) * (tps + tgap), textOffY + r * (tps + tgap), tps, tps);
         }
       }
       cursorX += charW + charSpacing;
@@ -131,9 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Draw all three logos at different scales
-  drawPixelLogo('bootLogoCanvas', 2);
-  drawPixelLogo('navLogoCanvas', 2);
-  drawPixelLogo('footerLogoCanvas', 2);
+  drawPixelLogo('bootLogoCanvas', 4);
+  drawPixelLogo('navLogoCanvas', 4);
+  drawPixelLogo('footerLogoCanvas', 4);
 
   // ─── Pixel Art Color Palette ───
   const PIXEL_PALETTE = {
