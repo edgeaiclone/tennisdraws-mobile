@@ -4,26 +4,10 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ─── Pixel Logo Renderer (robot + edgeAI text) ───
-  // Icon: 11x11 grid, Text: "edgeAI" 5px tall pixel font
-  // Colors: W = white, G = green, D = dim gray, . = transparent
+  // ─── Pixel Logo Renderer (edgeAI text only) ───
+  // Text: "edgeAI" 5px tall pixel font
+  // Colors: W = white, G = green, . = transparent
 
-  // Claude sparkle starburst — 11x11 pixel grid
-  const ROBOT_GRID = [
-    '....W.W....',
-    '.....W.....',
-    '..W..W..W..',
-    '...W.W.W...',
-    '....WWW....',
-    'WWWWWWWWWWW',
-    '....WWW....',
-    '...W.W.W...',
-    '..W..W..W..',
-    '.....W.....',
-    '....W.W....',
-  ];
-
-  // 5px tall pixel font for "edgeAI" — each char is a grid
   const PIXEL_FONT = {
     'e': [
       'WWW',
@@ -67,33 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
+    const ps = scale;
+    const gap = Math.max(1, Math.floor(scale / 4));
 
-    // Text uses full scale, icon uses half scale
-    const tps = scale;       // text pixel size
-    const tgap = Math.max(1, Math.floor(scale / 4));
-    const ips = Math.max(1, scale * 3 / 8); // icon pixel size (1.5x)
-    const igap = Math.max(1, Math.floor(ips / 4));
-
-    // Sparkle dimensions (at half scale)
-    const robotCols = 11;
-    const robotRows = 11;
-    const robotW = robotCols * (ips + igap);
-    const robotH = robotRows * (ips + igap);
-
-    // Text: "edgeAI" — 6 chars, each 3px wide + 1px spacing
     const text = ['e','d','g','e','A','I'];
     const charW = 3;
     const charH = 5;
     const charSpacing = 1;
     const textTotalCols = text.length * (charW + charSpacing) - charSpacing;
-    const textW = textTotalCols * (tps + tgap);
-    const textH = charH * (tps + tgap);
-
-    // Spacing between icon and text
-    const midGap = tps * 2;
-
-    const totalW = robotW + midGap + textW;
-    const totalH = Math.max(robotH, textH);
+    const totalW = textTotalCols * (ps + gap);
+    const totalH = charH * (ps + gap);
 
     canvas.width = totalW * dpr;
     canvas.height = totalH * dpr;
@@ -102,22 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.scale(dpr, dpr);
     ctx.imageSmoothingEnabled = false;
 
-    const colors = { 'W': '#FFFFFF', 'G': '#00E68A', 'D': 'rgba(255,255,255,0.15)' };
+    const colors = { 'W': '#FFFFFF', 'G': '#00E68A' };
 
-    // Draw icon (vertically centered)
-    const robotOffY = Math.floor((totalH - robotH) / 2);
-    for (let r = 0; r < ROBOT_GRID.length; r++) {
-      for (let c = 0; c < ROBOT_GRID[r].length; c++) {
-        const ch = ROBOT_GRID[r][c];
-        if (ch === '.') continue;
-        ctx.fillStyle = colors[ch] || '#fff';
-        ctx.fillRect(c * (ips + igap), robotOffY + r * (ips + igap), ips, ips);
-      }
-    }
-
-    // Draw text (vertically centered)
-    const textOffX = robotW + midGap;
-    const textOffY = Math.floor((totalH - textH) / 2);
     let cursorX = 0;
     for (const letter of text) {
       const glyph = PIXEL_FONT[letter];
@@ -127,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const ch = glyph[r][c];
           if (ch === '.') continue;
           ctx.fillStyle = colors[ch] || '#fff';
-          ctx.fillRect(textOffX + (cursorX + c) * (tps + tgap), textOffY + r * (tps + tgap), tps, tps);
+          ctx.fillRect((cursorX + c) * (ps + gap), r * (ps + gap), ps, ps);
         }
       }
       cursorX += charW + charSpacing;

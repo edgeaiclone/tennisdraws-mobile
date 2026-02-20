@@ -57,6 +57,7 @@ a { text-decoration: none; color: inherit; }
 
 .tools-header { text-align: center; margin-bottom: 48px; }
 .tools-title { font-family: var(--mono); font-size: clamp(24px, 4vw, 36px); font-weight: 800; letter-spacing: -1px; color: #fff; margin-bottom: 10px; }
+.tools-tagline { font-family: var(--mono); font-size: 15px; color: var(--accent); letter-spacing: 0.3px; margin-bottom: 6px; }
 .tools-sub { font-family: var(--mono); font-size: 14px; color: var(--text-secondary); letter-spacing: 0.5px; }
 
 .tools-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 48px; }
