@@ -515,13 +515,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixel Robot Logo Mark ───
-  function drawBootRobot() {
-    const canvas = document.getElementById('bootRobotCanvas');
+  // ─── Claude-style Sparkle Logo Mark ───
+  // 8-rayed starburst matching Claude's iconic sparkle icon
+  const SPARKLE_GRID = [
+    '......11......',  // N ray tip
+    '......11......',
+    '.1....11....1.',  // NW + N + NE
+    '..1...11...1..',
+    '...1..11..1...',
+    '....1.11.1....',
+    '.111111111111.',  // E-W ray (horizontal bar)
+    '.111111111111.',
+    '....1.11.1....',
+    '...1..11..1...',
+    '..1...11...1..',
+    '.1....11....1.',
+    '......11......',  // S ray tip
+    '......11......',
+  ];
+
+  function drawSparkle(canvasId, size) {
+    const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const size = 36;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
     canvas.style.width = size + 'px';
@@ -529,103 +546,31 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.scale(dpr, dpr);
     ctx.imageSmoothingEnabled = false;
 
-    const g = '#00E68A';
-    const W = '#FFFFFF';
-    const ps = 3;
+    const rows = SPARKLE_GRID.length;
+    const cols = SPARKLE_GRID[0].length;
+    const ps = size / cols;
 
-    // Robot: 12x12 pixel grid
-    const robot = [
-      '....11......',  // antenna
-      '....11......',
-      '..111111....',  // head top
-      '..1G..G1....',  // head with eyes (G = green)
-      '..111111....',  // head bottom
-      '..111111....',  // mouth
-      '...1111.....',  // neck
-      '.1.1111.1...',  // body + arms
-      '1..1111..1..',
-      '...1..1.....',  // legs
-      '...1..1.....',
-      '..11..11....',  // feet
-    ];
-
-    robot.forEach((row, r) => {
-      for (let c = 0; c < row.length; c++) {
-        const ch = row[c];
-        if (ch === '1') {
-          ctx.fillStyle = W;
-          ctx.fillRect(c * ps, r * ps, ps, ps);
-        } else if (ch === 'G') {
-          ctx.fillStyle = g;
+    // Draw the sparkle pixels
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (SPARKLE_GRID[r][c] === '1') {
+          ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(c * ps, r * ps, ps, ps);
         }
       }
-    });
+    }
 
-    // Glow on eyes
-    ctx.shadowColor = g;
-    ctx.shadowBlur = 6;
-    ctx.fillStyle = g;
-    ctx.fillRect(3 * ps, 3 * ps, ps, ps);
-    ctx.fillRect(6 * ps, 3 * ps, ps, ps);
-    ctx.shadowBlur = 0;
-
-    // Antenna tip glow
-    ctx.shadowColor = g;
-    ctx.shadowBlur = 4;
-    ctx.fillStyle = g;
-    ctx.fillRect(4 * ps, 0, ps * 2, ps);
+    // Subtle glow on center
+    ctx.shadowColor = 'rgba(255,255,255,0.6)';
+    ctx.shadowBlur = size * 0.15;
+    ctx.fillStyle = '#FFFFFF';
+    const cx = 6 * ps, cy = 6 * ps;
+    ctx.fillRect(cx, cy, ps * 2, ps * 2);
     ctx.shadowBlur = 0;
   }
-  drawBootRobot();
 
-  // ─── Small Nav Robot (same design, smaller) ───
-  function drawNavRobot() {
-    const canvas = document.getElementById('navRobotCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
-    const size = 24;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = size + 'px';
-    canvas.style.height = size + 'px';
-    ctx.scale(dpr, dpr);
-    ctx.imageSmoothingEnabled = false;
-
-    const g = '#00E68A';
-    const W = '#FFFFFF';
-    const ps = 2;
-
-    const robot = [
-      '....11......',
-      '....11......',
-      '..111111....',
-      '..1G..G1....',
-      '..111111....',
-      '..111111....',
-      '...1111.....',
-      '.1.1111.1...',
-      '1..1111..1..',
-      '...1..1.....',
-      '...1..1.....',
-      '..11..11....',
-    ];
-
-    robot.forEach((row, r) => {
-      for (let c = 0; c < row.length; c++) {
-        const ch = row[c];
-        if (ch === '1') {
-          ctx.fillStyle = W;
-          ctx.fillRect(c * ps, r * ps, ps, ps);
-        } else if (ch === 'G') {
-          ctx.fillStyle = g;
-          ctx.fillRect(c * ps, r * ps, ps, ps);
-        }
-      }
-    });
-  }
-  drawNavRobot();
+  drawSparkle('bootRobotCanvas', 36);
+  drawSparkle('navRobotCanvas', 24);
 
 
   // ─── Boot Sequence ───
