@@ -4,6 +4,135 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ─── Pixel Logo Renderer (robot + edgeAI text) ───
+  // Robot: 9x10 grid, Text: "edgeAI" 5px tall pixel font
+  // Colors: W = white, G = green, D = dim gray, . = transparent
+
+  const ROBOT_GRID = [
+    '..GGG..',
+    '.GWWWG.',
+    '.GW.WG.',
+    '.GWWWG.',
+    '..GGG..',
+    '.GGGGG.',
+    'G.GGG.G',
+    '..GGG..',
+    '.G...G.',
+    '.G...G.',
+  ];
+
+  // 5px tall pixel font for "edgeAI" — each char is a grid
+  const PIXEL_FONT = {
+    'e': [
+      'WWW',
+      'W..',
+      'WW.',
+      'W..',
+      'WWW',
+    ],
+    'd': [
+      'WW.',
+      'W.W',
+      'W.W',
+      'W.W',
+      'WW.',
+    ],
+    'g': [
+      '.WW',
+      'W..',
+      'W.W',
+      'W.W',
+      '.WW',
+    ],
+    'A': [
+      '.G.',
+      'G.G',
+      'GGG',
+      'G.G',
+      'G.G',
+    ],
+    'I': [
+      'GGG',
+      '.G.',
+      '.G.',
+      '.G.',
+      'GGG',
+    ],
+  };
+
+  function drawPixelLogo(canvasId, scale) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const ps = scale; // pixel size
+    const gap = Math.max(1, Math.floor(scale / 4));
+
+    // Robot dimensions
+    const robotCols = 7;
+    const robotRows = 10;
+    const robotW = robotCols * (ps + gap);
+    const robotH = robotRows * (ps + gap);
+
+    // Text: "edgeAI" — 6 chars, each 3px wide + 1px spacing
+    const text = ['e','d','g','e','A','I'];
+    const charW = 3;
+    const charH = 5;
+    const charSpacing = 1;
+    const textTotalCols = text.length * (charW + charSpacing) - charSpacing;
+    const textW = textTotalCols * (ps + gap);
+    const textH = charH * (ps + gap);
+
+    // Spacing between robot and text
+    const midGap = ps * 3;
+
+    const totalW = robotW + midGap + textW;
+    const totalH = Math.max(robotH, textH);
+
+    canvas.width = totalW * dpr;
+    canvas.height = totalH * dpr;
+    canvas.style.width = totalW + 'px';
+    canvas.style.height = totalH + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.imageSmoothingEnabled = false;
+
+    const colors = { 'W': '#FFFFFF', 'G': '#00E68A', 'D': 'rgba(255,255,255,0.15)' };
+
+    // Draw robot (vertically centered)
+    const robotOffY = Math.floor((totalH - robotH) / 2);
+    for (let r = 0; r < ROBOT_GRID.length; r++) {
+      for (let c = 0; c < ROBOT_GRID[r].length; c++) {
+        const ch = ROBOT_GRID[r][c];
+        if (ch === '.') continue;
+        ctx.fillStyle = colors[ch] || '#fff';
+        ctx.fillRect(c * (ps + gap), robotOffY + r * (ps + gap), ps, ps);
+      }
+    }
+
+    // Draw text (vertically centered)
+    const textOffX = robotW + midGap;
+    const textOffY = Math.floor((totalH - textH) / 2);
+    let cursorX = 0;
+    for (const letter of text) {
+      const glyph = PIXEL_FONT[letter];
+      if (!glyph) { cursorX += charW + charSpacing; continue; }
+      for (let r = 0; r < glyph.length; r++) {
+        for (let c = 0; c < glyph[r].length; c++) {
+          const ch = glyph[r][c];
+          if (ch === '.') continue;
+          ctx.fillStyle = colors[ch] || '#fff';
+          ctx.fillRect(textOffX + (cursorX + c) * (ps + gap), textOffY + r * (ps + gap), ps, ps);
+        }
+      }
+      cursorX += charW + charSpacing;
+    }
+  }
+
+  // Draw all three logos at different scales
+  drawPixelLogo('bootLogoCanvas', 5);
+  drawPixelLogo('navLogoCanvas', 3);
+  drawPixelLogo('footerLogoCanvas', 2);
+
   // ─── Pixel Art Color Palette ───
   const PIXEL_PALETTE = {
     0: 'transparent',

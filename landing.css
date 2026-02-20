@@ -30,10 +30,8 @@ a { text-decoration: none; color: inherit; }
 .boot-container { max-width: 560px; width: 100%; padding: 0 24px; position: relative; z-index: 2; }
 .boot-logo { text-align: center; margin-bottom: 24px; opacity: 0; animation: bootLogoIn 0.6s ease 0.2s forwards; }
 @keyframes bootLogoIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-.boot-logo-wrap { display: inline-flex; align-items: center; gap: 12px; position: relative; }
-.boot-sparkle { width: 36px; height: 36px; flex-shrink: 0; color: #fff; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3)); }
-.boot-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
-.boot-logo-accent { color: var(--accent); }
+.boot-logo-wrap { display: inline-flex; align-items: center; position: relative; }
+.boot-logo-canvas { display: block; image-rendering: pixelated; }
 .boot-lines { font-family: var(--mono); font-size: 13px; line-height: 1.9; min-height: 280px; image-rendering: pixelated; }
 .boot-line { color: var(--accent); opacity: 0; animation: lineIn 0.05s ease forwards; text-shadow: 0 0 8px rgba(0, 230, 138, 0.4); }
 .boot-line .armed { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
@@ -48,11 +46,9 @@ a { text-decoration: none; color: inherit; }
 .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .navbar.visible { transform: translateY(0); }
 .nav-inner { max-width: 700px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: center; }
-.nav-logo { display: flex; align-items: center; gap: 10px; }
-.nav-sparkle { width: 22px; height: 22px; flex-shrink: 0; color: #fff; filter: drop-shadow(0 0 4px rgba(255,255,255,0.2)); }
-.logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-.logo-text.small { font-size: 16px; }
-.logo-accent { color: var(--accent); }
+.nav-logo { display: flex; align-items: center; }
+.nav-logo-canvas { display: block; image-rendering: pixelated; }
+.footer-logo-canvas { display: block; image-rendering: pixelated; }
 
 /* ═══════════════════════════════════════════════ */
 /* TOOLS SECTION                                   */
