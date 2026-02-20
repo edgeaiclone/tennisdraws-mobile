@@ -31,7 +31,7 @@ a { text-decoration: none; color: inherit; }
 .boot-logo { text-align: center; margin-bottom: 32px; opacity: 0; animation: bootLogoIn 0.6s ease 0.2s forwards; }
 @keyframes bootLogoIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 .boot-logo-wrap { display: inline-flex; align-items: center; gap: 12px; position: relative; }
-.boot-robot-canvas { width: 36px; height: 36px; image-rendering: pixelated; flex-shrink: 0; }
+.boot-sparkle { width: 36px; height: 36px; flex-shrink: 0; color: #fff; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3)); }
 .boot-logo-text { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
 .boot-logo-accent { color: var(--accent); }
 .boot-lines { font-family: var(--mono); font-size: 13px; line-height: 2; min-height: 220px; image-rendering: pixelated; }
@@ -47,7 +47,7 @@ a { text-decoration: none; color: inherit; }
 .navbar.visible { transform: translateY(0); }
 .nav-inner { max-width: 700px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: center; }
 .nav-logo { display: flex; align-items: center; gap: 10px; }
-.nav-robot-canvas { width: 24px; height: 24px; image-rendering: pixelated; flex-shrink: 0; }
+.nav-sparkle { width: 22px; height: 22px; flex-shrink: 0; color: #fff; filter: drop-shadow(0 0 4px rgba(255,255,255,0.2)); }
 .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
 .logo-text.small { font-size: 16px; }
 .logo-accent { color: var(--accent); }

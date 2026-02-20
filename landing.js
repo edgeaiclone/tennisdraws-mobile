@@ -515,64 +515,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Claude-style Sparkle Logo Mark ───
-  // 8-rayed starburst matching Claude's iconic sparkle icon
-  const SPARKLE_GRID = [
-    '......11......',  // N ray tip
-    '......11......',
-    '.1....11....1.',  // NW + N + NE
-    '..1...11...1..',
-    '...1..11..1...',
-    '....1.11.1....',
-    '.111111111111.',  // E-W ray (horizontal bar)
-    '.111111111111.',
-    '....1.11.1....',
-    '...1..11..1...',
-    '..1...11...1..',
-    '.1....11....1.',
-    '......11......',  // S ray tip
-    '......11......',
-  ];
-
-  function drawSparkle(canvasId, size) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = size + 'px';
-    canvas.style.height = size + 'px';
-    ctx.scale(dpr, dpr);
-    ctx.imageSmoothingEnabled = false;
-
-    const rows = SPARKLE_GRID.length;
-    const cols = SPARKLE_GRID[0].length;
-    const ps = size / cols;
-
-    // Draw the sparkle pixels
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (SPARKLE_GRID[r][c] === '1') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(c * ps, r * ps, ps, ps);
-        }
-      }
-    }
-
-    // Subtle glow on center
-    ctx.shadowColor = 'rgba(255,255,255,0.6)';
-    ctx.shadowBlur = size * 0.15;
-    ctx.fillStyle = '#FFFFFF';
-    const cx = 6 * ps, cy = 6 * ps;
-    ctx.fillRect(cx, cy, ps * 2, ps * 2);
-    ctx.shadowBlur = 0;
-  }
-
-  drawSparkle('bootRobotCanvas', 36);
-  drawSparkle('navRobotCanvas', 24);
-
-
   // ─── Boot Sequence ───
   const bootLines = [
     { text: '> edgeAI v2.1.0 — Initializing...', delay: 0 },
