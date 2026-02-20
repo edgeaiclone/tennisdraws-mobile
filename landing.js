@@ -114,8 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const PIXEL_ART = {
-    // 01: Live Scores — scoreboard with live dot
-    'live-scores': parsePixelArt(
+    // 01: Livescores — scoreboard with live dot
+    'livescores': parsePixelArt(
       '........................\n' +
       '..11111111111111111111..\n' +
       '..1..................1..\n' +
@@ -141,62 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 02: Dropping Odds — downward arrow + chart bars
-    'dropping-odds': parsePixelArt(
-      '........................\n' +
-      '..........66............\n' +
-      '..........66............\n' +
-      '.........6666...........\n' +
-      '........666666..........\n' +
-      '.......66666666.........\n' +
-      '..........66............\n' +
-      '..........66............\n' +
-      '..........66............\n' +
-      '..........66............\n' +
-      '........................\n' +
-      '..11.................1..\n' +
-      '..11..55............11..\n' +
-      '..11..55..22.......111..\n' +
-      '..11..55..22..11..111...\n' +
-      '..11..55..22..11..11....\n' +
-      '..11..55..22..11........\n' +
-      '..11..55..22..11........\n' +
-      '..11..55..22..11........\n' +
-      '..88888888888888888888..\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 03: Bet365 Monitors — eye + lock
-    'bet365': parsePixelArt(
-      '........................\n' +
-      '........................\n' +
-      '....11111111111111......\n' +
-      '..11................11..\n' +
-      '.1.......222222......1..\n' +
-      '1......2222222222.....1.\n' +
-      '1.....222277222222....1.\n' +
-      '1.....222277222222....1.\n' +
-      '1......2222222222.....1.\n' +
-      '.1.......222222......1..\n' +
-      '..11................11..\n' +
-      '....11111111111111......\n' +
-      '........................\n' +
-      '..........5555..........\n' +
-      '.........5....5.........\n' +
-      '.........5....5.........\n' +
-      '........55555555........\n' +
-      '........5......5........\n' +
-      '........5..55..5........\n' +
-      '........5..55..5........\n' +
-      '........55555555........\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 04: MTO Intel — medical cross + heartbeat
-    'mto': parsePixelArt(
+    // 02: Live MTOs — medical cross + heartbeat
+    'live-mtos': parsePixelArt(
       '........................\n' +
       '........................\n' +
       '.........6666...........\n' +
@@ -222,116 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
       '..1111..................\n' +
       '........................'
     ),
-    // 05: Fatigue Tracker — running figure + clock
-    'fatigue': parsePixelArt(
-      '........................\n' +
-      '....55..................\n' +
-      '...5555.................\n' +
-      '....55..................\n' +
-      '...5115.................\n' +
-      '...5115.................\n' +
-      '...5115.................\n' +
-      '....55..................\n' +
-      '...5..5.................\n' +
-      '...5..5.................\n' +
-      '..5....5................\n' +
-      '........................\n' +
-      '...........22222222.....\n' +
-      '..........2........2....\n' +
-      '.........2..........2...\n' +
-      '.........2....22....2...\n' +
-      '.........2....2.....2...\n' +
-      '.........2....2222..2...\n' +
-      '.........2..........2...\n' +
-      '..........2........2....\n' +
-      '...........22222222.....\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 06: Rain Delays — cloud + rain drops
-    'rain': parsePixelArt(
-      '........................\n' +
-      '........................\n' +
-      '........222222..........\n' +
-      '......2222222222........\n' +
-      '....222222222222222.....\n' +
-      '...22222222222222222....\n' +
-      '...22222222222222222....\n' +
-      '...22222222222222222....\n' +
-      '....222222222222222.....\n' +
-      '........................\n' +
-      '.....2.....2.....2......\n' +
-      '....2.....2.....2.......\n' +
-      '.....2.....2.....2......\n' +
-      '....2.....2.....2.......\n' +
-      '.....2.....2.....2......\n' +
-      '....2.....2.....2.......\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 07: Entry Lists & Draws — bracket/list
-    'entries': parsePixelArt(
-      '........................\n' +
-      '..1111111111............\n' +
-      '..1........1............\n' +
-      '..1111111111............\n' +
-      '..........1.............\n' +
-      '..........11111111111...\n' +
-      '..........1.........1...\n' +
-      '..........11111111111...\n' +
-      '........................\n' +
-      '..1111111111............\n' +
-      '..1........1............\n' +
-      '..1111111111............\n' +
-      '..........1.............\n' +
-      '..........11111111111...\n' +
-      '..........1.........1...\n' +
-      '..........11111111111...\n' +
-      '........................\n' +
-      '..1111111111............\n' +
-      '..1........1............\n' +
-      '..1111111111............\n' +
-      '..........1.............\n' +
-      '..........11111111111...\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 08: Retired / Returned — exit door + return arrow
-    'retired': parsePixelArt(
-      '........................\n' +
-      '........................\n' +
-      '...66666666666666666....\n' +
-      '...6...............6....\n' +
-      '...6...............6....\n' +
-      '...6.......66......6....\n' +
-      '...6.......66......6....\n' +
-      '...6.......66......6....\n' +
-      '...6......6666.....6....\n' +
-      '...6...............6....\n' +
-      '...6...............6....\n' +
-      '...66666666666666666....\n' +
-      '........................\n' +
-      '........1111111.........\n' +
-      '.......1..............1.\n' +
-      '......1...............1.\n' +
-      '.....1111111111111111...\n' +
-      '......1.................\n' +
-      '.......1................\n' +
-      '........1111111.........\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................\n' +
-      '........................'
-    ),
-    // 09: AI Chat — brain + chat bubble
-    'ai-chat': parsePixelArt(
+    // 03: AI Chatbot — brain + chat bubble
+    'ai-chatbot': parsePixelArt(
       '........................\n' +
       '......3333333333........\n' +
       '....33..........33......\n' +
@@ -357,56 +195,137 @@ document.addEventListener('DOMContentLoaded', () => {
       '........................\n' +
       '........................'
     ),
-    // 10: Live Alerts — bell + notification waves
-    'alerts': parsePixelArt(
+    // 04: AI Stats — bar chart with comparison
+    'ai-stats': parsePixelArt(
       '........................\n' +
-      '...........55...........\n' +
-      '...........55...........\n' +
-      '.........111111.........\n' +
-      '........11111111........\n' +
-      '.......1111111111.......\n' +
-      '.......1111111111.......\n' +
-      '.......1111111111.......\n' +
-      '.......1111111111.......\n' +
-      '.......1111111111.......\n' +
-      '.......1111111111.......\n' +
-      '......111111111111......\n' +
-      '.....11111111111111.....\n' +
-      '...1111111111111111111..\n' +
       '........................\n' +
-      '..........1111..........\n' +
-      '..........1111..........\n' +
+      '..22....................\n' +
+      '..22..11................\n' +
+      '..22..11..55............\n' +
+      '..22..11..55..33........\n' +
+      '..22..11..55..33..44....\n' +
+      '..22..11..55..33..44....\n' +
+      '..22..11..55..33..44....\n' +
+      '..22..11..55..33..44....\n' +
+      '..88888888888888888888..\n' +
       '........................\n' +
-      '...66..............66...\n' +
-      '....66............66....\n' +
-      '.....66..........66.....\n' +
+      '..77777777..11111111....\n' +
+      '........................\n' +
+      '..77777.....1111111.....\n' +
+      '........................\n' +
+      '..7777777...11111.......\n' +
+      '........................\n' +
+      '..777777....111111111...\n' +
+      '........................\n' +
+      '........................\n' +
       '........................\n' +
       '........................\n' +
       '........................'
     ),
-    // 11: 24/7 Uptime — shield + checkmark
-    'uptime': parsePixelArt(
+    // 05: Retired & Returned — exit door + return arrow
+    'retired-returned': parsePixelArt(
       '........................\n' +
       '........................\n' +
-      '.......1111111111.......\n' +
-      '......111111111111......\n' +
-      '.....11111111111111.....\n' +
-      '.....11............11...\n' +
-      '.....11............11...\n' +
-      '.....11.......55..11....\n' +
-      '.....11......55...11....\n' +
-      '.....11.....55....11....\n' +
-      '.....11..55.55....11....\n' +
-      '.....11...555.....11....\n' +
-      '.....11....5......11....\n' +
-      '.....11...........11....\n' +
-      '......111111111111......\n' +
-      '.......1111111111.......\n' +
-      '........11111111........\n' +
-      '.........111111.........\n' +
+      '...66666666666666666....\n' +
+      '...6...............6....\n' +
+      '...6...............6....\n' +
+      '...6.......66......6....\n' +
+      '...6.......66......6....\n' +
+      '...6.......66......6....\n' +
+      '...6......6666.....6....\n' +
+      '...6...............6....\n' +
+      '...6...............6....\n' +
+      '...66666666666666666....\n' +
+      '........................\n' +
+      '........1111111.........\n' +
+      '.......1..............1.\n' +
+      '......1...............1.\n' +
+      '.....1111111111111111...\n' +
+      '......1.................\n' +
+      '.......1................\n' +
+      '........1111111.........\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 06: Draws, Entry Lists & Withdrawals — bracket/list
+    'draws-entries': parsePixelArt(
+      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
+      '..........1.............\n' +
+      '..........11111111111...\n' +
+      '..........1.........1...\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
+      '..........1.............\n' +
+      '..........11111111111...\n' +
+      '..........1.........1...\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '..1111111111............\n' +
+      '..1........1............\n' +
+      '..1111111111............\n' +
+      '..........1.............\n' +
+      '..........11111111111...\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 07: edgeAI Tools — wrench + lightning bolt
+    'edgeai-tools': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '..........5555..........\n' +
+      '..........5..5..........\n' +
+      '..........5..5..........\n' +
+      '..........5..5..........\n' +
+      '..........5555..........\n' +
+      '.........55..55.........\n' +
+      '........55....55........\n' +
+      '.......55......55.......\n' +
+      '......55........55......\n' +
+      '........................\n' +
+      '.......1111.............\n' +
+      '......1111..............\n' +
+      '.....1111...............\n' +
+      '....11111111............\n' +
+      '...........1111.........\n' +
       '..........1111..........\n' +
-      '...........11...........\n' +
+      '.........1111...........\n' +
       '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................\n' +
+      '........................'
+    ),
+    // 08: Chatrooms — chat bubbles
+    'chatrooms': parsePixelArt(
+      '........................\n' +
+      '........................\n' +
+      '..1111111111111111......\n' +
+      '..1................1....\n' +
+      '..1..77777777......1....\n' +
+      '..1................1....\n' +
+      '..1..7777777777....1....\n' +
+      '..1................1....\n' +
+      '..1111111111111111......\n' +
+      '..11....................\n' +
+      '...1....................\n' +
+      '........................\n' +
+      '......2222222222222222..\n' +
+      '......2..............2..\n' +
+      '......2..77777777....2..\n' +
+      '......2..............2..\n' +
+      '......2..777777......2..\n' +
+      '......2..............2..\n' +
+      '......2222222222222222..\n' +
+      '..................22....\n' +
+      '...................2....\n' +
       '........................\n' +
       '........................\n' +
       '........................'
@@ -415,49 +334,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tool metadata
   const TOOL_DATA = {
-    'live-scores': {
-      title: 'Live Scores & Stats',
-      desc: 'Point-by-point live scores across ATP, WTA, ITF, and Challengers. Serve stats, aces, break points, first serve % — full match data pipeline in real-time.',
+    'livescores': {
+      title: 'Livescores',
+      desc: 'Get livescores for all tennis tournaments, including ATP, WTA, Challenger, and ITF, enhanced by additional live match stats to ensure you don\'t miss a thing, plus the ability to explore historical data on past matches, tournaments, and player performances.',
     },
-    'dropping-odds': {
-      title: 'Dropping Odds Monitor',
-      desc: 'Scrapes live odds every hour across all matches. Tracks which player\'s odds are falling, by how much, and flags sharp money movement — the earliest signal of insider info.',
+    'live-mtos': {
+      title: 'Live MTOs',
+      desc: 'Track medical timeouts in real time with instant alerts and enhanced MTO details, including live match context, medical info, integrity checks, recent form, match dynamics, and performance analytics such as serve metrics, points won, break points, and trend changes.',
     },
-    'bet365': {
-      title: 'Bet365 Monitors',
-      desc: 'Three dedicated monitors watching Bet365 around the clock — odds lock detection, score freeze alerts, and tiebreak triggers. Instant Telegram alerts when anomalies hit.',
-    },
-    'mto': {
-      title: 'MTO Intel',
-      desc: 'Detects Medical Time-Outs the instant they happen. Tracks historical win/loss stats after MTOs per player — building the deepest injury-impact model in tennis.',
-    },
-    'fatigue': {
-      title: 'Fatigue Tracker',
-      desc: 'Spots same-day double-headers and flags marathon 3h+ matches. Calculates recovery windows and fatigue risk for the next match — edges others miss.',
-    },
-    'rain': {
-      title: 'Rain Delays',
-      desc: 'Monitors live rain delays across every venue. Alerts when play stops and resumes — key for momentum disruption and in-play opportunities.',
-    },
-    'entries': {
-      title: 'Entry Lists & Draws',
-      desc: '3,000+ players tracked across every tier. Grand Slams to ITF Futures. Full entry lists, draws, withdrawal reasons, lucky losers, and qualifiers.',
-    },
-    'retired': {
-      title: 'Retired / Returned',
-      desc: 'Tracks every mid-match retirement with date, tournament, score, and odds at retirement. Monitors who is returning to play and flags re-injury risk.',
-    },
-    'ai-chat': {
+    'ai-chatbot': {
       title: 'AI Chatbot',
-      desc: 'RAG-powered AI with all tennis data in a vector database. Ask anything — player form, H2H stats, MTO history, odds movement — in natural language.',
+      desc: 'Ask our AI chatbot anything and get instant, data-driven answers on player history, match stats, injuries, retirements, and more, giving you the edge you need to make smarter decisions.',
     },
-    'alerts': {
-      title: 'Live Alerts',
-      desc: 'Real-time Telegram alerts across every monitor. MTOs, odds locks, rain delays, score freezes, dropping odds — instant notifications to your phone.',
+    'ai-stats': {
+      title: 'AI Stats',
+      desc: 'Compare all players currently in action and see who is performing well or poorly in real time, using key stat categories like first serve, double faults, aces, and other live performance indicators.',
     },
-    'uptime': {
-      title: '24/7 Uptime',
-      desc: '21+ services running around the clock. MongoDB health checks, service watchdogs, auto-recovery. Zero downtime — every match, every edge, always on.',
+    'retired-returned': {
+      title: 'Retired & Returned Players',
+      desc: 'Track players who have recently retired from a match and those who have returned to competition after a retirement, with full details including the tournament, match, score at retirement, and live odds for every entry.',
+    },
+    'draws-entries': {
+      title: 'Draws, Entry Lists & Withdrawals',
+      desc: 'View draws, entry lists, and withdrawals in one place, with fast updates when players pull out and replacements move into the field so you always know the latest lineup.',
+    },
+    'edgeai-tools': {
+      title: 'edgeAI Tools',
+      desc: 'Opening Odds Alert, Burnout Watch for 3h+ marathon matches, Fatigue Tracker for same-day doubles, and After MTO Tracker for players heading into their next match after winning with an MTO.',
+    },
+    'chatrooms': {
+      title: 'Chatrooms',
+      desc: 'Join dedicated chatrooms for every match and player, plus a global chat, where you can discuss live action, share insights, and connect with other members in real time.',
     },
   };
 
@@ -789,6 +696,88 @@ document.addEventListener('DOMContentLoaded', () => {
       autoTimer = setInterval(() => {
         showTool((currentIdx + 1) % buttons.length);
       }, 5500);
+    }
+
+    // ─── Hover Preview Tooltip ───
+    const previewCard = document.getElementById('toolPreviewCard');
+    const previewImg = document.getElementById('toolPreviewImg');
+    const previewPlaceholder = document.getElementById('toolPreviewPlaceholder');
+    const previewCanvas = document.getElementById('toolPreviewCanvas');
+    const isMobileDevice = window.innerWidth < 768;
+
+    // Wireframe image paths — replace placeholders with real wireframes later
+    const WIREFRAME_IMAGES = {};
+
+    function showPreview(btn) {
+      if (isMobileDevice || !previewCard) return;
+      const toolKey = btn.dataset.tool;
+
+      // Check for wireframe image
+      if (WIREFRAME_IMAGES[toolKey]) {
+        previewImg.src = WIREFRAME_IMAGES[toolKey];
+        previewImg.style.display = 'block';
+        previewPlaceholder.style.display = 'none';
+      } else {
+        // Draw pixel art as placeholder preview
+        previewImg.style.display = 'none';
+        previewPlaceholder.style.display = 'flex';
+        if (PIXEL_ART[toolKey]) {
+          const grid = PIXEL_ART[toolKey];
+          const ctx = previewCanvas.getContext('2d');
+          const dpr = window.devicePixelRatio || 1;
+          const ps = 6;
+          const gap = 1;
+          const cols = grid[0] ? grid[0].length : 24;
+          const rows = grid.length;
+          const w = cols * (ps + gap);
+          const h = rows * (ps + gap);
+          previewCanvas.width = w * dpr;
+          previewCanvas.height = h * dpr;
+          previewCanvas.style.width = w + 'px';
+          previewCanvas.style.height = h + 'px';
+          ctx.scale(dpr, dpr);
+          ctx.imageSmoothingEnabled = false;
+          ctx.clearRect(0, 0, w, h);
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const colorIdx = grid[r][c];
+              if (colorIdx === 0) continue;
+              const color = PIXEL_PALETTE[colorIdx];
+              if (color === 'transparent') continue;
+              ctx.fillStyle = color;
+              ctx.fillRect(c * (ps + gap), r * (ps + gap), ps, ps);
+            }
+          }
+        }
+      }
+
+      // Position card above the button
+      const btnRect = btn.getBoundingClientRect();
+      const sectionRect = btn.closest('.tools-section').getBoundingClientRect();
+      const cardW = 200;
+      const cardH = 300;
+      let left = btnRect.left + btnRect.width / 2 - cardW / 2 - sectionRect.left;
+      let top = btnRect.top - cardH - 12 - sectionRect.top;
+
+      // Keep within bounds
+      if (left < 0) left = 0;
+      if (left + cardW > sectionRect.width) left = sectionRect.width - cardW;
+      if (top < 0) top = btnRect.bottom + 12 - sectionRect.top;
+
+      previewCard.style.left = left + 'px';
+      previewCard.style.top = top + 'px';
+      previewCard.classList.add('visible');
+    }
+
+    function hidePreview() {
+      if (previewCard) previewCard.classList.remove('visible');
+    }
+
+    if (!isMobileDevice) {
+      buttons.forEach(btn => {
+        btn.addEventListener('mouseenter', () => showPreview(btn));
+        btn.addEventListener('mouseleave', hidePreview);
+      });
     }
 
     showTool(0);
