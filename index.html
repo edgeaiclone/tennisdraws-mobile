@@ -37,51 +37,116 @@
   </div>
 </nav>
 
-<!-- TOOLS — pixel art carousel -->
-<section class="tools-section" id="tools">
-  <div class="tools-header">
-    <h1 class="tools-title">Live Tennis Intelligence</h1>
-    <p class="tools-tagline">edgeAI — Where Smart Money Starts</p>
-    <p class="tools-sub">21+ services. Every match. 100% free.</p>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Live Tennis<br>Intelligence</h1>
+    <p class="hero-tagline">edgeAI — Where Smart Money Starts</p>
+    <p class="hero-sub">21+ services. Every match. 100% free.</p>
+    <div class="hero-scroll-cue">
+      <span class="scroll-text">Scroll to explore</span>
+      <div class="scroll-arrow"></div>
+    </div>
   </div>
-  <div class="tools-grid">
-    <button class="tool-btn active" data-tool="livescores" data-num="01"><span class="tool-btn-num">01</span><span class="tool-btn-name">Livescores</span></button>
-    <button class="tool-btn" data-tool="live-mtos" data-num="02"><span class="tool-btn-num">02</span><span class="tool-btn-name">Live MTOs</span></button>
-    <button class="tool-btn" data-tool="ai-chatbot" data-num="03"><span class="tool-btn-num">03</span><span class="tool-btn-name">AI Chatbot</span></button>
-    <button class="tool-btn" data-tool="ai-stats" data-num="04"><span class="tool-btn-num">04</span><span class="tool-btn-name">AI Stats</span></button>
-    <button class="tool-btn" data-tool="retired-returned" data-num="05"><span class="tool-btn-num">05</span><span class="tool-btn-name">Retired & Returned</span></button>
-    <button class="tool-btn" data-tool="draws-entries" data-num="06"><span class="tool-btn-num">06</span><span class="tool-btn-name">Draws & Entry Lists</span></button>
-    <button class="tool-btn" data-tool="edgeai-tools" data-num="07"><span class="tool-btn-num">07</span><span class="tool-btn-name">edgeAI Tools</span></button>
-    <button class="tool-btn" data-tool="chatrooms" data-num="08"><span class="tool-btn-num">08</span><span class="tool-btn-name">Chatrooms</span></button>
-  </div>
-  <div class="tool-preview-card" id="toolPreviewCard">
-    <div class="tool-preview-inner">
-      <img class="tool-preview-img" id="toolPreviewImg" src="" alt="Feature preview">
-      <div class="tool-preview-placeholder" id="toolPreviewPlaceholder">
-        <canvas class="tool-preview-canvas" id="toolPreviewCanvas"></canvas>
+</section>
+
+<!-- STICKY PHONE SHOWCASE -->
+<section class="showcase" id="showcase">
+  <div class="showcase-phone-col">
+    <div class="phone-device" id="phoneDevice">
+      <div class="phone-notch"></div>
+      <div class="phone-screen" id="phoneScreen">
+        <img class="screen-img active" data-feature="livescores" src="wireframes/Home %231.png" alt="Livescores">
+        <img class="screen-img" data-feature="live-mtos" src="wireframes/placeholder.svg" alt="Live MTOs">
+        <img class="screen-img" data-feature="ai-chatbot" src="wireframes/placeholder.svg" alt="AI Chatbot">
+        <img class="screen-img" data-feature="ai-stats" src="wireframes/placeholder.svg" alt="AI Stats">
+        <img class="screen-img" data-feature="retired-returned" src="wireframes/placeholder.svg" alt="Retired & Returned">
+        <img class="screen-img" data-feature="draws-entries" src="wireframes/placeholder.svg" alt="Draws & Entry Lists">
+        <img class="screen-img" data-feature="edgeai-tools" src="wireframes/placeholder.svg" alt="edgeAI Tools">
+        <img class="screen-img" data-feature="chatrooms" src="wireframes/placeholder.svg" alt="Chatrooms">
       </div>
     </div>
   </div>
-  <div class="tools-display">
-    <div class="pixel-canvas-wrapper">
-      <canvas class="pixel-art-canvas" id="pixelArtCanvas"></canvas>
+
+  <div class="showcase-features">
+    <div class="feature-panel" data-feature="livescores">
+      <div class="feature-content">
+        <span class="feature-num">01</span>
+        <h2 class="feature-title">Livescores</h2>
+        <p class="feature-desc">Get livescores for all tennis tournaments, including ATP, WTA, Challenger, and ITF, enhanced by additional live match stats to ensure you don't miss a thing, plus the ability to explore historical data on past matches, tournaments, and player performances.</p>
+      </div>
     </div>
-    <div class="tool-info">
-      <h2 class="tool-info-title" id="pixelToolTitle">Live Scores & Stats</h2>
-      <p class="tool-info-desc" id="pixelToolDesc"></p>
+    <div class="feature-panel" data-feature="live-mtos">
+      <div class="feature-content">
+        <span class="feature-num">02</span>
+        <h2 class="feature-title">Live MTOs</h2>
+        <p class="feature-desc">Track medical timeouts in real time with instant alerts and enhanced MTO details, including live match context, medical info, integrity checks, recent form, match dynamics, and performance analytics such as serve metrics, points won, break points, and trend changes.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="ai-chatbot">
+      <div class="feature-content">
+        <span class="feature-num">03</span>
+        <h2 class="feature-title">AI Chatbot</h2>
+        <p class="feature-desc">Ask our AI chatbot anything and get instant, data-driven answers on player history, match stats, injuries, retirements, and more, giving you the edge you need to make smarter decisions.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="ai-stats">
+      <div class="feature-content">
+        <span class="feature-num">04</span>
+        <h2 class="feature-title">AI Stats</h2>
+        <p class="feature-desc">Compare all players currently in action and see who is performing well or poorly in real time, using key stat categories like first serve, double faults, aces, and other live performance indicators.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="retired-returned">
+      <div class="feature-content">
+        <span class="feature-num">05</span>
+        <h2 class="feature-title">Retired & Returned Players</h2>
+        <p class="feature-desc">Track players who have recently retired from a match and those who have returned to competition after a retirement, with full details including the tournament, match, score at retirement, and live odds for every entry.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="draws-entries">
+      <div class="feature-content">
+        <span class="feature-num">06</span>
+        <h2 class="feature-title">Draws, Entry Lists & Withdrawals</h2>
+        <p class="feature-desc">View draws, entry lists, and withdrawals in one place, with fast updates when players pull out and replacements move into the field so you always know the latest lineup.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="edgeai-tools">
+      <div class="feature-content">
+        <span class="feature-num">07</span>
+        <h2 class="feature-title">edgeAI Tools</h2>
+        <p class="feature-desc">Opening Odds Alert, Burnout Watch for 3h+ marathon matches, Fatigue Tracker for same-day doubles, and After MTO Tracker for players heading into their next match after winning with an MTO.</p>
+      </div>
+    </div>
+    <div class="feature-panel" data-feature="chatrooms">
+      <div class="feature-content">
+        <span class="feature-num">08</span>
+        <h2 class="feature-title">Chatrooms</h2>
+        <p class="feature-desc">Join dedicated chatrooms for every match and player, plus a global chat, where you can discuss live action, share insights, and connect with other members in real time.</p>
+      </div>
     </div>
   </div>
-  <div class="tools-cta">
-    <div class="store-buttons">
-      <a href="https://apps.apple.com" class="store-btn" target="_blank">
-        <canvas class="store-icon" id="iosIcon" width="32" height="32"></canvas>
-        <div class="store-label"><small>Download on</small><strong>App Store</strong></div>
-      </a>
-      <a href="https://play.google.com" class="store-btn" target="_blank">
-        <canvas class="store-icon" id="androidIcon" width="32" height="32"></canvas>
-        <div class="store-label"><small>Get it on</small><strong>Google Play</strong></div>
-      </a>
-    </div>
+</section>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress">
+  <div class="scroll-progress-fill" id="scrollProgressFill"></div>
+  <div class="scroll-progress-dots" id="scrollProgressDots"></div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <h2 class="cta-title">Start Tracking Today</h2>
+  <p class="cta-sub">100% free. No ads. No paywalls.</p>
+  <div class="store-buttons">
+    <a href="https://apps.apple.com" class="store-btn" target="_blank">
+      <canvas class="store-icon" id="iosIcon" width="32" height="32"></canvas>
+      <div class="store-label"><small>Download on</small><strong>App Store</strong></div>
+    </a>
+    <a href="https://play.google.com" class="store-btn" target="_blank">
+      <canvas class="store-icon" id="androidIcon" width="32" height="32"></canvas>
+      <div class="store-label"><small>Get it on</small><strong>Google Play</strong></div>
+    </a>
   </div>
 </section>
 
@@ -90,13 +155,15 @@
   <div class="footer-inner">
     <canvas class="footer-logo-canvas" id="footerLogoCanvas"></canvas>
     <span class="footer-sep">&middot;</span>
-    <span class="footer-copy">&copy; 2025</span>
+    <span class="footer-copy">&copy; 2026</span>
     <a href="https://x.com/tennisentrylist" target="_blank" rel="noopener" class="footer-x" aria-label="X">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     </a>
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="landing.js"></script>
 </body>
 </html>
