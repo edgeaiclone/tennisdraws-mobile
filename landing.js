@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════ */
-/* edgeAI Landing — Sticky Phone Showcase          */
+/* edgeAI Landing — Tab-Based Showcase             */
 /* ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,43 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
   drawPixelLogo('bootLogoCanvas', 4);
   drawPixelLogo('navLogoCanvas', 4);
   drawPixelLogo('footerLogoCanvas', 4);
-
-
-  // ─── Tool Data ───
-  const TOOL_DATA = {
-    'livescores': {
-      title: 'Livescores',
-      desc: 'Get livescores for all tennis tournaments, including ATP, WTA, Challenger, and ITF, enhanced by additional live match stats to ensure you don\'t miss a thing, plus the ability to explore historical data on past matches, tournaments, and player performances.',
-    },
-    'live-mtos': {
-      title: 'Live MTOs',
-      desc: 'Track medical timeouts in real time with instant alerts and enhanced MTO details, including live match context, medical info, integrity checks, recent form, match dynamics, and performance analytics such as serve metrics, points won, break points, and trend changes.',
-    },
-    'ai-chatbot': {
-      title: 'AI Chatbot',
-      desc: 'Ask our AI chatbot anything and get instant, data-driven answers on player history, match stats, injuries, retirements, and more, giving you the edge you need to make smarter decisions.',
-    },
-    'ai-stats': {
-      title: 'AI Stats',
-      desc: 'Compare all players currently in action and see who is performing well or poorly in real time, using key stat categories like first serve, double faults, aces, and other live performance indicators.',
-    },
-    'retired-returned': {
-      title: 'Retired & Returned Players',
-      desc: 'Track players who have recently retired from a match and those who have returned to competition after a retirement, with full details including the tournament, match, score at retirement, and live odds for every entry.',
-    },
-    'draws-entries': {
-      title: 'Draws, Entry Lists & Withdrawals',
-      desc: 'View draws, entry lists, and withdrawals in one place, with fast updates when players pull out and replacements move into the field so you always know the latest lineup.',
-    },
-    'edgeai-tools': {
-      title: 'edgeAI Tools',
-      desc: 'Opening Odds Alert, Burnout Watch for 3h+ marathon matches, Fatigue Tracker for same-day doubles, and After MTO Tracker for players heading into their next match after winning with an MTO.',
-    },
-    'chatrooms': {
-      title: 'Chatrooms',
-      desc: 'Join dedicated chatrooms for every match and player, plus a global chat, where you can discuss live action, share insights, and connect with other members in real time.',
-    },
-  };
 
 
   // ─── TextScramble Class ───
@@ -210,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     await sleep(200);
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
-    initShowcase();
+    initTabSystem();
   }
 
   function updateBootPct(pct) {
@@ -242,186 +205,213 @@ document.addEventListener('DOMContentLoaded', () => {
   if (prefersReducedMotion) {
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
-    setTimeout(() => { initShowcase(); }, 100);
+    setTimeout(() => { initTabSystem(); }, 100);
   } else {
     runBootSequence();
   }
 
 
-  // ─── Sticky Phone Showcase (GSAP ScrollTrigger) ───
-  function initShowcase() {
-    gsap.registerPlugin(ScrollTrigger);
+  // ─── Tab System ───
+  let currentTab = null;
+  let currentFeature = null;
+  let tabTimeline = null;
 
-    const panels = document.querySelectorAll('.feature-panel');
+  function initTabSystem() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    const indicator = document.getElementById('tabIndicator');
     const screenImgs = document.querySelectorAll('.screen-img');
-    const progressBar = document.getElementById('scrollProgress');
-    const progressFill = document.getElementById('scrollProgressFill');
-    const dotsContainer = document.getElementById('scrollProgressDots');
 
-    if (!panels.length) return;
+    if (!tabBtns.length) return;
 
-    // Build progress dots
-    panels.forEach((_, i) => {
-      const dot = document.createElement('div');
-      dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
-      dot.dataset.index = i;
-      dotsContainer.appendChild(dot);
-    });
+    // Position indicator on first tab
+    updateIndicator(tabBtns[0], indicator);
 
-    const dots = dotsContainer.querySelectorAll('.progress-dot');
-    let currentFeature = -1;
-    let transitionTimeline = null;
-    let lastTransitionTime = 0;
-    const MIN_TRANSITION_GAP = 100;
-
-    const wipeBar = document.getElementById('screenWipeBar');
-    const wipeTrail = document.getElementById('screenWipeTrail');
-
-    // Master ScrollTrigger for progress bar
-    ScrollTrigger.create({
-      trigger: '#showcase',
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => {
-        progressFill.style.height = (self.progress * 100) + '%';
-      },
-      onEnter: () => progressBar.classList.add('visible'),
-      onLeave: () => progressBar.classList.remove('visible'),
-      onEnterBack: () => progressBar.classList.add('visible'),
-      onLeaveBack: () => progressBar.classList.remove('visible'),
-    });
-
-    // Per-panel ScrollTriggers
-    panels.forEach((panel, i) => {
-      const featureKey = panel.dataset.feature;
-
-      ScrollTrigger.create({
-        trigger: panel,
-        start: 'top center',
-        end: 'bottom center',
-        onEnter: () => activateFeature(i, featureKey),
-        onEnterBack: () => activateFeature(i, featureKey),
-      });
-    });
-
-    function activateFeature(index, featureKey) {
-      if (index === currentFeature) return;
-
-      const prevIndex = currentFeature;
-      const direction = index > prevIndex ? 1 : -1; // 1=forward, -1=backward
-      const isFirst = prevIndex === -1;
-
-      // Kill any in-progress transition
-      const now = Date.now();
-      if (transitionTimeline) {
-        if (now - lastTransitionTime < MIN_TRANSITION_GAP) {
-          transitionTimeline.progress(1);
+    // Show first phone screen (first card of first tab)
+    const firstPanel = document.querySelector('.tab-panel.active');
+    if (firstPanel) {
+      const firstCard = firstPanel.querySelector('.feature-card.active');
+      if (firstCard) {
+        const featureKey = firstCard.dataset.feature;
+        const img = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
+        if (img) {
+          img.classList.add('active');
+          currentFeature = featureKey;
         }
-        transitionTimeline.kill();
       }
-      lastTransitionTime = now;
+    }
+    currentTab = 'live';
 
-      const oldImg = prevIndex >= 0
-        ? document.querySelector('.screen-img[data-feature="' + panels[prevIndex].dataset.feature + '"]')
-        : null;
-      const newImg = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
-      if (!newImg) return;
-
-      // Feature content visibility
-      panels.forEach((p, i) => {
-        const content = p.querySelector('.feature-content');
-        if (i === index) {
-          content.classList.add('visible');
-        } else {
-          content.classList.remove('visible');
-        }
-      });
-
-      // Update progress dots
-      dots.forEach((d, i) => {
-        d.classList.toggle('active', i <= index);
-      });
-
-      currentFeature = index;
-
-      // --- SCREEN TRANSITION: Horizontal Slide ---
-      if (isFirst || prefersReducedMotion) {
-        if (oldImg) gsap.set(oldImg, { opacity: 0, x: 0 });
-        gsap.set(newImg, { opacity: 1, x: 0 });
-        return;
-      }
-
-      const duration = 0.5;
-      const ease = 'power3.inOut';
-      const phoneW = document.getElementById('phoneDevice').offsetWidth;
-
-      transitionTimeline = gsap.timeline({
-        onComplete: () => {
-          if (oldImg) gsap.set(oldImg, { opacity: 0, x: 0 });
-          gsap.set(wipeBar, { opacity: 0 });
-          transitionTimeline = null;
-        }
-      });
-
-      // New screen starts off-screen to the right (forward) or left (backward)
-      gsap.set(newImg, {
-        opacity: 1,
-        x: direction * phoneW,
-        zIndex: 5
-      });
-
-      // Green accent line on the leading edge
-      gsap.set(wipeBar, {
-        top: 0,
-        bottom: 0,
-        height: '100%',
-        width: '3px',
-        left: direction === 1 ? 'auto' : '0',
-        right: direction === 1 ? '0' : 'auto',
-        opacity: 0
-      });
-
-      // 1. Old screen slides out to the opposite side
-      if (oldImg) {
-        transitionTimeline.to(oldImg, {
-          x: direction * -phoneW,
-          duration: duration,
-          ease: ease,
-        }, 0);
-      }
-
-      // 2. New screen slides in from the side
-      transitionTimeline.to(newImg, {
-        x: 0,
-        duration: duration,
-        ease: ease,
-      }, 0);
-
-      // 3. Brief green accent flash on leading edge
-      transitionTimeline.fromTo(wipeBar, {
-        opacity: 1,
-      }, {
-        opacity: 0,
-        duration: duration * 0.6,
-        ease: 'power1.out',
-      }, 0);
+    // Animate initial cards in
+    if (!prefersReducedMotion) {
+      const initialCards = document.querySelectorAll('.tab-panel.active .feature-card');
+      gsap.fromTo(initialCards,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out', delay: 0.2 }
+      );
     }
 
-    // Hero parallax fade on scroll
-    gsap.to('.hero-content', {
-      scrollTrigger: {
-        trigger: '.hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-      },
-      opacity: 0,
-      y: -60,
-      ease: 'none',
+    // Tab click handlers
+    tabBtns.forEach((btn, btnIndex) => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.dataset.tab;
+        if (tabKey === currentTab) return;
+
+        // Determine direction
+        const tabOrder = ['live', 'ai', 'players', 'tools'];
+        const oldIndex = tabOrder.indexOf(currentTab);
+        const newIndex = tabOrder.indexOf(tabKey);
+        const direction = newIndex > oldIndex ? 1 : -1;
+
+        // Update tab button states
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Animate indicator
+        updateIndicator(btn, indicator);
+
+        // Get old and new panels
+        const oldPanel = document.querySelector('.tab-panel[data-tab="' + currentTab + '"]');
+        const newPanel = document.querySelector('.tab-panel[data-tab="' + tabKey + '"]');
+        if (!oldPanel || !newPanel) return;
+
+        // Kill any in-progress animation
+        if (tabTimeline) {
+          tabTimeline.kill();
+          tabTimeline = null;
+        }
+
+        currentTab = tabKey;
+
+        if (prefersReducedMotion) {
+          // Instant swap
+          oldPanel.classList.remove('active');
+          newPanel.classList.add('active');
+          activateDefaultCard(newPanel);
+          return;
+        }
+
+        // Animate tab panel transition
+        const oldCards = oldPanel.querySelectorAll('.feature-card');
+
+        tabTimeline = gsap.timeline({
+          onComplete: () => { tabTimeline = null; }
+        });
+
+        // Fade out old panel cards, then swap panels and animate new cards in
+        tabTimeline.to(oldCards, {
+          opacity: 0,
+          x: direction * -30,
+          duration: 0.2,
+          stagger: 0.04,
+          ease: 'power2.in',
+          onComplete: () => {
+            oldPanel.classList.remove('active');
+            // Reset old cards for next time
+            gsap.set(oldCards, { opacity: 1, x: 0 });
+
+            // Show new panel
+            newPanel.classList.add('active');
+
+            // Activate default card and phone screen
+            activateDefaultCard(newPanel);
+
+            // Now animate new cards in (panel is visible)
+            const newCards = newPanel.querySelectorAll('.feature-card');
+            gsap.fromTo(newCards,
+              { opacity: 0, x: direction * 30 },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.35,
+                stagger: 0.08,
+                ease: 'power2.out',
+              }
+            );
+          }
+        });
+      });
     });
 
-    // Initialize first feature as visible
-    activateFeature(0, panels[0].dataset.feature);
+    // Card click handlers
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const featureKey = card.dataset.feature;
+        if (featureKey === currentFeature) return;
+
+        // Update card active states within same tab panel
+        const panel = card.closest('.tab-panel');
+        if (panel) {
+          panel.querySelectorAll('.feature-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+        }
+
+        // Animate phone screen swap
+        animatePhoneScreen(featureKey);
+      });
+    });
+  }
+
+  function updateIndicator(btn, indicator) {
+    if (!btn || !indicator) return;
+    const rect = btn.getBoundingClientRect();
+    const parentRect = btn.parentElement.getBoundingClientRect();
+    indicator.style.left = (rect.left - parentRect.left) + 'px';
+    indicator.style.width = rect.width + 'px';
+  }
+
+  function activateDefaultCard(panel) {
+    // First card with .active class in this panel
+    const activeCard = panel.querySelector('.feature-card.active');
+    if (activeCard) {
+      animatePhoneScreen(activeCard.dataset.feature);
+    }
+  }
+
+  function animatePhoneScreen(featureKey) {
+    const oldImg = currentFeature
+      ? document.querySelector('.screen-img[data-feature="' + currentFeature + '"]')
+      : null;
+    const newImg = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
+    if (!newImg) return;
+
+    currentFeature = featureKey;
+
+    if (prefersReducedMotion) {
+      if (oldImg) oldImg.classList.remove('active');
+      newImg.classList.add('active');
+      return;
+    }
+
+    // GSAP phone screen transition
+    const tl = gsap.timeline();
+
+    if (oldImg && oldImg !== newImg) {
+      tl.to(oldImg, {
+        opacity: 0,
+        scale: 0.97,
+        duration: 0.2,
+        ease: 'power2.in',
+        onComplete: () => {
+          oldImg.classList.remove('active');
+          gsap.set(oldImg, { scale: 1 });
+        }
+      });
+    }
+
+    tl.fromTo(newImg,
+      { opacity: 0, scale: 1.03 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.25,
+        ease: 'power2.out',
+        onStart: () => {
+          newImg.classList.add('active');
+        }
+      },
+      oldImg && oldImg !== newImg ? '-=0.05' : 0
+    );
   }
 
 
@@ -479,5 +469,14 @@ document.addEventListener('DOMContentLoaded', () => {
     '.11....11.',
     '.11....11.',
   ], { '1': '#00E68A' });
+
+  // ─── Recalculate tab indicator on resize ───
+  window.addEventListener('resize', () => {
+    const activeBtn = document.querySelector('.tab-btn.active');
+    const indicator = document.getElementById('tabIndicator');
+    if (activeBtn && indicator) {
+      updateIndicator(activeBtn, indicator);
+    }
+  });
 
 });

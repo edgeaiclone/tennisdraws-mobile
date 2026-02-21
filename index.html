@@ -43,16 +43,26 @@
     <h1 class="hero-title">Live Tennis<br>Intelligence</h1>
     <p class="hero-tagline">edgeAI — Where Smart Money Starts</p>
     <p class="hero-sub">21+ services. Every match. 100% free.</p>
-    <div class="hero-scroll-cue">
-      <span class="scroll-text">Scroll to explore</span>
-      <div class="scroll-arrow"></div>
-    </div>
   </div>
 </section>
 
-<!-- STICKY PHONE SHOWCASE -->
-<section class="showcase" id="showcase">
-  <div class="showcase-phone-col">
+<!-- TAB BAR -->
+<div class="tab-bar" id="tabBar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" data-tab="live">Live</button>
+    <button class="tab-btn" data-tab="ai">AI</button>
+    <button class="tab-btn" data-tab="players">Players</button>
+    <button class="tab-btn" data-tab="tools">Tools</button>
+    <div class="tab-indicator" id="tabIndicator"></div>
+  </div>
+</div>
+
+<!-- FEATURES LAYOUT -->
+<section class="features-layout" id="featuresLayout">
+  <div class="features-bg-glow"></div>
+
+  <!-- Phone Column -->
+  <div class="features-phone-col">
     <div class="phone-device" id="phoneDevice">
       <div class="phone-notch"></div>
       <div class="phone-screen" id="phoneScreen">
@@ -64,91 +74,143 @@
         <img class="screen-img" data-feature="draws-entries" src="wireframes/placeholder.svg" alt="Draws & Entry Lists">
         <img class="screen-img" data-feature="edgeai-tools" src="wireframes/placeholder.svg" alt="edgeAI Tools">
         <img class="screen-img" data-feature="chatrooms" src="wireframes/placeholder.svg" alt="Chatrooms">
-        <div class="screen-wipe-bar" id="screenWipeBar"></div>
-        <div class="screen-wipe-trail" id="screenWipeTrail"></div>
       </div>
     </div>
   </div>
 
-  <div class="showcase-features">
-    <div class="feature-panel" data-feature="livescores">
-      <div class="feature-content">
-        <span class="feature-num">01</span>
-        <h2 class="feature-title">Livescores</h2>
-        <p class="feature-desc">Get livescores for all tennis tournaments, including ATP, WTA, Challenger, and ITF, enhanced by additional live match stats to ensure you don't miss a thing, plus the ability to explore historical data on past matches, tournaments, and player performances.</p>
+  <!-- Tab Panels Column -->
+  <div class="features-panels">
+
+    <!-- LIVE TAB -->
+    <div class="tab-panel active" data-tab="live">
+      <div class="feature-card active" data-feature="livescores">
+        <div class="card-header">
+          <span class="card-num">01</span>
+          <h3 class="card-title">Livescores</h3>
+        </div>
+        <p class="card-desc">Get livescores for all tennis tournaments, including ATP, WTA, Challenger, and ITF, enhanced by additional live match stats to ensure you don't miss a thing, plus the ability to explore historical data on past matches, tournaments, and player performances.</p>
+        <div class="card-chips">
+          <span class="stat-chip">ATP</span>
+          <span class="stat-chip">WTA</span>
+          <span class="stat-chip">Challenger</span>
+          <span class="stat-chip">ITF</span>
+        </div>
+      </div>
+      <div class="feature-card" data-feature="live-mtos">
+        <div class="card-header">
+          <span class="card-num">02</span>
+          <h3 class="card-title">Live MTOs</h3>
+        </div>
+        <p class="card-desc">Track medical timeouts in real time with instant alerts and enhanced MTO details, including live match context, medical info, integrity checks, recent form, match dynamics, and performance analytics.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Real-time Alerts</span>
+          <span class="stat-chip">Integrity Checks</span>
+          <span class="stat-chip">Analytics</span>
+        </div>
       </div>
     </div>
-    <div class="feature-panel" data-feature="live-mtos">
-      <div class="feature-content">
-        <span class="feature-num">02</span>
-        <h2 class="feature-title">Live MTOs</h2>
-        <p class="feature-desc">Track medical timeouts in real time with instant alerts and enhanced MTO details, including live match context, medical info, integrity checks, recent form, match dynamics, and performance analytics such as serve metrics, points won, break points, and trend changes.</p>
+
+    <!-- AI TAB -->
+    <div class="tab-panel" data-tab="ai">
+      <div class="feature-card active" data-feature="ai-chatbot">
+        <div class="card-header">
+          <span class="card-num">03</span>
+          <h3 class="card-title">AI Chatbot</h3>
+        </div>
+        <p class="card-desc">Ask our AI chatbot anything and get instant, data-driven answers on player history, match stats, injuries, retirements, and more, giving you the edge you need to make smarter decisions.</p>
+        <div class="card-chips">
+          <span class="stat-chip">GPT-Powered</span>
+          <span class="stat-chip">Data-Driven</span>
+          <span class="stat-chip">Instant</span>
+        </div>
+      </div>
+      <div class="feature-card" data-feature="ai-stats">
+        <div class="card-header">
+          <span class="card-num">04</span>
+          <h3 class="card-title">AI Stats</h3>
+        </div>
+        <p class="card-desc">Compare all players currently in action and see who is performing well or poorly in real time, using key stat categories like first serve, double faults, aces, and other live performance indicators.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Live Comparison</span>
+          <span class="stat-chip">Serve %</span>
+          <span class="stat-chip">Aces</span>
+        </div>
       </div>
     </div>
-    <div class="feature-panel" data-feature="ai-chatbot">
-      <div class="feature-content">
-        <span class="feature-num">03</span>
-        <h2 class="feature-title">AI Chatbot</h2>
-        <p class="feature-desc">Ask our AI chatbot anything and get instant, data-driven answers on player history, match stats, injuries, retirements, and more, giving you the edge you need to make smarter decisions.</p>
+
+    <!-- PLAYERS TAB -->
+    <div class="tab-panel" data-tab="players">
+      <div class="feature-card active" data-feature="retired-returned">
+        <div class="card-header">
+          <span class="card-num">05</span>
+          <h3 class="card-title">Retired & Returned</h3>
+        </div>
+        <p class="card-desc">Track players who have recently retired from a match and those who have returned to competition after a retirement, with full details including the tournament, match, score at retirement, and live odds.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Retirement Tracking</span>
+          <span class="stat-chip">Live Odds</span>
+        </div>
+      </div>
+      <div class="feature-card" data-feature="draws-entries">
+        <div class="card-header">
+          <span class="card-num">06</span>
+          <h3 class="card-title">Draws & Entry Lists</h3>
+        </div>
+        <p class="card-desc">View draws, entry lists, and withdrawals in one place, with fast updates when players pull out and replacements move into the field so you always know the latest lineup.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Draws</span>
+          <span class="stat-chip">Entries</span>
+          <span class="stat-chip">Withdrawals</span>
+        </div>
       </div>
     </div>
-    <div class="feature-panel" data-feature="ai-stats">
-      <div class="feature-content">
-        <span class="feature-num">04</span>
-        <h2 class="feature-title">AI Stats</h2>
-        <p class="feature-desc">Compare all players currently in action and see who is performing well or poorly in real time, using key stat categories like first serve, double faults, aces, and other live performance indicators.</p>
+
+    <!-- TOOLS TAB -->
+    <div class="tab-panel" data-tab="tools">
+      <div class="feature-card active" data-feature="edgeai-tools">
+        <div class="card-header">
+          <span class="card-num">07</span>
+          <h3 class="card-title">edgeAI Tools</h3>
+        </div>
+        <p class="card-desc">Opening Odds Alert, Burnout Watch for 3h+ marathon matches, Fatigue Tracker for same-day doubles, and After MTO Tracker for players heading into their next match after winning with an MTO.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Odds Alert</span>
+          <span class="stat-chip">Burnout Watch</span>
+          <span class="stat-chip">Fatigue Tracker</span>
+        </div>
+      </div>
+      <div class="feature-card" data-feature="chatrooms">
+        <div class="card-header">
+          <span class="card-num">08</span>
+          <h3 class="card-title">Chatrooms</h3>
+        </div>
+        <p class="card-desc">Join dedicated chatrooms for every match and player, plus a global chat, where you can discuss live action, share insights, and connect with other members in real time.</p>
+        <div class="card-chips">
+          <span class="stat-chip">Match Chat</span>
+          <span class="stat-chip">Player Chat</span>
+          <span class="stat-chip">Global</span>
+        </div>
       </div>
     </div>
-    <div class="feature-panel" data-feature="retired-returned">
-      <div class="feature-content">
-        <span class="feature-num">05</span>
-        <h2 class="feature-title">Retired & Returned Players</h2>
-        <p class="feature-desc">Track players who have recently retired from a match and those who have returned to competition after a retirement, with full details including the tournament, match, score at retirement, and live odds for every entry.</p>
-      </div>
-    </div>
-    <div class="feature-panel" data-feature="draws-entries">
-      <div class="feature-content">
-        <span class="feature-num">06</span>
-        <h2 class="feature-title">Draws, Entry Lists & Withdrawals</h2>
-        <p class="feature-desc">View draws, entry lists, and withdrawals in one place, with fast updates when players pull out and replacements move into the field so you always know the latest lineup.</p>
-      </div>
-    </div>
-    <div class="feature-panel" data-feature="edgeai-tools">
-      <div class="feature-content">
-        <span class="feature-num">07</span>
-        <h2 class="feature-title">edgeAI Tools</h2>
-        <p class="feature-desc">Opening Odds Alert, Burnout Watch for 3h+ marathon matches, Fatigue Tracker for same-day doubles, and After MTO Tracker for players heading into their next match after winning with an MTO.</p>
-      </div>
-    </div>
-    <div class="feature-panel" data-feature="chatrooms">
-      <div class="feature-content">
-        <span class="feature-num">08</span>
-        <h2 class="feature-title">Chatrooms</h2>
-        <p class="feature-desc">Join dedicated chatrooms for every match and player, plus a global chat, where you can discuss live action, share insights, and connect with other members in real time.</p>
-      </div>
-    </div>
+
   </div>
 </section>
 
-<!-- SCROLL PROGRESS -->
-<div class="scroll-progress" id="scrollProgress">
-  <div class="scroll-progress-fill" id="scrollProgressFill"></div>
-  <div class="scroll-progress-dots" id="scrollProgressDots"></div>
-</div>
-
 <!-- CTA -->
 <section class="cta-section" id="cta">
-  <h2 class="cta-title">Start Tracking Today</h2>
-  <p class="cta-sub">100% free. No ads. No paywalls.</p>
-  <div class="store-buttons">
-    <a href="https://apps.apple.com" class="store-btn" target="_blank">
-      <canvas class="store-icon" id="iosIcon" width="32" height="32"></canvas>
-      <div class="store-label"><small>Download on</small><strong>App Store</strong></div>
-    </a>
-    <a href="https://play.google.com" class="store-btn" target="_blank">
-      <canvas class="store-icon" id="androidIcon" width="32" height="32"></canvas>
-      <div class="store-label"><small>Get it on</small><strong>Google Play</strong></div>
-    </a>
+  <div class="cta-card">
+    <h2 class="cta-title">Start Tracking Today</h2>
+    <p class="cta-sub">100% free. No ads. No paywalls.</p>
+    <div class="store-buttons">
+      <a href="https://apps.apple.com" class="store-btn" target="_blank">
+        <canvas class="store-icon" id="iosIcon" width="32" height="32"></canvas>
+        <div class="store-label"><small>Download on</small><strong>App Store</strong></div>
+      </a>
+      <a href="https://play.google.com" class="store-btn" target="_blank">
+        <canvas class="store-icon" id="androidIcon" width="32" height="32"></canvas>
+        <div class="store-label"><small>Get it on</small><strong>Google Play</strong></div>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -165,7 +227,6 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="landing.js"></script>
 </body>
 </html>
