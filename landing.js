@@ -270,6 +270,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dots = dotsContainer.querySelectorAll('.progress-dot');
     let currentFeature = -1;
+    let transitionTimeline = null;
+    let lastTransitionTime = 0;
+    const MIN_TRANSITION_GAP = 100;
+
+    const wipeBar = document.getElementById('screenWipeBar');
+    const wipeTrail = document.getElementById('screenWipeTrail');
 
     // Master ScrollTrigger for progress bar
     ScrollTrigger.create({
@@ -301,10 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function activateFeature(index, featureKey) {
       if (index === currentFeature) return;
 
-      // Crossfade phone screen
-      screenImgs.forEach(img => img.classList.remove('active'));
-      const targetImg = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
-      if (targetImg) targetImg.classList.add('active');
+      const prevIndex = currentFeature;
+      const direction = index > prevIndex ? 1 : -1;
+      const isFirst = prevIndex === -1;
+      const isMobile = window.innerWidth <= 768;
+      const slideIn = isMobile ? 8 : 15;
+      const slideOut = isMobile ? -10 : -20;
+
+      // Kill any in-progress transition
+      const now = Date.now();
+      if (transitionTimeline) {
+        if (now - lastTransitionTime < MIN_TRANSITION_GAP) {
+          transitionTimeline.progress(1);
+        }
+        transitionTimeline.kill();
+      }
+      lastTransitionTime = now;
+
+      const oldImg = prevIndex >= 0
+        ? document.querySelector('.screen-img[data-feature="' + panels[prevIndex].dataset.feature + '"]')
+        : null;
+      const newImg = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
+      if (!newImg) return;
 
       // Feature content visibility
       panels.forEach((p, i) => {
@@ -322,6 +346,87 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       currentFeature = index;
+
+      // --- SCREEN TRANSITION ---
+      if (isFirst || prefersReducedMotion) {
+        if (oldImg) gsap.set(oldImg, { opacity: 0, x: 0 });
+        gsap.set(newImg, { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', x: 0 });
+        return;
+      }
+
+      const duration = 0.7;
+      const ease = 'power2.inOut';
+
+      const clipStart = direction === 1
+        ? 'inset(0% 0% 100% 0%)'
+        : 'inset(100% 0% 0% 0%)';
+      const clipEnd = 'inset(0% 0% 0% 0%)';
+
+      const barStartY = direction === 1 ? '0%' : '100%';
+      const barEndY = direction === 1 ? '100%' : '0%';
+
+      transitionTimeline = gsap.timeline({
+        onComplete: () => {
+          if (oldImg) gsap.set(oldImg, { opacity: 0, clipPath: clipEnd, x: 0 });
+          gsap.set(wipeBar, { opacity: 0 });
+          gsap.set(wipeTrail, { opacity: 0 });
+          transitionTimeline = null;
+        }
+      });
+
+      // Prepare new image
+      gsap.set(newImg, {
+        opacity: 1,
+        clipPath: clipStart,
+        x: direction * slideIn,
+        zIndex: 5
+      });
+
+      // Prepare wipe bar
+      gsap.set(wipeBar, { top: barStartY, opacity: 1 });
+      gsap.set(wipeTrail, { top: barStartY, opacity: 0 });
+
+      // 1. Old screen slides out + fades
+      if (oldImg) {
+        transitionTimeline.to(oldImg, {
+          x: direction * slideOut,
+          opacity: 0.3,
+          duration: duration * 0.6,
+          ease: ease,
+        }, 0);
+        transitionTimeline.to(oldImg, {
+          opacity: 0,
+          duration: duration * 0.3,
+          ease: 'power1.out',
+        }, duration * 0.5);
+      }
+
+      // 2. Scanline bar sweeps across
+      transitionTimeline.to(wipeBar, {
+        top: barEndY,
+        duration: duration,
+        ease: ease,
+      }, 0);
+
+      // 3. Wipe trail follows
+      transitionTimeline.to(wipeTrail, {
+        top: barEndY,
+        opacity: 0.6,
+        duration: duration,
+        ease: ease,
+      }, 0.05);
+      transitionTimeline.to(wipeTrail, {
+        opacity: 0,
+        duration: duration * 0.3,
+      }, duration * 0.7);
+
+      // 4. New screen reveals via clip-path wipe + slide
+      transitionTimeline.to(newImg, {
+        clipPath: clipEnd,
+        x: 0,
+        duration: duration,
+        ease: ease,
+      }, 0.05);
     }
 
     // Hero parallax fade on scroll
