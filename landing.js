@@ -223,16 +223,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Phone Screen Shuffler ───
-  const phoneShuffler = document.getElementById('phoneShuffler');
-  if (phoneShuffler) {
-    const screens = phoneShuffler.querySelectorAll('.screen-img');
-    let currentScreen = 0;
+  // ─── Pixel Window Auto-Slideshow ───
+  const pwTrack = document.getElementById('pwTrack');
+  const pwDots = document.querySelectorAll('#pwDotsNav .pw-nav-dot');
 
-    phoneShuffler.addEventListener('click', () => {
-      screens[currentScreen].classList.remove('active');
-      currentScreen = (currentScreen + 1) % screens.length;
-      screens[currentScreen].classList.add('active');
+  if (pwTrack && pwDots.length) {
+    const slides = pwTrack.querySelectorAll('img');
+    let current = 0;
+    const total = slides.length;
+
+    function goToSlide(i) {
+      current = ((i % total) + total) % total;
+      pwTrack.style.transform = `translateX(-${current * 100}%)`;
+      pwDots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+    }
+
+    setInterval(() => goToSlide(current + 1), 3000);
+
+    document.getElementById('pixelWindow')?.addEventListener('click', () => {
+      goToSlide(current + 1);
     });
   }
 

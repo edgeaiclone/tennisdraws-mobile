@@ -312,7 +312,7 @@ img {
 }
 
 
-/* ─── Phone Mockup ─── */
+/* ─── Pixel Window Slideshow ─── */
 .hero-phone {
   display: flex;
   align-items: center;
@@ -333,85 +333,96 @@ img {
   z-index: 0;
 }
 
-.phone-device {
+.pixel-window {
   position: relative;
-  width: 260px;
-  background: #1A1A24;
-  border-radius: 36px;
-  padding: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.08);
+  width: 280px;
+  z-index: 1;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  overflow: hidden;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.3),
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px var(--accent-dim);
-  z-index: 1;
-  animation: phoneFloat 4s ease-in-out infinite;
+    0 0 60px var(--accent-dim);
+  animation: pixelFloat 4s ease-in-out infinite;
   cursor: pointer;
 }
 
-@keyframes phoneFloat {
+@keyframes pixelFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
 
-.phone-notch {
-  width: 100px;
-  height: 22px;
-  background: #1A1A24;
-  border-radius: 0 0 14px 14px;
-  margin: 0 auto;
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
-}
-
-.phone-screen {
-  border-radius: 24px;
-  overflow: hidden;
-  background: var(--bg);
-  aspect-ratio: 393 / 852;
-  position: relative;
-}
-
-.screen-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  transform: scale(0.96);
-}
-
-.screen-img.active {
-  opacity: 1;
-  transform: scale(1);
-  position: relative;
-}
-
-.phone-shuffle-hint {
-  position: absolute;
-  bottom: -32px;
-  left: 50%;
-  transform: translateX(-50%);
+.pw-titlebar {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pw-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.pw-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pw-dot-red { background: #FF5F56; }
+.pw-dot-yellow { background: #FFBD2E; }
+.pw-dot-green { background: #27C93F; }
+
+.pw-title {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-dim);
-  opacity: 0.5;
-  white-space: nowrap;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  letter-spacing: 0.5px;
 }
 
-.phone-device:hover .phone-shuffle-hint {
-  opacity: 0.8;
+.pw-viewport {
+  overflow: hidden;
+  aspect-ratio: 393 / 852;
+  background: var(--bg);
+}
+
+.pw-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.pw-track img {
+  width: 100%;
+  flex-shrink: 0;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pw-dots-nav {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pw-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease;
+}
+
+.pw-nav-dot.active {
+  background: var(--accent);
 }
 
 
@@ -967,8 +978,8 @@ img {
     order: -1;
   }
 
-  .phone-device {
-    width: 220px;
+  .pixel-window {
+    width: 240px;
   }
 
   .hero-phone-glow {
@@ -1019,7 +1030,7 @@ img {
     padding: 14px 24px;
   }
 
-  .phone-device {
+  .pixel-window {
     width: 200px;
   }
 
