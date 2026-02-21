@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════ */
-/* edgeAI Landing — Tab-Based Showcase             */
+/* edgeAI Landing — "The Terminal" Design          */
 /* ═══════════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ─── Pixel Logo Renderer (edgeAI text only) ───
+  // ─── Pixel Logo Renderer ───
   const PIXEL_FONT = {
     'e': ['WWW','W..','WW.','W..','WWW'],
     'd': ['WW.','W.W','W.W','W.W','WW.'],
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.style.height = totalH + 'px';
     ctx.scale(dpr, dpr);
     ctx.imageSmoothingEnabled = false;
-    const colors = { 'W': '#FFFFFF', 'G': '#00E68A' };
+    const colors = { 'W': '#FFFFFF', 'G': '#00D4AA' };
     let cursorX = 0;
     for (const letter of text) {
       const glyph = PIXEL_FONT[letter];
@@ -51,66 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
   drawPixelLogo('bootLogoCanvas', 4);
   drawPixelLogo('navLogoCanvas', 4);
   drawPixelLogo('footerLogoCanvas', 4);
-
-
-  // ─── TextScramble Class ───
-  class TextScramble {
-    constructor(el) {
-      this.el = el;
-      this.chars = '!<>-_\\/[]{}=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      this.frameReq = null;
-      this.tickCount = 0;
-    }
-    setText(newText) {
-      const length = newText.length;
-      this.queue = [];
-      for (let i = 0; i < length; i++) {
-        const to = newText[i];
-        const start = Math.floor(Math.random() * 10);
-        const end = start + Math.floor(Math.random() * 10) + 4;
-        this.queue.push({ to, start, end, char: '' });
-      }
-      cancelAnimationFrame(this.frameReq);
-      this.frame = 0;
-      this.tickCount = 0;
-      return new Promise(resolve => {
-        this.resolve = resolve;
-        this._update();
-      });
-    }
-    _update() {
-      this.tickCount++;
-      if (this.tickCount % 3 !== 0) {
-        this.frame++;
-        this.frameReq = requestAnimationFrame(() => this._update());
-        return;
-      }
-      let output = '';
-      let complete = 0;
-      for (let i = 0; i < this.queue.length; i++) {
-        let { to, start, end, char } = this.queue[i];
-        if (this.frame >= end) {
-          complete++;
-          output += to;
-        } else if (this.frame >= start) {
-          if (!char || Math.random() < 0.28) {
-            char = this.chars[Math.floor(Math.random() * this.chars.length)];
-            this.queue[i].char = char;
-          }
-          output += '<span style="color:rgba(255,255,255,0.3)">' + char + '</span>';
-        } else {
-          output += '<span style="color:rgba(255,255,255,0.15)">' + this.chars[Math.floor(Math.random() * this.chars.length)] + '</span>';
-        }
-      }
-      this.el.innerHTML = output;
-      if (complete === this.queue.length) {
-        if (this.resolve) this.resolve();
-      } else {
-        this.frameReq = requestAnimationFrame(() => this._update());
-        this.frame++;
-      }
-    }
-  }
 
 
   // ─── Boot Sequence ───
@@ -141,18 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.height = h;
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    const blockW = 8, gap = 3;
-    const totalBlocks = Math.floor(w / (blockW + gap));
+    const blockW = 8, gapB = 3;
+    const totalBlocks = Math.floor(w / (blockW + gapB));
     const filledBlocks = Math.floor(progress * totalBlocks);
     for (let i = 0; i < totalBlocks; i++) {
-      ctx.fillStyle = 'rgba(0, 230, 138, 0.08)';
-      ctx.fillRect(i * (blockW + gap), 1, blockW, h - 2);
+      ctx.fillStyle = 'rgba(0, 212, 170, 0.08)';
+      ctx.fillRect(i * (blockW + gapB), 1, blockW, h - 2);
     }
-    ctx.shadowColor = '#00E68A';
+    ctx.shadowColor = '#00D4AA';
     ctx.shadowBlur = 4;
     for (let i = 0; i < filledBlocks; i++) {
-      ctx.fillStyle = '#00E68A';
-      ctx.fillRect(i * (blockW + gap), 0, blockW, h);
+      ctx.fillStyle = '#00D4AA';
+      ctx.fillRect(i * (blockW + gapB), 0, blockW, h);
     }
     ctx.shadowBlur = 0;
   }
@@ -173,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     await sleep(200);
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
-    initTabSystem();
+    initAnimations();
   }
 
   function updateBootPct(pct) {
@@ -205,214 +145,85 @@ document.addEventListener('DOMContentLoaded', () => {
   if (prefersReducedMotion) {
     bootScreen.classList.add('done');
     navbar.classList.add('visible');
-    setTimeout(() => { initTabSystem(); }, 100);
+    setTimeout(() => { initAnimations(); }, 100);
   } else {
     runBootSequence();
   }
 
 
-  // ─── Tab System ───
-  let currentTab = null;
-  let currentFeature = null;
-  let tabTimeline = null;
+  // ─── GSAP Scroll Animations ───
+  function initAnimations() {
+    if (prefersReducedMotion) return;
 
-  function initTabSystem() {
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-    const indicator = document.getElementById('tabIndicator');
-    const screenImgs = document.querySelectorAll('.screen-img');
+    gsap.registerPlugin(ScrollTrigger);
 
-    if (!tabBtns.length) return;
-
-    // Position indicator on first tab
-    updateIndicator(tabBtns[0], indicator);
-
-    // Show first phone screen (first card of first tab)
-    const firstPanel = document.querySelector('.tab-panel.active');
-    if (firstPanel) {
-      const firstCard = firstPanel.querySelector('.feature-card.active');
-      if (firstCard) {
-        const featureKey = firstCard.dataset.feature;
-        const img = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
-        if (img) {
-          img.classList.add('active');
-          currentFeature = featureKey;
-        }
-      }
-    }
-    currentTab = 'live';
-
-    // Animate initial cards in
-    if (!prefersReducedMotion) {
-      const initialCards = document.querySelectorAll('.tab-panel.active .feature-card');
-      gsap.fromTo(initialCards,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out', delay: 0.2 }
-      );
-    }
-
-    // Tab click handlers
-    tabBtns.forEach((btn, btnIndex) => {
-      btn.addEventListener('click', () => {
-        const tabKey = btn.dataset.tab;
-        if (tabKey === currentTab) return;
-
-        // Determine direction
-        const tabOrder = ['live', 'ai', 'players', 'tools'];
-        const oldIndex = tabOrder.indexOf(currentTab);
-        const newIndex = tabOrder.indexOf(tabKey);
-        const direction = newIndex > oldIndex ? 1 : -1;
-
-        // Update tab button states
-        tabBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        // Animate indicator
-        updateIndicator(btn, indicator);
-
-        // Get old and new panels
-        const oldPanel = document.querySelector('.tab-panel[data-tab="' + currentTab + '"]');
-        const newPanel = document.querySelector('.tab-panel[data-tab="' + tabKey + '"]');
-        if (!oldPanel || !newPanel) return;
-
-        // Kill any in-progress animation
-        if (tabTimeline) {
-          tabTimeline.kill();
-          tabTimeline = null;
-        }
-
-        currentTab = tabKey;
-
-        if (prefersReducedMotion) {
-          // Instant swap
-          oldPanel.classList.remove('active');
-          newPanel.classList.add('active');
-          activateDefaultCard(newPanel);
-          return;
-        }
-
-        // Animate tab panel transition
-        const oldCards = oldPanel.querySelectorAll('.feature-card');
-
-        tabTimeline = gsap.timeline({
-          onComplete: () => { tabTimeline = null; }
-        });
-
-        // Fade out old panel cards, then swap panels and animate new cards in
-        tabTimeline.to(oldCards, {
-          opacity: 0,
-          x: direction * -30,
-          duration: 0.2,
-          stagger: 0.04,
-          ease: 'power2.in',
-          onComplete: () => {
-            oldPanel.classList.remove('active');
-            // Reset old cards for next time
-            gsap.set(oldCards, { opacity: 1, x: 0 });
-
-            // Show new panel
-            newPanel.classList.add('active');
-
-            // Activate default card and phone screen
-            activateDefaultCard(newPanel);
-
-            // Now animate new cards in (panel is visible)
-            const newCards = newPanel.querySelectorAll('.feature-card');
-            gsap.fromTo(newCards,
-              { opacity: 0, x: direction * 30 },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.35,
-                stagger: 0.08,
-                ease: 'power2.out',
-              }
-            );
-          }
-        });
-      });
+    // Hero text stagger
+    gsap.from('.hero-label', {
+      y: 30, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.1,
+    });
+    gsap.from('.hero-title', {
+      y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.25,
+    });
+    gsap.from('.hero-sub', {
+      y: 30, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.4,
+    });
+    gsap.from('.hero-buttons', {
+      y: 20, opacity: 0, duration: 0.6, ease: 'power3.out', delay: 0.55,
+    });
+    gsap.from('.hero-trust', {
+      opacity: 0, duration: 0.6, delay: 0.7,
     });
 
-    // Card click handlers
-    document.querySelectorAll('.feature-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const featureKey = card.dataset.feature;
-        if (featureKey === currentFeature) return;
+    // Hero phone
+    gsap.from('.hero-phone', {
+      y: 50, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2,
+    });
 
-        // Update card active states within same tab panel
-        const panel = card.closest('.tab-panel');
-        if (panel) {
-          panel.querySelectorAll('.feature-card').forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-        }
+    // Section title — Features
+    gsap.from('.features-header', {
+      scrollTrigger: { trigger: '.features', start: 'top 75%' },
+      y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
+    });
 
-        // Animate phone screen swap
-        animatePhoneScreen(featureKey);
-      });
+    // Feature cards
+    gsap.from('.feature-card', {
+      scrollTrigger: { trigger: '.features-grid', start: 'top 80%' },
+      y: 50, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+    });
+
+    // Bento cells
+    gsap.from('.bento-cell', {
+      scrollTrigger: { trigger: '.bento-grid', start: 'top 80%' },
+      y: 40, opacity: 0, scale: 0.97, duration: 0.7, stagger: 0.12, ease: 'power3.out',
+    });
+
+    // CTA
+    gsap.from('.cta-title', {
+      scrollTrigger: { trigger: '.cta', start: 'top 75%' },
+      y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
+    });
+    gsap.from('.cta-sub', {
+      scrollTrigger: { trigger: '.cta', start: 'top 75%' },
+      y: 30, opacity: 0, duration: 0.7, delay: 0.1, ease: 'power3.out',
+    });
+    gsap.from('.store-btn', {
+      scrollTrigger: { trigger: '.store-buttons', start: 'top 85%' },
+      y: 20, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
     });
   }
 
-  function updateIndicator(btn, indicator) {
-    if (!btn || !indicator) return;
-    const rect = btn.getBoundingClientRect();
-    const parentRect = btn.parentElement.getBoundingClientRect();
-    indicator.style.left = (rect.left - parentRect.left) + 'px';
-    indicator.style.width = rect.width + 'px';
-  }
 
-  function activateDefaultCard(panel) {
-    // First card with .active class in this panel
-    const activeCard = panel.querySelector('.feature-card.active');
-    if (activeCard) {
-      animatePhoneScreen(activeCard.dataset.feature);
-    }
-  }
-
-  function animatePhoneScreen(featureKey) {
-    const oldImg = currentFeature
-      ? document.querySelector('.screen-img[data-feature="' + currentFeature + '"]')
-      : null;
-    const newImg = document.querySelector('.screen-img[data-feature="' + featureKey + '"]');
-    if (!newImg) return;
-
-    currentFeature = featureKey;
-
-    if (prefersReducedMotion) {
-      if (oldImg) oldImg.classList.remove('active');
-      newImg.classList.add('active');
-      return;
-    }
-
-    // GSAP phone screen transition
-    const tl = gsap.timeline();
-
-    if (oldImg && oldImg !== newImg) {
-      tl.to(oldImg, {
-        opacity: 0,
-        scale: 0.97,
-        duration: 0.2,
-        ease: 'power2.in',
-        onComplete: () => {
-          oldImg.classList.remove('active');
-          gsap.set(oldImg, { scale: 1 });
-        }
+  // ─── Navbar Scroll Behavior ───
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.scrollY > 80);
+        ticking = false;
       });
+      ticking = true;
     }
-
-    tl.fromTo(newImg,
-      { opacity: 0, scale: 1.03 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.25,
-        ease: 'power2.out',
-        onStart: () => {
-          newImg.classList.add('active');
-        }
-      },
-      oldImg && oldImg !== newImg ? '-=0.05' : 0
-    );
-  }
+  });
 
 
   // ─── Pixelated Store Icons ───
@@ -468,15 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
     '.11....11.',
     '.11....11.',
     '.11....11.',
-  ], { '1': '#00E68A' });
-
-  // ─── Recalculate tab indicator on resize ───
-  window.addEventListener('resize', () => {
-    const activeBtn = document.querySelector('.tab-btn.active');
-    const indicator = document.getElementById('tabIndicator');
-    if (activeBtn && indicator) {
-      updateIndicator(activeBtn, indicator);
-    }
-  });
+  ], { '1': '#00D4AA' });
 
 });
