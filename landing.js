@@ -125,72 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   drawPixelText('heroTitleCanvas', ['The edge', 'smart bettors', 'need.'], 7, '#FFFFFF');
   drawPixelText('sectionTitleCanvas', ['Built for the edge'], 5, '#00D4AA');
-  drawPixelText('pwTitleCanvas', ['edgeAI'], 3, '#00D4AA');
-
-  // ─── Pixel Block Border ───
-  function drawPixelBorder() {
-    const frame = document.querySelector('.crt-frame');
-    const canvas = document.getElementById('pixelBorderCanvas');
-    if (!frame || !canvas) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const mobile = window.innerWidth <= 640;
-    const bs = mobile ? 6 : 8;     // block size
-    const gap = mobile ? 1 : 2;    // gap between blocks
-    const cell = bs + gap;
-
-    const frameW = frame.offsetWidth;
-    const frameH = frame.offsetHeight;
-
-    // Border = 2 block rows thick, stepped corners cut 1 block
-    const borderBlocks = 2;
-    const stepCut = 1;
-
-    // Total canvas size includes border on all sides
-    const canvasW = frameW + borderBlocks * 2 * cell;
-    const canvasH = frameH + borderBlocks * 2 * cell;
-
-    canvas.width = canvasW * dpr;
-    canvas.height = canvasH * dpr;
-    canvas.style.width = canvasW + 'px';
-    canvas.style.height = canvasH + 'px';
-
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.imageSmoothingEnabled = false;
-
-    const cols = Math.ceil(canvasW / cell);
-    const rows = Math.ceil(canvasH / cell);
-
-    // Inner area (no blocks drawn here — it's the frame content)
-    const innerC1 = borderBlocks;
-    const innerR1 = borderBlocks;
-    const innerC2 = innerC1 + Math.ceil(frameW / cell);
-    const innerR2 = innerR1 + Math.ceil(frameH / cell);
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        // Skip interior
-        if (c >= innerC1 && c < innerC2 && r >= innerR1 && r < innerR2) continue;
-
-        // Stepped corner cutouts — cut top-left, top-right, bottom-left, bottom-right
-        // Top-left: cut stepCut x stepCut blocks from the outermost corner
-        if (c < stepCut && r < stepCut) continue;
-        // Top-right
-        if (c >= cols - stepCut && r < stepCut) continue;
-        // Bottom-left
-        if (c < stepCut && r >= rows - stepCut) continue;
-        // Bottom-right
-        if (c >= cols - stepCut && r >= rows - stepCut) continue;
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(c * cell, r * cell, bs, bs);
-      }
-    }
-  }
-
-  drawPixelBorder();
-  window.addEventListener('resize', drawPixelBorder);
 
   // ─── Boot Sequence ───
   const bootLines = [
@@ -290,27 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── Pixel Window Auto-Slideshow ───
-  const pwTrack = document.getElementById('pwTrack');
-  const pwDots = document.querySelectorAll('#pwDotsNav .pw-nav-dot');
-
-  if (pwTrack && pwDots.length) {
-    const slides = pwTrack.querySelectorAll('img');
-    let current = 0;
-    const total = slides.length;
-
-    function goToSlide(i) {
-      current = ((i % total) + total) % total;
-      pwTrack.style.transform = `translateX(-${current * 100}%)`;
-      pwDots.forEach((d, idx) => d.classList.toggle('active', idx === current));
-    }
-
-    setInterval(() => goToSlide(current + 1), 3000);
-
-    document.getElementById('pixelWindow')?.addEventListener('click', () => {
-      goToSlide(current + 1);
-    });
-  }
 
 
   // ─── GSAP Scroll Animations ───
