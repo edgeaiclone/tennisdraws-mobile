@@ -223,6 +223,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
+  // ─── Phone Screen Shuffler ───
+  const phoneShuffler = document.getElementById('phoneShuffler');
+  if (phoneShuffler) {
+    const screens = phoneShuffler.querySelectorAll('.screen-img');
+    let currentScreen = 0;
+
+    phoneShuffler.addEventListener('click', () => {
+      screens[currentScreen].classList.remove('active');
+      currentScreen = (currentScreen + 1) % screens.length;
+      screens[currentScreen].classList.add('active');
+    });
+  }
+
+
   // ─── GSAP Scroll Animations ───
   function initAnimations() {
     if (prefersReducedMotion) return;
