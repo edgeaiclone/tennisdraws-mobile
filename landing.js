@@ -6,11 +6,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── Pixel Logo Renderer ───
   const PIXEL_FONT = {
+    // edgeAI logo letters
     'e': ['WWW','W..','WW.','W..','WWW'],
     'd': ['WW.','W.W','W.W','W.W','WW.'],
     'g': ['.WW','W..','W.W','W.W','.WW'],
     'A': ['.G.','G.G','GGG','G.G','G.G'],
     'I': ['GGG','.G.','.G.','.G.','GGG'],
+    // Full alphabet for hero title
+    'T': ['WWW','.W.','.W.','.W.','.W.'],
+    'h': ['W..','W..','WW.','W.W','W.W'],
+    's': ['.WW','W..','WW.','.W.','WW.'],
+    'm': ['W.W','WWW','WWW','W.W','W.W'],
+    'a': ['.W.','W.W','WWW','W.W','W.W'],
+    'r': ['WW.','W.W','WW.','W.W','W.W'],
+    't': ['WWW','.W.','.W.','.W.','.W.'],
+    'b': ['WW.','W.W','WW.','W.W','WW.'],
+    'o': ['.W.','W.W','W.W','W.W','.W.'],
+    'n': ['W.W','WW.','W.W','W.W','W.W'],
+    'p': ['WW.','W.W','WW.','W..','W..'],
+    '.': ['...','...','..','..','.W.'],
+    'i': ['.W.','...','.W.','.W.','.W.'],
+    'l': ['W..','W..','W..','W..','WW.'],
+    'c': ['.WW','W..','W..','W..','.WW'],
+    'u': ['W.W','W.W','W.W','W.W','.WW'],
+    'w': ['W.W','W.W','WWW','WWW','W.W'],
+    'y': ['W.W','W.W','.W.','.W.','.W.'],
+    'f': ['WWW','W..','WW.','W..','W..'],
+    'k': ['W.W','WW.','W..','WW.','W.W'],
   };
 
   function drawPixelLogo(canvasId, scale) {
@@ -51,6 +73,56 @@ document.addEventListener('DOMContentLoaded', () => {
   drawPixelLogo('bootLogoCanvas', 4);
   drawPixelLogo('navLogoCanvas', 4);
   drawPixelLogo('footerLogoCanvas', 4);
+
+
+  // ─── Pixel Text Renderer (multi-line) ───
+  function drawPixelText(canvasId, lines, scale, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const ps = scale;
+    const gap = Math.max(1, Math.floor(scale / 4));
+    const charW = 3, charH = 5, charSpacing = 1, lineSpacing = 2;
+
+    // Calculate canvas size
+    let maxCols = 0;
+    for (const line of lines) {
+      const cols = line.length * (charW + charSpacing) - charSpacing;
+      if (cols > maxCols) maxCols = cols;
+    }
+    const totalW = maxCols * (ps + gap);
+    const totalH = (lines.length * charH + (lines.length - 1) * lineSpacing) * (ps + gap);
+
+    canvas.width = totalW * dpr;
+    canvas.height = totalH * dpr;
+    canvas.style.width = totalW + 'px';
+    canvas.style.height = totalH + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.imageSmoothingEnabled = false;
+
+    let rowOffset = 0;
+    for (const line of lines) {
+      let cursorX = 0;
+      for (const ch of line) {
+        if (ch === ' ') { cursorX += charW + charSpacing; continue; }
+        const glyph = PIXEL_FONT[ch];
+        if (!glyph) { cursorX += charW + charSpacing; continue; }
+        for (let r = 0; r < glyph.length; r++) {
+          for (let c = 0; c < glyph[r].length; c++) {
+            const px = glyph[r][c];
+            if (px === '.') continue;
+            ctx.fillStyle = color;
+            ctx.fillRect((cursorX + c) * (ps + gap), (rowOffset + r) * (ps + gap), ps, ps);
+          }
+        }
+        cursorX += charW + charSpacing;
+      }
+      rowOffset += charH + lineSpacing;
+    }
+  }
+
+  drawPixelText('heroTitleCanvas', ['The edge', 'smart bettors', 'need.'], 7, '#FFFFFF');
 
 
   // ─── Boot Sequence ───
@@ -206,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollTrigger: { trigger: '.cta', start: 'top 75%' },
       y: 30, opacity: 0, duration: 0.7, delay: 0.1, ease: 'power3.out',
     });
-    gsap.from('.store-btn', {
+    gsap.from('.cta .store-btn', {
       scrollTrigger: { trigger: '.store-buttons', start: 'top 85%' },
       y: 20, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
     });
@@ -267,6 +339,37 @@ document.addEventListener('DOMContentLoaded', () => {
   ], { '7': '#ffffff' });
 
   drawPixelIcon('androidIcon', [
+    '..1....1..',
+    '...1..1...',
+    '.11111111.',
+    '1111111111',
+    '1111111111',
+    '1.11111.11',
+    '1111111111',
+    '1111111111',
+    '.11111111.',
+    '.11....11.',
+    '.11....11.',
+    '.11....11.',
+  ], { '1': '#00D4AA' });
+
+  // Hero store icons (same graphics, different canvas IDs)
+  drawPixelIcon('heroIosIcon', [
+    '....77....',
+    '...77.....',
+    '..7777777.',
+    '.77777777.',
+    '777777777.',
+    '777777777.',
+    '777777777.',
+    '.77777777.',
+    '..7777777.',
+    '..777.777.',
+    '..77...77.',
+    '..7.....7.',
+  ], { '7': '#ffffff' });
+
+  drawPixelIcon('heroAndroidIcon', [
     '..1....1..',
     '...1..1...',
     '.11111111.',

@@ -237,12 +237,13 @@ img {
 }
 
 .hero-title {
-  font-size: clamp(40px, 6vw, 64px);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -1.5px;
-  color: var(--text);
   margin-bottom: 20px;
+}
+
+.hero-title canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .hero-sub {
@@ -963,9 +964,9 @@ img {
     min-height: auto;
   }
 
-  .hero-title {
-    font-size: 36px;
-    letter-spacing: -1px;
+  .hero-title canvas {
+    max-width: 100%;
+    height: auto;
   }
 
   .hero-sub {
