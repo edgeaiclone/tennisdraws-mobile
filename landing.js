@@ -308,11 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (index === currentFeature) return;
 
       const prevIndex = currentFeature;
-      const direction = index > prevIndex ? 1 : -1;
+      const direction = index > prevIndex ? 1 : -1; // 1=forward, -1=backward
       const isFirst = prevIndex === -1;
-      const isMobile = window.innerWidth <= 768;
-      const slideIn = isMobile ? 8 : 15;
-      const slideOut = isMobile ? -10 : -20;
 
       // Kill any in-progress transition
       const now = Date.now();
@@ -347,86 +344,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
       currentFeature = index;
 
-      // --- SCREEN TRANSITION ---
+      // --- SCREEN TRANSITION: Horizontal Slide ---
       if (isFirst || prefersReducedMotion) {
         if (oldImg) gsap.set(oldImg, { opacity: 0, x: 0 });
-        gsap.set(newImg, { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', x: 0 });
+        gsap.set(newImg, { opacity: 1, x: 0 });
         return;
       }
 
-      const duration = 0.7;
-      const ease = 'power2.inOut';
-
-      const clipStart = direction === 1
-        ? 'inset(0% 0% 100% 0%)'
-        : 'inset(100% 0% 0% 0%)';
-      const clipEnd = 'inset(0% 0% 0% 0%)';
-
-      const barStartY = direction === 1 ? '0%' : '100%';
-      const barEndY = direction === 1 ? '100%' : '0%';
+      const duration = 0.5;
+      const ease = 'power3.inOut';
+      const phoneW = document.getElementById('phoneDevice').offsetWidth;
 
       transitionTimeline = gsap.timeline({
         onComplete: () => {
-          if (oldImg) gsap.set(oldImg, { opacity: 0, clipPath: clipEnd, x: 0 });
+          if (oldImg) gsap.set(oldImg, { opacity: 0, x: 0 });
           gsap.set(wipeBar, { opacity: 0 });
-          gsap.set(wipeTrail, { opacity: 0 });
           transitionTimeline = null;
         }
       });
 
-      // Prepare new image
+      // New screen starts off-screen to the right (forward) or left (backward)
       gsap.set(newImg, {
         opacity: 1,
-        clipPath: clipStart,
-        x: direction * slideIn,
+        x: direction * phoneW,
         zIndex: 5
       });
 
-      // Prepare wipe bar
-      gsap.set(wipeBar, { top: barStartY, opacity: 1 });
-      gsap.set(wipeTrail, { top: barStartY, opacity: 0 });
+      // Green accent line on the leading edge
+      gsap.set(wipeBar, {
+        top: 0,
+        bottom: 0,
+        height: '100%',
+        width: '3px',
+        left: direction === 1 ? 'auto' : '0',
+        right: direction === 1 ? '0' : 'auto',
+        opacity: 0
+      });
 
-      // 1. Old screen slides out + fades
+      // 1. Old screen slides out to the opposite side
       if (oldImg) {
         transitionTimeline.to(oldImg, {
-          x: direction * slideOut,
-          opacity: 0.3,
-          duration: duration * 0.6,
+          x: direction * -phoneW,
+          duration: duration,
           ease: ease,
         }, 0);
-        transitionTimeline.to(oldImg, {
-          opacity: 0,
-          duration: duration * 0.3,
-          ease: 'power1.out',
-        }, duration * 0.5);
       }
 
-      // 2. Scanline bar sweeps across
-      transitionTimeline.to(wipeBar, {
-        top: barEndY,
+      // 2. New screen slides in from the side
+      transitionTimeline.to(newImg, {
+        x: 0,
         duration: duration,
         ease: ease,
       }, 0);
 
-      // 3. Wipe trail follows
-      transitionTimeline.to(wipeTrail, {
-        top: barEndY,
-        opacity: 0.6,
-        duration: duration,
-        ease: ease,
-      }, 0.05);
-      transitionTimeline.to(wipeTrail, {
+      // 3. Brief green accent flash on leading edge
+      transitionTimeline.fromTo(wipeBar, {
+        opacity: 1,
+      }, {
         opacity: 0,
-        duration: duration * 0.3,
-      }, duration * 0.7);
-
-      // 4. New screen reveals via clip-path wipe + slide
-      transitionTimeline.to(newImg, {
-        clipPath: clipEnd,
-        x: 0,
-        duration: duration,
-        ease: ease,
-      }, 0.05);
+        duration: duration * 0.6,
+        ease: 'power1.out',
+      }, 0);
     }
 
     // Hero parallax fade on scroll

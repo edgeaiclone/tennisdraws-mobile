@@ -211,12 +211,12 @@ body::after {
   will-change: clip-path, opacity, transform;
 }
 
-/* ─── Scanline Wipe Bar ─── */
+/* ─── Slide Accent Bar ─── */
 .screen-wipe-bar {
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
+  top: 0;
+  width: 3px;
+  height: 100%;
   background: var(--accent);
   box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(0, 230, 138, 0.3);
   z-index: 15;
@@ -224,14 +224,7 @@ body::after {
   opacity: 0;
 }
 .screen-wipe-trail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: linear-gradient(to bottom, rgba(0, 230, 138, 0.08), transparent);
-  z-index: 14;
-  pointer-events: none;
-  opacity: 0;
+  display: none;
 }
 
 /* ─── Feature Panels ─── */
