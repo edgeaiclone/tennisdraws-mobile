@@ -337,50 +337,24 @@ img {
   background: #1a1a24;
   overflow: hidden;
   border-radius: 0;
-  border: 6px solid #ffffff;
-  box-shadow:
-    inset 0 0 20px rgba(255, 255, 255, 0.03),
-    -10px 0 0 0 #ffffff,
-    0 -10px 0 0 #ffffff,
-    10px 0 0 0 #ffffff,
-    0 10px 0 0 #ffffff,
-    -6px -6px 0 0 #0B0B0F,
-    6px -6px 0 0 #0B0B0F,
-    -6px 6px 0 0 #0B0B0F,
-    6px 6px 0 0 #0B0B0F,
-    -10px -10px 0 0 #ffffff,
-    10px -10px 0 0 #ffffff,
-    -10px 10px 0 0 #ffffff,
-    10px 10px 0 0 #ffffff,
-    0 0 30px rgba(255, 255, 255, 0.08),
-    0 20px 60px rgba(0, 0, 0, 0.6);
+  border: none;
+  z-index: 1;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.03);
 }
 
-.crt-frame::before {
-  content: '';
+/* Canvas-drawn pixel border */
+.pixel-border-canvas {
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
-  z-index: 10;
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  border-radius: 0;
-  opacity: 0.4;
-}
-
-.crt-frame::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  right: 2px;
-  bottom: 2px;
-  pointer-events: none;
-  z-index: 10;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0;
+  z-index: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter:
+    drop-shadow(0 20px 60px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.06));
 }
 
 /* Scanline overlay */
@@ -411,9 +385,27 @@ img {
   gap: 10px;
   padding: 10px 12px;
   background: #0d0d14;
-  border-bottom: 3px solid #ffffff;
+  border-bottom: none;
   position: relative;
   z-index: 2;
+}
+
+/* Pixelated bottom divider */
+.pw-titlebar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    to right,
+    #ffffff 0px,
+    #ffffff 8px,
+    transparent 8px,
+    transparent 10px
+  );
 }
 
 /* Power LED — square pixel style */
@@ -447,7 +439,7 @@ img {
   border-radius: 0;
   overflow: hidden;
   margin: 6px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: none;
   box-shadow:
     inset 0 0 40px rgba(0, 0, 0, 0.4),
     inset 0 0 80px rgba(0, 0, 0, 0.2);
@@ -506,9 +498,27 @@ img {
 .pw-bottombar {
   padding: 10px 0;
   background: #0d0d14;
-  border-top: 3px solid #ffffff;
+  border-top: none;
   position: relative;
   z-index: 2;
+}
+
+/* Pixelated top divider */
+.pw-bottombar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    to right,
+    #ffffff 0px,
+    #ffffff 8px,
+    transparent 8px,
+    transparent 10px
+  );
 }
 
 /* Square pixel nav dots */
@@ -1153,7 +1163,7 @@ img {
   }
 
   .crt-frame {
-    border-width: 4px;
+    border: none;
   }
 
   .crt-screen {
