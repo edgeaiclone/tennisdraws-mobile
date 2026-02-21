@@ -34,7 +34,6 @@
     <a href="#" class="nav-logo">
       <canvas class="nav-logo-canvas" id="navLogoCanvas"></canvas>
     </a>
-    <a href="#cta" class="nav-cta">Get the App</a>
   </div>
 </nav>
 
@@ -64,24 +63,27 @@
     </div>
     <div class="hero-phone">
       <div class="hero-phone-glow"></div>
-      <div class="pixel-window" id="pixelWindow">
-        <div class="pw-titlebar">
-          <div class="pw-dots">
-            <span class="pw-dot pw-dot-red"></span>
-            <span class="pw-dot pw-dot-yellow"></span>
-            <span class="pw-dot pw-dot-green"></span>
+      <div class="pixel-window crt-monitor" id="pixelWindow">
+        <div class="crt-frame">
+          <div class="crt-scanlines"></div>
+          <div class="pw-titlebar">
+            <div class="crt-led"></div>
+            <canvas class="pw-title-canvas" id="pwTitleCanvas"></canvas>
           </div>
-          <span class="pw-title">edgeAI — preview</span>
-        </div>
-        <div class="pw-viewport">
-          <div class="pw-track" id="pwTrack">
-            <img src="wireframes/Home %231.png" alt="Livescores" draggable="false">
-            <img src="wireframes/Scrapping - LIVE MTO (Telegram).png" alt="Burnout Watch" draggable="false">
+          <div class="crt-screen">
+            <div class="pw-viewport">
+              <div class="pw-track" id="pwTrack">
+                <img src="wireframes/Home %231.png" alt="Livescores" draggable="false">
+                <img src="wireframes/Scrapping - LIVE MTO (Telegram).png" alt="Burnout Watch" draggable="false">
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="pw-dots-nav" id="pwDotsNav">
-          <span class="pw-nav-dot active"></span>
-          <span class="pw-nav-dot"></span>
+          <div class="pw-bottombar">
+            <div class="pw-dots-nav" id="pwDotsNav">
+              <span class="pw-nav-dot active"></span>
+              <span class="pw-nav-dot"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -99,7 +101,7 @@
 <!-- FEATURES GRID -->
 <section class="features" id="features">
   <div class="features-header">
-    <h2 class="section-title">Built for the edge</h2>
+    <canvas id="sectionTitleCanvas" class="section-title-canvas"></canvas>
     <p class="section-sub">8 tools. One app. Zero cost.</p>
   </div>
   <div class="features-grid">

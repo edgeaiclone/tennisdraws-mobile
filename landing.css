@@ -184,21 +184,6 @@ img {
   display: block;
 }
 
-.nav-cta {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--bg);
-  background: var(--accent);
-  padding: 8px 20px;
-  border-radius: 6px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.nav-cta:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
 
 
 /* ═══════════════════════════════════════════════ */
@@ -333,20 +318,13 @@ img {
   z-index: 0;
 }
 
-.pixel-window {
+/* ─── CRT Retro Monitor Frame ─── */
+.pixel-window.crt-monitor {
   position: relative;
-  width: 280px;
+  width: 300px;
   z-index: 1;
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.3),
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 60px var(--accent-dim);
-  animation: pixelFloat 4s ease-in-out infinite;
   cursor: pointer;
+  animation: pixelFloat 4s ease-in-out infinite;
 }
 
 @keyframes pixelFloat {
@@ -354,41 +332,158 @@ img {
   50% { transform: translateY(-10px); }
 }
 
+.crt-frame {
+  position: relative;
+  background: #1a1a24;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 4px solid #2a2a3a;
+  box-shadow:
+    inset 0 0 30px rgba(0, 212, 170, 0.05),
+    -8px 0 0 0 var(--accent),
+    0 -8px 0 0 var(--accent),
+    8px 0 0 0 var(--accent),
+    0 8px 0 0 var(--accent),
+    -4px -4px 0 0 #1a1a24,
+    4px -4px 0 0 #1a1a24,
+    -4px 4px 0 0 #1a1a24,
+    4px 4px 0 0 #1a1a24,
+    0 0 20px rgba(0, 212, 170, 0.15),
+    0 0 60px rgba(0, 212, 170, 0.05),
+    0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.crt-frame::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  pointer-events: none;
+  z-index: 10;
+  border: 3px solid var(--accent);
+  border-radius: 4px;
+  opacity: 0.4;
+}
+
+.crt-frame::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  pointer-events: none;
+  z-index: 10;
+  border: 2px solid rgba(0, 212, 170, 0.1);
+  border-radius: 2px;
+}
+
+/* Scanline overlay */
+.crt-scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  animation: scanlineFlicker 0.1s infinite alternate;
+}
+
+@keyframes scanlineFlicker {
+  0%   { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+/* Title bar */
 .pw-titlebar {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 12px;
+  background: #0d0d14;
+  border-bottom: 2px solid #2a2a3a;
+  position: relative;
+  z-index: 2;
 }
 
-.pw-dots {
-  display: flex;
-  gap: 5px;
-}
-
-.pw-dot {
+/* Power LED — square pixel style */
+.crt-led {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  background: var(--accent);
+  border-radius: 0;
+  box-shadow:
+    0 0 6px var(--accent),
+    0 0 12px rgba(0, 212, 170, 0.3);
+  animation: ledPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
-.pw-dot-red { background: #FF5F56; }
-.pw-dot-yellow { background: #FFBD2E; }
-.pw-dot-green { background: #27C93F; }
+@keyframes ledPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent), 0 0 12px rgba(0, 212, 170, 0.3); }
+  50%      { opacity: 0.6; box-shadow: 0 0 3px var(--accent), 0 0 6px rgba(0, 212, 170, 0.15); }
+}
 
-.pw-title {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
+.pw-title-canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* CRT screen area */
+.crt-screen {
+  position: relative;
+  z-index: 2;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 6px;
+  border: 2px solid #2a2a3a;
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 80px rgba(0, 0, 0, 0.2);
+  animation: screenGlow 3s ease-in-out infinite;
+}
+
+@keyframes screenGlow {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 30px rgba(0, 212, 170, 0.03),
+      0 0 20px rgba(0, 212, 170, 0.08);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 30px rgba(0, 212, 170, 0.06),
+      0 0 30px rgba(0, 212, 170, 0.12);
+  }
 }
 
 .pw-viewport {
   overflow: hidden;
   aspect-ratio: 393 / 852;
   background: var(--bg);
+  position: relative;
+}
+
+/* CRT vignette — darkened edges */
+.pw-viewport::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  border-radius: 4px;
 }
 
 .pw-track {
@@ -404,25 +499,33 @@ img {
   object-fit: cover;
 }
 
+/* Bottom bar */
+.pw-bottombar {
+  padding: 10px 0;
+  background: #0d0d14;
+  border-top: 2px solid #2a2a3a;
+  position: relative;
+  z-index: 2;
+}
+
+/* Square pixel nav dots */
 .pw-dots-nav {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 0;
-  background: rgba(0, 0, 0, 0.4);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 8px;
 }
 
 .pw-nav-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: background 0.3s ease;
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  background: #2a2a3a;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pw-nav-dot.active {
   background: var(--accent);
+  box-shadow: 0 0 6px rgba(0, 212, 170, 0.5);
 }
 
 
@@ -482,6 +585,13 @@ img {
   font-weight: 800;
   letter-spacing: -1px;
   margin-bottom: 12px;
+}
+
+.section-title-canvas {
+  display: block;
+  margin: 0 auto 12px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .section-sub {
@@ -978,8 +1088,8 @@ img {
     order: -1;
   }
 
-  .pixel-window {
-    width: 240px;
+  .pixel-window.crt-monitor {
+    width: 260px;
   }
 
   .hero-phone-glow {
@@ -1015,6 +1125,11 @@ img {
     height: auto;
   }
 
+  .section-title-canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
   .hero-sub {
     font-size: 15px;
   }
@@ -1030,8 +1145,20 @@ img {
     padding: 14px 24px;
   }
 
-  .pixel-window {
-    width: 200px;
+  .pixel-window.crt-monitor {
+    width: 220px;
+  }
+
+  .crt-frame {
+    border-width: 3px;
+  }
+
+  .crt-screen {
+    margin: 4px;
+  }
+
+  .pw-titlebar {
+    padding: 8px 10px;
   }
 
   .features {

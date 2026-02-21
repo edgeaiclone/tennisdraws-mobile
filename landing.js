@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'y': ['W.W','W.W','.W.','.W.','.W.'],
     'f': ['WWW','W..','WW.','W..','W..'],
     'k': ['W.W','WW.','W..','WW.','W.W'],
+    'B': ['WW.','W.W','WW.','W.W','WW.'],
   };
 
   function drawPixelLogo(canvasId, scale) {
@@ -123,6 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   drawPixelText('heroTitleCanvas', ['The edge', 'smart bettors', 'need.'], 7, '#FFFFFF');
+  drawPixelText('sectionTitleCanvas', ['Built for the edge'], 5, '#00D4AA');
+  drawPixelText('pwTitleCanvas', ['edgeAI'], 3, '#00D4AA');
 
 
   // ─── Boot Sequence ───
